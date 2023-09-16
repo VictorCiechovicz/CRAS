@@ -4,9 +4,13 @@ import React, { useState } from 'react'
 
 import Link from 'next/link'
 import { LinksAdmin, LinksAgent } from './const'
-import { HomeIcon } from '@heroicons/react/24/outline'
+import {
+  ArrowRightIcon,
+  ArrowRightOnRectangleIcon,
+  HomeIcon
+} from '@heroicons/react/24/outline'
 import { usePathname } from 'next/navigation'
-import { Avatar } from '@/components/ui/avatar'
+import { Avatar } from '@/components/common/ui/avatar'
 import ImageAvatar from '../../../public/images/placeholder.jpg'
 import Image from 'next/image'
 import clsx from 'clsx'
@@ -57,7 +61,7 @@ export function SideBar() {
                 >
                   <div className={iconClass}>
                     {React.cloneElement(link.icon, {
-                      color: isActive || isHovered ? '#FFFFFF' : '#888888'
+                      color: isActive || isHovered ? '#FFFFFF' : 'text-gray-500'
                     })}
                   </div>
                   <span
@@ -72,11 +76,20 @@ export function SideBar() {
             })}
           </li>
         </ul>
-        <div className="absolute bottom-0 left-0 flex gap-2 items-center p-4">
-          <Avatar>
-            <Image src={ImageAvatar} className="w-10 h-10" alt="Avatar" />
-          </Avatar>
-          <p className="text-base text-gray-500">Fulano da Silva</p>
+        <div className="absolute bottom-0 left-0 flex gap-20 items-center  p-4">
+          <div className="flex gap-2">
+            <div>
+              <Avatar>
+                <Image src={ImageAvatar} className="w-10 h-10" alt="Avatar" />
+              </Avatar>
+            </div>
+
+            <p className="text-base mt-2 text-gray-500">Fulano da Silva</p>
+          </div>
+
+          <div className="cursor-pointer">
+            <ArrowRightOnRectangleIcon className="w-7 h-7 text-gray-500 hover:text-gray-400" />
+          </div>
         </div>
       </div>
     </aside>

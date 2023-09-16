@@ -6,29 +6,30 @@ import { columns } from './columns'
 import { HomeList } from '@/schemas'
 import { Button } from '@/components/common/ui/button'
 
-interface ManagementFamilyProps {
+
+interface ManagementAgentsProps {
   items: HomeList[]
 }
 
-export function ManagementFamilyList({ items }: ManagementFamilyProps) {
+export function ManagementAgentsList({ items }: ManagementAgentsProps) {
   const [currentPage, setCurrentPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
 
   return (
     <>
       <PageHeading
-        title="Gestão de Famílias"
+        title="Gestão de Agentes"
         paths={[
           { href: '/home', name: 'Início' },
-          { href: '#', name: 'Gestão de Famílias' }
+          { href: '#', name: 'Gestão de Agentes' }
         ]}
       >
         <Button variant="outline" className="bg-blue-800 text-white rounded-lg">
-          Nova Família
+          Novo Agente
         </Button>
       </PageHeading>
       <Table
-        title="Famílias"
+        title="Agentes"
         columns={columns}
         data={items}
         currentPage={currentPage}

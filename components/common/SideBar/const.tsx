@@ -1,6 +1,5 @@
 import {
   UserGroupIcon,
-  ArrowRightIcon,
   ClipboardDocumentCheckIcon,
   ClipboardDocumentListIcon,
   UserPlusIcon
@@ -29,18 +28,13 @@ export const LinksAdmin: ILinks[] = [
   },
   {
     text: 'Aprovações',
-    link: '/aprove',
+    link: '/approved',
     icon: <ClipboardDocumentCheckIcon />
   },
   {
     text: 'Agentes',
-    link: '/agent',
+    link: '/managementAgents',
     icon: <UserPlusIcon />
-  },
-  {
-    text: 'Sair',
-    link: '/logout',
-    icon: <ArrowRightIcon />
   }
 ]
 
@@ -54,11 +48,5 @@ export const LinksAgent: ILinks[] = [
     text: 'Cadastros',
     link: '/managementFamily',
     icon: <ClipboardDocumentListIcon />
-  },
-
-  {
-    text: 'Sair',
-    link: '/logout',
-    icon: <ArrowRightIcon />
   }
 ]

@@ -4,29 +4,25 @@ import { useState } from 'react'
 import { PageHeading, Table } from '@/components/common'
 import { columns } from './columns'
 import { HomeList } from '@/schemas'
-import { Button } from '@/components/common/ui/button'
 
-interface ManagementFamilyProps {
+
+interface ApprovedListProps {
   items: HomeList[]
 }
 
-export function ManagementFamilyList({ items }: ManagementFamilyProps) {
+export function ApprovedList({ items }: ApprovedListProps) {
   const [currentPage, setCurrentPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
 
   return (
     <>
       <PageHeading
-        title="Gestão de Famílias"
+        title="Gestão de Aprovações"
         paths={[
           { href: '/home', name: 'Início' },
-          { href: '#', name: 'Gestão de Famílias' }
+          { href: '#', name: 'Gestão de Aprovações' }
         ]}
-      >
-        <Button variant="outline" className="bg-blue-800 text-white rounded-lg">
-          Nova Família
-        </Button>
-      </PageHeading>
+      />
       <Table
         title="Famílias"
         columns={columns}

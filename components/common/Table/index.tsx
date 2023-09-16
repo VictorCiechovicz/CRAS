@@ -2,6 +2,10 @@
 
 import { useEffect, useState } from 'react'
 
+import { Pagination } from './Pagination'
+import { Search } from './Search'
+import clsx from 'clsx'
+import { PaginationProps, TableProps } from './types'
 import {
   TabeBase,
   TableBody,
@@ -10,11 +14,7 @@ import {
   TableHead,
   TableHeader,
   TableRow
-} from '@/components/ui/table'
-import { Pagination } from './Pagination'
-import { Search } from './Search'
-import clsx from 'clsx'
-import { PaginationProps, TableProps } from './types'
+} from '../ui/table'
 
 export function Table<T>({
   caption,
