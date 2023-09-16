@@ -1,6 +1,7 @@
-import { FamilyList } from '@/components/page'
+import { ManagementFamilyList } from "@/components/page"
 
-export default async function Home() {
+
+export default async function ManagementFamily() {
 
   const data = [
     {
@@ -294,7 +295,7 @@ export default async function Home() {
   ]
   return (
     <div className="w-full">
-      <FamilyList items={data} />
+      <ManagementFamilyList items={data} />
     </div>
   )
 }

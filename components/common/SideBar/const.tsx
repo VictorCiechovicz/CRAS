@@ -24,22 +24,22 @@ export const LinksAdmin: ILinks[] = [
   },
   {
     text: 'Cadastros',
-    link: '#',
+    link: '/managementFamily',
     icon: <ClipboardDocumentListIcon />
   },
   {
     text: 'Aprovações',
-    link: '#',
+    link: '/aprove',
     icon: <ClipboardDocumentCheckIcon />
   },
   {
     text: 'Agentes',
-    link: '#',
+    link: '/agent',
     icon: <UserPlusIcon />
   },
   {
     text: 'Sair',
-    link: '#',
+    link: '/logout',
     icon: <ArrowRightIcon />
   }
 ]
@@ -47,18 +47,18 @@ export const LinksAdmin: ILinks[] = [
 export const LinksAgent: ILinks[] = [
   {
     text: 'Início',
-    link: '#',
+    link: '/home',
     icon: <UserGroupIcon />
   },
   {
     text: 'Cadastros',
-    link: '#',
+    link: '/managementFamily',
     icon: <ClipboardDocumentListIcon />
   },
 
   {
     text: 'Sair',
-    link: '#',
+    link: '/logout',
     icon: <ArrowRightIcon />
   }
 ]
