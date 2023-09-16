@@ -35,7 +35,7 @@ export function Pagination({
         <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className=" flex justify-center items-center w-7 h-7 bg-gray-200 rounded-sm border border-gray-300"
+          className="disabled:bg-gray-50 flex justify-center items-center w-10 h-7 bg-gray-200 rounded-sm border border-gray-300"
         >
           <ChevronLeftIcon className="w-4 h-4" />
         </button>
@@ -55,7 +55,7 @@ export function Pagination({
               border-gray-300
               hover:bg-gray-300
               `,
-              num === currentPage && ' bg-gray-300  '
+              num === currentPage && ' bg-gray-300 border-gray-400 '
             )}
           >
             {num}
@@ -64,7 +64,7 @@ export function Pagination({
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className=" flex justify-center items-center w-7 h-7 bg-gray-200 rounded-sm border border-gray-300"
+          className=" flex justify-center items-center w-10 h-7 bg-gray-200 rounded-sm border border-gray-300 disabled:bg-gray-50 "
         >
           <ChevronRightIcon className="w-4 h-4" />
         </button>
