@@ -3,8 +3,7 @@
 export const columns = [
   {
     label: 'Nome',
-    field: 'name',
-
+    field: 'name'
   },
   {
     label: 'Celular',
@@ -12,13 +11,11 @@ export const columns = [
   },
   {
     label: 'Email',
-    field: 'email',
-  
+    field: 'email'
   },
   {
     label: 'Agente',
-    field: 'agent',
-  
+    field: 'agent'
   },
   {
     label: 'Membros',
@@ -27,26 +24,22 @@ export const columns = [
   },
   {
     label: 'Renda',
-    field: 'income',
-  
+    field: 'income'
   },
   {
     label: 'Data Entrada',
-    field: 'check_in_date',
-  
+    field: 'check_in_date'
   },
   {
     label: 'Data Saída',
-    field: 'check_out_date',
-  
+    field: 'check_out_date'
   },
   {
     label: 'Endereço',
-    field: 'adress',
-  
+    field: 'adress'
   },
   {
     label: 'Status',
     field: 'status'
-  },
+  }
 ]

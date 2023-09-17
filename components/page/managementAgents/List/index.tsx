@@ -5,7 +5,7 @@ import { PageHeading, Table } from '@/components/common'
 import { columns } from './columns'
 import { HomeList } from '@/schemas'
 import { Button } from '@/components/common/ui/button'
-
+import { useRouter } from 'next/navigation'
 
 interface ManagementAgentsProps {
   items: HomeList[]
@@ -14,7 +14,7 @@ interface ManagementAgentsProps {
 export function ManagementAgentsList({ items }: ManagementAgentsProps) {
   const [currentPage, setCurrentPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
-
+  const router = useRouter()
   return (
     <>
       <PageHeading
@@ -24,7 +24,11 @@ export function ManagementAgentsList({ items }: ManagementAgentsProps) {
           { href: '#', name: 'Gestão de Agentes' }
         ]}
       >
-        <Button variant="outline" className="bg-blue-800 text-white rounded-lg">
+        <Button
+          variant="outline"
+          className="bg-blue-800 text-white rounded-lg"
+          onClick={() => router.push('/managementAgents/registerAgents')}
+        >
           Novo Agente
         </Button>
       </PageHeading>
