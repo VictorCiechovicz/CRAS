@@ -1,4 +1,4 @@
-import { AgentForm, ManagementAgentsList } from "@/components/page"
+import { AgentForm } from "@/components/page"
 
 
 

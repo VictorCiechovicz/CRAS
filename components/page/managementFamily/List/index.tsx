@@ -5,6 +5,7 @@ import { PageHeading, Table } from '@/components/common'
 import { columns } from './columns'
 import { HomeList } from '@/schemas'
 import { Button } from '@/components/common/ui/button'
+import { useRouter } from 'next/navigation'
 
 interface ManagementFamilyProps {
   items: HomeList[]
@@ -13,6 +14,8 @@ interface ManagementFamilyProps {
 export function ManagementFamilyList({ items }: ManagementFamilyProps) {
   const [currentPage, setCurrentPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
+
+  const router = useRouter()
 
   return (
     <>
@@ -23,7 +26,11 @@ export function ManagementFamilyList({ items }: ManagementFamilyProps) {
           { href: '#', name: 'Gestão de Famílias' }
         ]}
       >
-        <Button variant="outline" className="bg-blue-800 text-white rounded-lg">
+        <Button
+          variant="outline"
+          className="bg-blue-800 text-white rounded-lg"
+          onClick={() => router.push('./managementFamily/registerFamily')}
+        >
           Nova Família
         </Button>
       </PageHeading>

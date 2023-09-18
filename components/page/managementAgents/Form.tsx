@@ -18,26 +18,30 @@ import {
 
 const accountFormSchema = z.object({
   name: z
-    .string()
-    .min(1, {
-      message: 'Nome é necessário!'
+    .string({
+      required_error: 'Informe o Nome Completo do representante da Família.'
     })
-  
+
+    .min(1, {
+      message: 'Nome muito curto.'
+    })
     .max(30, {
-      message: 'Nome muito extenso.'
+      message: 'Nome com numero máximo de 30 caracteres.'
     }),
-    
+
   email: z
-    .string()
-    .min(1, { message: 'Email é necessário!' })
-    .email('Formato de Email inválido!')
-    .refine(e => e === 'abcd@fg.com', 'This email is not in our database'),
-  phone: z
-    .string()
-    .min(1, { message: 'Celular é necessário!' }),
+    .string({
+      required_error: 'Informe Email.'
+    })
+    .email('Formato de Email inválido!'),
+  phone: z.string({
+    required_error: 'Informe Celular.'
+  }),
   password: z
-    .string()
-    .min(6, { message: 'Senha é necessária!' })
+    .string({
+      required_error: 'Informe Senha.'
+    })
+    .min(6, { message: 'Senha é muito fraca! Escolha no mínimo 6 caracteres.' })
 })
 
 type FormValues = z.infer<typeof accountFormSchema>
@@ -59,14 +63,7 @@ export function AgentForm() {
   const { toast } = useToast()
 
   function onSubmit(data: FormValues) {
-    toast({
-      title: 'Data',
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      )
-    })
+    console.log(data)
   }
 
   return (
