@@ -5,7 +5,6 @@ import React, { useState } from 'react'
 import Link from 'next/link'
 import { LinksAdmin, LinksAgent } from './const'
 import {
-  ArrowRightIcon,
   ArrowRightOnRectangleIcon,
   HomeIcon
 } from '@heroicons/react/24/outline'

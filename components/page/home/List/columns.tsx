@@ -8,7 +8,8 @@ export const columns = [
   },
   {
     label: 'Celular',
-    field: 'phone'
+    field: 'phone',
+    
   },
   {
     label: 'Email',
