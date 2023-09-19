@@ -2,17 +2,13 @@
 
 import React, { useState } from 'react'
 
-import { cn } from '@/lib/utils'
-
-
-
-
 import { useRouter } from 'next/navigation'
 import { useToast } from '@/components/common/ui/use-toast'
 import { Label } from '@/components/common/ui/label'
 import { Input } from '@/components/common/ui/input'
 import { Button } from '@/components/common/ui/button'
 import Loading from '@/components/common/Loading'
+import useAuth from '@/hook/useAuth'
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -30,13 +26,32 @@ export function LoginForm({ className, ...props }: UserAuthFormProps) {
 
   const router = useRouter()
   const { toast } = useToast()
+  const { signin } = useAuth()
 
   async function onSubmit(event: React.SyntheticEvent) {
     event.preventDefault()
     setIsLoading(true)
 
-  }
+    try {
+      const infos = {
+        email: data.email,
+        password: data.password
+      }
+      await signin(infos)
 
+      toast({
+        title: 'Ebaa....',
+        description: 'Login Bem sucedido'
+      })
+    } catch (error) {
+      toast({
+        title: 'Erro ao fazer Login!',
+        description: 'Ocorreu algum erro ao realizar login'
+      })
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setData(prev => {
@@ -45,11 +60,11 @@ export function LoginForm({ className, ...props }: UserAuthFormProps) {
   }
 
   return (
-    <div className={cn('grid gap-6', className)} {...props}>
+    <div {...props}>
       <form onSubmit={onSubmit}>
         <div className="grid gap-2">
-          <div className="grid gap-1">
-            <Label className="sr-only" htmlFor="email">
+          <div className="grid mb-14">
+            <Label className="mb-5" htmlFor="email">
               Email
             </Label>
             <Input
@@ -61,13 +76,14 @@ export function LoginForm({ className, ...props }: UserAuthFormProps) {
               name="email"
               value={data.email}
               onChange={handleChange}
+              className="mb-5"
             />
-            <Label className="sr-only" htmlFor="password">
-              Password
+            <Label className="mb-5" htmlFor="password">
+              Senha
             </Label>
             <Input
               id="password"
-              placeholder="password"
+              placeholder="Senha"
               type="password"
               autoCapitalize="none"
               disabled={isLoading}
@@ -76,15 +92,15 @@ export function LoginForm({ className, ...props }: UserAuthFormProps) {
               onChange={handleChange}
             />
           </div>
-          <Button disabled={isLoading}>
-            {isLoading && (
-              <Loading status />
-            )}
-           Entrar
+          <Button
+            disabled={isLoading}
+            className="bg-blue-800 text-white rounded-lg"
+          >
+            {isLoading && <Loading status />}
+            Entrar
           </Button>
         </div>
       </form>
-
     </div>
   )
 }
