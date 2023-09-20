@@ -8,7 +8,7 @@ import { Label } from '@/components/common/ui/label'
 import { Input } from '@/components/common/ui/input'
 import { Button } from '@/components/common/ui/button'
 import Loading from '@/components/common/Loading'
-import useAuth from '@/hook/useAuth'
+
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -26,7 +26,7 @@ export function LoginForm({ className, ...props }: UserAuthFormProps) {
 
   const router = useRouter()
   const { toast } = useToast()
-  const { signin } = useAuth()
+
 
   async function onSubmit(event: React.SyntheticEvent) {
     event.preventDefault()
@@ -37,7 +37,7 @@ export function LoginForm({ className, ...props }: UserAuthFormProps) {
         email: data.email,
         password: data.password
       }
-      await signin(infos)
+  
 
       toast({
         title: 'Ebaa....',

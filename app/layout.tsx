@@ -2,11 +2,8 @@ import type { Metadata } from 'next'
 import { cn } from '@/lib/utils'
 import { Inter } from 'next/font/google'
 
-
 import './globals.css'
 import { Toaster } from '@/components/common/ui/toaster'
-import { AuthProvider } from '@/context/AuthContext'
-
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -23,11 +20,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={cn(inter.className, 'bg-gray-100 min-h-screen')}>
-        <AuthProvider>
         <Toaster />
         {children}
-      </AuthProvider>
-       
       </body>
     </html>
   )

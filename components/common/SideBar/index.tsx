@@ -13,29 +13,20 @@ import { Avatar } from '@/components/common/ui/avatar'
 import ImageAvatar from '../../../public/images/placeholder.jpg'
 import Image from 'next/image'
 import clsx from 'clsx'
-import useAuth from '@/hook/useAuth'
 
 export function SideBar() {
   const [isAdmin, setIsAdmin] = useState(true)
   const [hoveredLink, setHoveredLink] = useState<string | null>(null)
-  const { signout, user } = useAuth()
+
   const pathname = usePathname()
-  
+
   const linksToRender = isAdmin ? LinksAdmin : LinksAgent
-  
-  useEffect(() => {
-    if (user?.userType === 'Admin') {
-      setIsAdmin(true)
-    } else {
-      setIsAdmin(false)
-    }
-  }, [user])
-  
+
   return (
     <aside
-    className="fixed top-0 left-0 z-50 h-screen bg-sidebar transition duration-150 ease-in-out w-[19.5rem] shadow-lg"
+      className="fixed top-0 left-0 z-50 h-screen bg-sidebar transition duration-150 ease-in-out w-[19.5rem] shadow-lg"
       aria-label="Sidebar"
-      >
+    >
       <div className="relative h-full px-4 pb-6 pt-5 overflow-y-auto bg-white">
         <div className="mb-14 ml-6 flex items-end gap-2">
           <HomeIcon className="w-8 h-8 text-black" />
@@ -92,10 +83,10 @@ export function SideBar() {
               </Avatar>
             </div>
 
-            <p className="text-base mt-2 text-gray-500">{user?.userName}</p>
+            <p className="text-base mt-2 text-gray-500">Fulano de Tal</p>
           </div>
 
-          <div className="cursor-pointer" onClick={() => signout()}>
+          <div className="cursor-pointer" onClick={() => {}}>
             <ArrowRightOnRectangleIcon className="w-7 h-7 text-gray-500 hover:text-gray-400" />
           </div>
         </div>

@@ -23,7 +23,6 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/common/ui/select'
-import useAuth from '@/hook/useAuth'
 
 const FormSchema = z.object({
   type: z.string({
@@ -71,7 +70,6 @@ export function AgentForm() {
     defaultValues
   })
   const { errors } = form.formState
-  const { signup } = useAuth()
   const { toast } = useToast()
 
   async function onSubmit(infoUser: FormValues) {
@@ -83,8 +81,6 @@ export function AgentForm() {
         userType: infoUser.type,
         userPhone: infoUser.phone
       }
-
-      await signup(data)
 
       toast({
         title: 'Agente Cadastrado',
