@@ -9,3 +9,40 @@ datasource db {
   provider = "mongodb"
   url      = env("DATABASE_URL")
 }
+
+enum FamilyStatus {
+  ACTIVE
+  INACTIVE
+  PENDING
+}
+
+model Familys {
+  id              String       @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+  CPF             String
+  RG              String
+  email           String
+  phone           String
+  city            String
+  neighborhood    String
+  number          String
+  state           String
+  street          String
+  zip_code        String
+  notes           String?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  status          FamilyStatus @default(PENDING)
+  createdByUserId String
+  dependents      Dependent[]
+}
+
+model Dependent {
+  id                   String   @id @default(auto()) @map("_id") @db.ObjectId
+  name_dependent       String
+  CPF_dependent        String
+  date_birth_dependent DateTime
+  income_dependent     Float
+  familyId             String   @db.ObjectId
+  family               Familys   @relation(fields: [familyId], references: [id])
+}
