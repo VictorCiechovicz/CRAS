@@ -188,7 +188,7 @@ export function FamilyForm() {
                   control={form.control}
                   name="name"
                   render={({ field }) => (
-                    <FormItem className="w-[332px]">
+                    <FormItem className="w-[308px]">
                       <FormLabel>Nome Completo</FormLabel>
                       <FormControl>
                         <Input placeholder="Nome Completo" {...field} />
@@ -202,7 +202,7 @@ export function FamilyForm() {
                   control={form.control}
                   name="CPF"
                   render={({ field }) => (
-                    <FormItem className="w-[308px]">
+                    <FormItem className="w-[328px]">
                       <FormLabel>CPF</FormLabel>
                       <FormControl>
                         <Input placeholder="CPF" {...field} />
@@ -217,7 +217,7 @@ export function FamilyForm() {
                   control={form.control}
                   name="RG"
                   render={({ field }) => (
-                    <FormItem className="w-[332px]">
+                    <FormItem className="w-[308px]">
                       <FormLabel>RG</FormLabel>
                       <FormControl>
                         <Input placeholder="RG" {...field} />
@@ -237,7 +237,7 @@ export function FamilyForm() {
                   control={form.control}
                   name="email"
                   render={({ field }) => (
-                    <FormItem className="w-[328px]">
+                    <FormItem className="w-[308px]">
                       <FormLabel>Email</FormLabel>
                       <FormControl>
                         <Input placeholder="Email" {...field} />
@@ -269,12 +269,12 @@ export function FamilyForm() {
                 Composição Familiar
               </p>
               <div>
-                <div className="flex w-[656px] gap-4 mb-10">
-                  <div>
+                <div className="flex w-[656px] gap-4 mb-10 flex-wrap">
+               
                     <FormField
                       name="name_dependent"
                       render={({ field }) => (
-                        <FormItem className="w-[328px]">
+                        <FormItem className="w-[308px]">
                           <FormLabel>Nome</FormLabel>
                           <FormControl>
                             <Input placeholder="Nome" {...field} />
@@ -297,13 +297,13 @@ export function FamilyForm() {
                         </FormItem>
                       )}
                     />
-                  </div>
+               
 
-                  <div>
+            
                     <FormField
                       name="date_birth_dependent"
                       render={({ field }) => (
-                        <FormItem className="flex flex-col w-[328px]">
+                        <FormItem className="flex flex-col w-[308px]">
                           <FormLabel className="mb-2.5">
                             Data de Nascimento
                           </FormLabel>
@@ -359,7 +359,7 @@ export function FamilyForm() {
                         </FormItem>
                       )}
                     />
-                  </div>
+              
                 </div>
 
                 <Button className="mb-10" onClick={addToTable}>
