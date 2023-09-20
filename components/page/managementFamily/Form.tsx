@@ -7,10 +7,8 @@ import { cn } from '@/lib/utils'
 import { format } from 'date-fns'
 import { CalendarIcon } from '@heroicons/react/24/outline'
 import { useForm } from 'react-hook-form'
-
 import { Button } from '@/components/common/ui/button'
 import { Calendar } from '@/components/common/ui/calendar'
-
 import {
   Form,
   FormControl,
@@ -26,13 +24,6 @@ import {
   PopoverTrigger
 } from '@/components/common/ui/popover'
 import { useToast } from '@/components/common/ui/use-toast'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/components/common/ui/select'
 import { Textarea } from '@/components/common/ui/textarea'
 import { useState } from 'react'
 import {
@@ -45,6 +36,15 @@ import {
 } from '@/components/common/ui/table'
 import { validCPF } from '@/utils/validate'
 import { PageHeading } from '@/components/common'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/common/ui/select'
+
+import states from '../../../utils/states'
 
 const FormSchema = z.object({
   name: z
@@ -83,7 +83,29 @@ const FormSchema = z.object({
   phone: z.string({
     required_error: 'Informe Celular do representante da Família.'
   }),
-  notes: z.string().optional().nullable()
+  city: z.string({
+    required_error: 'Informe Cidade da Família.'
+  }),
+
+  neighborhood: z.string({
+    required_error: 'Informe a Bairro da Família.'
+  }),
+
+  number: z.string({
+    required_error: 'Informe Número da Família.'
+  }),
+
+  state: z.string({
+    required_error: 'Informe Estado da Família.'
+  }),
+
+  street: z.string({
+    required_error: 'Informe Rua da Família.'
+  }),
+
+  zip_code: z.string({
+    required_error: 'Informe CEP da Família.'
+  })
 })
 
 type FormValues = z.infer<typeof FormSchema>
@@ -162,7 +184,6 @@ export function FamilyForm() {
               <p className="text-sm font-medium w-[324px]">Dados de Pessoais</p>
 
               <div className=" flex gap-4  w-[656px] flex-wrap ">
-            
                 <FormField
                   control={form.control}
                   name="name"
@@ -251,7 +272,6 @@ export function FamilyForm() {
                 <div className="flex w-[656px] gap-4 mb-10">
                   <div>
                     <FormField
-                      control={form.control}
                       name="name_dependent"
                       render={({ field }) => (
                         <FormItem className="w-[328px]">
@@ -265,7 +285,6 @@ export function FamilyForm() {
                       )}
                     />
                     <FormField
-                      control={form.control}
                       name="CPF_dependent"
                       render={({ field }) => (
                         <FormItem className="w-[328px]">
@@ -282,7 +301,6 @@ export function FamilyForm() {
 
                   <div>
                     <FormField
-                      control={form.control}
                       name="date_birth_dependent"
                       render={({ field }) => (
                         <FormItem className="flex flex-col w-[328px]">
@@ -330,7 +348,6 @@ export function FamilyForm() {
                       )}
                     />
                     <FormField
-                      control={form.control}
                       name="income_dependent"
                       render={({ field }) => (
                         <FormItem className="w-[328px]">
@@ -388,12 +405,140 @@ export function FamilyForm() {
                 </div>
               </div>
             </div>
+            <div className="border-b mb-5 pb-5 flex gap-8 w-full">
+              <p className="text-sm font-medium w-[324px]">Endereço</p>
 
+              <div className=" flex gap-4  w-[656px] flex-wrap ">
+                <FormField
+                  control={form.control}
+                  name="zip_code"
+                  render={({ field }) => (
+                    <FormItem className="w-[208px]">
+                      <FormLabel>CEP</FormLabel>
+                      <FormControl>
+                        <Input placeholder="CEP" {...field} />
+                      </FormControl>
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="street"
+                  render={({ field }) => (
+                    <FormItem className="w-[308px]">
+                      <FormLabel>Logradouro</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Logradouro" {...field} />
+                      </FormControl>
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="number"
+                  render={({ field }) => (
+                    <FormItem className="w-[104px]">
+                      <FormLabel>Número</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Número" {...field} />
+                      </FormControl>
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="neighborhood"
+                  render={({ field }) => (
+                    <FormItem className="w-[208px]">
+                      <FormLabel>Bairro</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Bairro" {...field} />
+                      </FormControl>
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                   name="complement"
+                  render={({ field }) => (
+                    <FormItem className="w-[432px]">
+                      <FormLabel>Complemento</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Complemento" {...field} />
+                      </FormControl>
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="state"
+                  render={({ field }) => (
+                    <FormItem className="w-[320px]">
+                      <FormLabel>Estado</FormLabel>
+                      <FormControl>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Selecione" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {states.map(state => (
+                              <SelectItem value={state.value}>
+                                {state.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="city"
+                  render={({ field }) => (
+                    <FormItem className="w-[320px]">
+                      <FormLabel>Cidade</FormLabel>
+                      <FormControl>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Selecione" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent></SelectContent>
+                        </Select>
+                      </FormControl>
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
             <div className="border-b mb-5 pb-5 flex gap-8 w-full">
               <p className="text-sm font-medium w-[324px]">Anotações</p>
               <div className="w-[356px]">
                 <FormField
-                  control={form.control}
                   name="notes"
                   render={({ field }) => (
                     <FormItem className="w-[656px]">
