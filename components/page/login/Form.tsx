@@ -8,7 +8,8 @@ import { Label } from '@/components/common/ui/label'
 import { Input } from '@/components/common/ui/input'
 import { Button } from '@/components/common/ui/button'
 import Loading from '@/components/common/Loading'
-
+import Image from 'next/image'
+import LogoCras from '../../../public/images/logo-cras.png'
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -27,7 +28,6 @@ export function LoginForm({ className, ...props }: UserAuthFormProps) {
   const router = useRouter()
   const { toast } = useToast()
 
-
   async function onSubmit(event: React.SyntheticEvent) {
     event.preventDefault()
     setIsLoading(true)
@@ -37,7 +37,6 @@ export function LoginForm({ className, ...props }: UserAuthFormProps) {
         email: data.email,
         password: data.password
       }
-  
 
       toast({
         title: 'Ebaa....',
@@ -60,7 +59,14 @@ export function LoginForm({ className, ...props }: UserAuthFormProps) {
   }
 
   return (
-    <div {...props}>
+    <div
+      {...props}
+      className=" px-10 bg-white w-[448px] h-[500px] rounded-lg shadow-sm "
+    >
+      <div className="w-full flex justify-center pt-7 pb-7">
+        <Image alt="Logo Cras" src={LogoCras} />
+      </div>
+
       <form onSubmit={onSubmit}>
         <div className="grid gap-2">
           <div className="grid mb-14">
