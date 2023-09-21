@@ -24,7 +24,7 @@ export const formatStatus = (value?: keyof typeof StatusProps) => {
     )
   }
   return (
-    <span className="text-yellow-500 text-xs bg-yellow-100 px-2 py-1 rounded-sm">
+    <span className="text-yellow-500 text-xs bg-yellow-100 px-2 py-1 rounded-sm border-yellow-500 border">
       {formattedValue}
     </span>
   )

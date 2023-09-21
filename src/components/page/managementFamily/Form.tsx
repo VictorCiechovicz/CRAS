@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -8,42 +9,32 @@ import { cn } from '@/src/lib/utils'
 import { format } from 'date-fns'
 import { CalendarIcon } from '@heroicons/react/24/outline'
 import { useForm } from 'react-hook-form'
-import { Button } from '@/src/components/common/ui/button'
-import { Calendar } from '@/src/components/common/ui/calendar'
 import {
+  Button,
+  Calendar,
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage
-} from '@/src/components/common/ui/form'
-import { Input } from '@/src/components/common/ui/input'
-import {
+  FormMessage,
+  Input,
+  PageHeading,
   Popover,
   PopoverContent,
-  PopoverTrigger
-} from '@/src/components/common/ui/popover'
-import { useToast } from '@/src/components/common/ui/use-toast'
-import { Textarea } from '@/src/components/common/ui/textarea'
-import { useState } from 'react'
-import {
+  PopoverTrigger,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
   TabeBase,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
   TableRow
-} from '@/src/components/common/ui/table'
-import { validCPF } from '@/src/utils/validate'
-import { PageHeading } from '@/src/components/common'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/src/components/common/ui/select'
+} from '@/src/components/common'
 
 import states from '../../../utils/states'
 
