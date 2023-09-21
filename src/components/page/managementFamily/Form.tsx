@@ -1,5 +1,6 @@
 'use client'
 
+import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
@@ -58,13 +59,9 @@ const FormSchema = z.object({
     .max(30, {
       message: 'Nome com numero máximo de 30 caracteres.'
     }),
-  CPF: z
-    .string({
-      required_error: 'Informe CPF do representante da Família.'
-    })
-    .refine(validCPF, {
-      message: 'CPF inválido.'
-    }),
+  CPF: z.string({
+    required_error: 'Informe CPF do representante da Família.'
+  }),
   RG: z
     .string({
       required_error: 'Informe RG do representante da Família.'
@@ -120,10 +117,30 @@ type TableItem = {
   name_dependent: string | undefined
   CPF_dependent: string | undefined
   date_birth_dependent: string | undefined
-  income_dependent: string | undefined
+  income_dependent: number | undefined
+}
+interface Dependents {
+  name_dependent: string
+  CPF_dependent: string
+  date_birth_dependent: string
+  income_dependent: number
+}
+
+type FormData = FormValues & {
+  createdByUserId: string
+  createdByUserName: string
+  dependents: Dependents[]
+  notes?: string
 }
 
 export function FamilyForm() {
+  const [nameDependent, setNameDependent] = useState('')
+  const [CPFDependent, setCPFDependent] = useState('')
+  const [dateBirthDependent, setDateBirthDependent] = useState<
+    Date | undefined
+  >(undefined)
+  const [incomeDependent, setIncomeDependent] = useState('')
+
   const [tableItems, setTableItems] = useState<TableItem[]>([])
 
   const router = useRouter()
@@ -134,15 +151,32 @@ export function FamilyForm() {
   const { toast } = useToast()
 
   const addToTable = () => {
+    if (
+      !nameDependent ||
+      !CPFDependent ||
+      !dateBirthDependent ||
+      !incomeDependent
+    ) {
+      return toast({
+        title: 'Composição Familiar',
+        variant: 'destructive',
+        description: 'Informe as Informações Componente Familiar'
+      })
+    }
+
     setTableItems((prevItems: any) => [
       ...prevItems,
       {
-        name_dependent: form.watch('name_dependent'),
-        CPF_dependent: form.watch('CPF_dependent'),
-        date_birth_dependent: form.watch('date_birth_dependent'),
-        income_dependent: form.watch('income_dependent')
+        name_dependent: nameDependent,
+        CPF_dependent: CPFDependent,
+        date_birth_dependent: dateBirthDependent,
+        income_dependent: incomeDependent
       }
     ])
+    setNameDependent('')
+    setCPFDependent('')
+    setDateBirthDependent(undefined)
+    setIncomeDependent('')
   }
 
   const removeFromTable = (index: any) => {
@@ -152,15 +186,48 @@ export function FamilyForm() {
       return newItems
     })
   }
-  function onSubmit(data: FormValues) {
-    toast({
-      title: 'Data',
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      )
-    })
+
+  async function onSubmit(
+    data: FormData,
+    event: React.FormEvent<HTMLFormElement>
+  ) {
+    event.preventDefault()
+    const info = {
+      name: data.name,
+      CPF: data.CPF,
+      RG: data.RG,
+      email: data.email,
+      phone: data.phone,
+      city: data.city,
+      neighborhood: data.neighborhood,
+      number: data.number,
+      state: data.state,
+      street: data.street,
+      zip_code: data.zip_code,
+      createdByUserId: '12321321',
+      createdByUserName: 'Fulano de Tal',
+      dependents: tableItems,
+      notes: data.notes
+    }
+
+    try {
+      await axios.post('http://localhost:3000/api/familys', info)
+
+      toast({
+        title: 'Cadastro de Família',
+        description: 'Família Cadastrada com Sucesso!'
+      })
+    } catch (error) {
+      console.error('Erro ao cadastrar família:', error)
+
+      toast({
+        title: 'Cadastro de Família',
+        variant: 'destructive',
+        description: 'Não foi possível Cadastrar a Família!'
+      })
+    }
+    router.push('/managementFamily')
+    router.refresh()
   }
 
   return (
@@ -178,7 +245,10 @@ export function FamilyForm() {
         <p className="text-lg font-medium">Nova Família</p>
       </div>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form
+          onSubmit={form.handleSubmit(onSubmit as any)}
+          className="space-y-8"
+        >
           <div className="flex flex-col items-start w-full">
             <div className="border-b mb-5 pb-5 flex gap-8 w-full">
               <p className="text-sm font-medium w-[324px]">Dados de Pessoais</p>
@@ -270,99 +340,107 @@ export function FamilyForm() {
               </p>
               <div>
                 <div className="flex w-[656px] gap-4 mb-10 flex-wrap">
-               
-                    <FormField
-                      name="name_dependent"
-                      render={({ field }) => (
-                        <FormItem className="w-[308px]">
-                          <FormLabel>Nome</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Nome" {...field} />
-                          </FormControl>
+                  <FormField
+                    name="name_dependent"
+                    render={({ field }) => (
+                      <FormItem className="w-[308px]">
+                        <FormLabel>Nome</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Nome"
+                            value={nameDependent}
+                            onChange={e => setNameDependent(e.target.value)}
+                          />
+                        </FormControl>
 
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      name="CPF_dependent"
-                      render={({ field }) => (
-                        <FormItem className="w-[328px]">
-                          <FormLabel>CPF</FormLabel>
-                          <FormControl>
-                            <Input placeholder="CPF" {...field} />
-                          </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    name="CPF_dependent"
+                    render={({ field }) => (
+                      <FormItem className="w-[328px]">
+                        <FormLabel>CPF</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="CPF"
+                            value={CPFDependent}
+                            onChange={e => setCPFDependent(e.target.value)}
+                          />
+                        </FormControl>
 
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-               
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-            
-                    <FormField
-                      name="date_birth_dependent"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-col w-[308px]">
-                          <FormLabel className="mb-2.5">
-                            Data de Nascimento
-                          </FormLabel>
-                          <Popover>
-                            <PopoverTrigger asChild>
-                              <FormControl>
-                                <Button
-                                  variant={'outline'}
-                                  className={cn(
-                                    '  text-left font-normal',
-                                    !field.value && 'text-muted-foreground'
-                                  )}
-                                >
-                                  {field.value ? (
-                                    format(field.value, 'dd/MM/yyyy')
-                                  ) : (
-                                    <span>Selecione</span>
-                                  )}
-                                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                </Button>
-                              </FormControl>
-                            </PopoverTrigger>
-                            <PopoverContent
-                              className="w-auto p-0"
-                              align="start"
-                            >
-                              <Calendar
-                                mode="single"
-                                selected={field.value}
-                                onSelect={field.onChange}
-                                disabled={date =>
-                                  date > new Date() ||
-                                  date < new Date('1900-01-01')
-                                }
-                                initialFocus
-                              />
-                            </PopoverContent>
-                          </Popover>
+                  <FormField
+                    name="date_birth_dependent"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col w-[308px]">
+                        <FormLabel className="mb-2.5">
+                          Data de Nascimento
+                        </FormLabel>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <FormControl>
+                              <Button
+                                variant={'outline'}
+                                className={cn(
+                                  'text-left font-normal',
+                                  !dateBirthDependent && 'text-muted-foreground'
+                                )}
+                              >
+                                {dateBirthDependent ? (
+                                  format(
+                                    Number(dateBirthDependent),
+                                    'dd/MM/yyyy'
+                                  )
+                                ) : (
+                                  <span>Selecione</span>
+                                )}
+                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={dateBirthDependent}
+                              onSelect={setDateBirthDependent}
+                              disabled={date =>
+                                date > new Date() ||
+                                date < new Date('1900-01-01')
+                              }
+                              initialFocus
+                            />
+                          </PopoverContent>
+                        </Popover>
 
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      name="income_dependent"
-                      render={({ field }) => (
-                        <FormItem className="w-[328px]">
-                          <FormLabel>Renda</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Renda" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-              
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    name="income_dependent"
+                    render={({ field }) => (
+                      <FormItem className="w-[328px]">
+                        <FormLabel>Renda</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Renda"
+                            value={incomeDependent}
+                            onChange={e => setIncomeDependent(e.target.value)}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
 
-                <Button className="mb-10" onClick={addToTable}>
+                <Button type="button" className="mb-10" onClick={addToTable}>
                   Adicionar à Tabela
                 </Button>
                 <div className="w-[656px]">
@@ -383,11 +461,17 @@ export function FamilyForm() {
                             <TableCell>{item.name_dependent}</TableCell>
                             <TableCell>{item.CPF_dependent}</TableCell>
                             <TableCell>
-                              {format(item.date_birth_dependent, 'dd/MM/yyyy')}
+                              {format(
+                                Number(item.date_birth_dependent),
+                                'dd/MM/yyyy'
+                              )}
                             </TableCell>
                             <TableCell>{item.income_dependent}</TableCell>
                             <TableCell>
-                              <Button onClick={() => removeFromTable(index)}>
+                              <Button
+                                type="button"
+                                onClick={() => removeFromTable(index)}
+                              >
                                 Remover
                               </Button>
                             </TableCell>
@@ -466,7 +550,7 @@ export function FamilyForm() {
                   )}
                 />
                 <FormField
-                   name="complement"
+                  name="complement"
                   render={({ field }) => (
                     <FormItem className="w-[432px]">
                       <FormLabel>Complemento</FormLabel>
@@ -525,7 +609,14 @@ export function FamilyForm() {
                               <SelectValue placeholder="Selecione" />
                             </SelectTrigger>
                           </FormControl>
-                          <SelectContent></SelectContent>
+                          <SelectContent>
+                            {' '}
+                            {states.map(state => (
+                              <SelectItem value={state.value}>
+                                {state.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
                         </Select>
                       </FormControl>
 
@@ -559,9 +650,10 @@ export function FamilyForm() {
             </div>
 
             <div className="flex justify-end gap-3 w-full">
-              <Button variant="outline" onClick={() => router.back()}>
+              <Button type="button" onClick={() => router.back()}>
                 Cancelar
               </Button>
+
               <Button type="submit">Salvar</Button>
             </div>
           </div>

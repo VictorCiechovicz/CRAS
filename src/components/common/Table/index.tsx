@@ -79,7 +79,11 @@ export function Table<T>({
                   key={colIndex}
                   className={clsx('whitespace-nowrap', col.cellClassName)}
                 >
-                  {row[col.field]}
+                  {col?.renderCell
+                    ? col.renderCell(row[col.field], row)
+                    : col?.valueFormatter
+                    ? col.valueFormatter(row[col.field])
+                    : row[col.field]}
                 </TableCell>
               ))}
             </TableRow>

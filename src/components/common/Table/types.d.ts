@@ -4,6 +4,8 @@ export interface Column<T> {
   field: string
   className?: string
   cellClassName?: string
+  renderCell?(value: unknown, row: T): React.ReactNode;
+  valueFormatter?(value: unknown): Row[string];
 }
 
 export interface TableData {

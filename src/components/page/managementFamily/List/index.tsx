@@ -3,12 +3,12 @@
 import { useState } from 'react'
 import { PageHeading, Table } from '@/src/components/common'
 import { columns } from './columns'
-import { HomeList } from '@/src/schemas'
+import { FamilyList } from '@/src/schemas'
 import { Button } from '@/src/components/common/ui/button'
 import { useRouter } from 'next/navigation'
 
 interface ManagementFamilyProps {
-  items: HomeList[]
+  items: FamilyList[]
 }
 
 export function ManagementFamilyList({ items }: ManagementFamilyProps) {

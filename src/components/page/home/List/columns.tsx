@@ -1,5 +1,7 @@
 'use client'
 
+import { formatStatus } from "@/src/utils/format/status"
+
 export const columns = [
   {
     label: 'Nome',
@@ -48,6 +50,7 @@ export const columns = [
   },
   {
     label: 'Status',
-    field: 'status'
+    field: 'status',
+    valueFormatter:formatStatus
   },
 ]

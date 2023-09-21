@@ -34,6 +34,7 @@ model Familys {
   updatedAt       DateTime     @updatedAt
   status          FamilyStatus @default(PENDING)
   createdByUserId String
+  createdByUserName String
   dependents      Dependent[]
 }
 
@@ -42,7 +43,7 @@ model Dependent {
   name_dependent       String
   CPF_dependent        String
   date_birth_dependent DateTime
-  income_dependent     Float
+  income_dependent     String
   familyId             String   @db.ObjectId
   family               Familys   @relation(fields: [familyId], references: [id])
 }

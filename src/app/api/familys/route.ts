@@ -20,13 +20,14 @@ export const POST = async (request: Request) => {
       street,
       zip_code,
       createdByUserId,
+      createdByUserName,
       dependents,
       notes
     } = body;
 
     if (!name || !CPF || !RG || !email || !phone ||
       !city || !neighborhood || !number || !state ||
-      !street || !zip_code || !createdByUserId) {
+      !street || !zip_code || !createdByUserId || !createdByUserName) {
       return new NextResponse('Bad Request', { status: 400 });
     }
 
@@ -52,6 +53,7 @@ export const POST = async (request: Request) => {
         zip_code: zip_code,
         notes: notes,
         createdByUserId: createdByUserId,
+        createdByUserName: createdByUserName,
         dependents: {
           create: dependents
         }

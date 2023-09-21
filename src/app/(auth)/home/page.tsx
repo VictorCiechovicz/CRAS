@@ -109,7 +109,7 @@ export default async function Home() {
       check_in_date: '13/09/2023',
       check_out_date: '13/09/2023',
       adress: 'Alameda Vicente Pinzon, 144 - Vila Olímpia, CEP 04547-130',
-      status: 'ACTIVE'
+      status: 'INACTIVE'
     },
     {
       name: 'Jane Cooper',
@@ -121,7 +121,7 @@ export default async function Home() {
       check_in_date: '15/09/2023',
       check_out_date: '13/09/2023',
       adress: 'victor Vicente Pinzon, 144 - Vila Olímpia, CEP 04547-130',
-      status: 'DESACTIVE'
+      status: 'ACTIVE'
     },
     {
       name: 'Jane Cooper',
