@@ -12,23 +12,36 @@ import {
 import { FamilyList } from '@/src/schemas'
 import { formatStatus } from '@/src/utils/format/status'
 import { format, isValid } from 'date-fns'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 interface FamilyDetailsModalProps {
   isOpen: boolean
   onClose: () => void
   family: FamilyList | null
-  totalIncome: string
 }
 
 const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
   isOpen,
   onClose,
-  family,
-  totalIncome
+  family
 }) => {
-  if (!family) return null
+  const [totalIncome, setTotalIncome] = useState<string>('')
 
+  useEffect(() => {
+    if (family) {
+      const income = family.dependents
+        .map(dep => parseFloat(dep.income_dependent))
+        .reduce((acc, curr) => acc + curr, 0)
+        .toLocaleString('pt-BR', {
+          style: 'currency',
+          currency: 'BRL'
+        })
+
+      setTotalIncome(income)
+    }
+  }, [family])
+
+  if (!family) return null
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <div>

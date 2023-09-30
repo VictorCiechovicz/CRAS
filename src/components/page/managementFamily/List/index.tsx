@@ -30,25 +30,15 @@ export function ManagementFamilyList({ items }: ManagementFamilyProps) {
   const [pageSize, setPageSize] = useState(10)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedItem, setSelectedItem] = useState<FamilyList | null>(null)
-  const [totalIncome, setTotalIncome] = useState<string>('')
+
 
   const { toast } = useToast()
   const router = useRouter()
 
   const openModal = (item: FamilyList) => {
-    setSelectedItem(item)
-    setIsModalOpen(true)
-
-    const totalIncome = item.dependents
-      .map(dep => parseFloat(dep.income_dependent))
-      .reduce((acc, curr) => acc + curr, 0)
-      .toLocaleString('pt-BR', {
-        style: 'currency',
-        currency: 'BRL'
-      })
-
-    setTotalIncome(totalIncome)
-  }
+    setSelectedItem(item);
+    setIsModalOpen(true);
+};
 
   return (
     <>
@@ -73,7 +63,6 @@ export function ManagementFamilyList({ items }: ManagementFamilyProps) {
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
         family={selectedItem} 
-        totalIncome={totalIncome} 
       />
       <Table
         title="Suas Famílias"

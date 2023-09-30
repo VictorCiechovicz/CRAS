@@ -5,6 +5,7 @@ import { Table } from '@/src/components/common'
 import { columns } from './columns'
 import { FamilyList } from '@/src/schemas'
 import { UserGroupIcon, UserIcon } from '@heroicons/react/24/outline'
+import FamilyDetailsModal from '@/src/components/common/Modal/ModalDetails'
 interface FamilyListProps {
   items: FamilyList[]
 }
@@ -12,6 +13,13 @@ interface FamilyListProps {
 export function FamilyList({ items }: FamilyListProps) {
   const [currentPage, setCurrentPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedItem, setSelectedItem] = useState<FamilyList | null>(null)
+
+  const openModal = (item: FamilyList) => {
+    setSelectedItem(item)
+    setIsModalOpen(true)
+  }
 
   return (
     <div>
@@ -40,6 +48,11 @@ export function FamilyList({ items }: FamilyListProps) {
           </div>
         </div>
       </div>
+      <FamilyDetailsModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        family={selectedItem}
+      />
       <Table
         title="Famílias Cadastradas"
         columns={columns}
@@ -48,6 +61,7 @@ export function FamilyList({ items }: FamilyListProps) {
         pageSize={pageSize}
         onPageChange={newPage => setCurrentPage(newPage)}
         onPageSizeChange={newSize => setPageSize(newSize)}
+        onRowClick={item => openModal(item)}
       />
     </div>
   )
