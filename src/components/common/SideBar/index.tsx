@@ -38,7 +38,7 @@ export function SideBar() {
               const isActive = pathname.includes(link.link)
               const isHovered = hoveredLink === link.link
               const linkClass = clsx(
-                'flex items-center my-1 p-3 h-12 text-gray-500 text-base leading-6 font-medium rounded-lg group',
+                'flex items-center my-1 p-3 h-12 text-gray-500 text-base leading-6 font-medium rounded-sm group',
                 {
                   'bg-blue-800 text-white': isActive || isHovered
                 }

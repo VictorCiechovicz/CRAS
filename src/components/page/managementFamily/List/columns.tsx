@@ -4,6 +4,7 @@ import { Column } from '@/src/components/common/Table/types'
 import { FamilyList } from '@/src/schemas'
 import { formatPhoneNumber } from '@/src/utils/format/formatPhone'
 import { formatStatus } from '@/src/utils/format/status'
+import { format } from 'date-fns'
 
 export const columns = [
   {
@@ -13,7 +14,7 @@ export const columns = [
   {
     label: 'Celular',
     field: 'phone',
-   valueFormatter:formatPhoneNumber
+    valueFormatter: formatPhoneNumber
   },
   {
     label: 'Email',
@@ -46,12 +47,27 @@ export const columns = [
   },
   {
     label: 'Data Entrada',
-    field: 'check_in_date'
+    field: 'startDate',
+    renderCell(value, rowData: FamilyList) {
+      if (rowData.periodBenefit.length > 0) {
+        const date = new Date(rowData.periodBenefit[0].startDate)
+        return format(date, 'dd/MM/yyyy')
+      }
+      return 'N/A'
+    }
   },
   {
     label: 'Data Saída',
-    field: 'check_out_date'
+    field: 'endDate',
+    renderCell(value, rowData: FamilyList) {
+      if (rowData.periodBenefit.length > 0) {
+        const date = new Date(rowData.periodBenefit[0].endDate)
+        return format(date, 'dd/MM/yyyy')
+      }
+      return 'N/A'
+    }
   },
+
   {
     label: 'Endereço',
     field: 'adress',

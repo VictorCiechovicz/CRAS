@@ -12,6 +12,7 @@ export interface FamilyList {
   zip_code: string
   createdByUserId: string
   dependents: Dependents[]
+  periodBenefit: PeriodBenefit[]
   notes?: string
 }
 
@@ -20,5 +21,10 @@ interface Dependents {
   CPF_dependent: string
   date_birth_dependent: string
   income_dependent: string
+}
+
+interface PeriodBenefit {
+  startDate: string
+  endDate: string
 }
 

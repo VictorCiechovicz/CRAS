@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { PageHeading, Table } from '@/src/components/common'
+import { Modal, PageHeading, Table } from '@/src/components/common'
 import { columns } from './columns'
 import { FamilyList } from '@/src/schemas'
 import { Button } from '@/src/components/common/ui/button'
@@ -14,8 +14,12 @@ interface ManagementFamilyProps {
 export function ManagementFamilyList({ items }: ManagementFamilyProps) {
   const [currentPage, setCurrentPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   const router = useRouter()
+  const openModal = () => {
+    setIsModalOpen(true)
+  }
 
   return (
     <>
@@ -28,20 +32,26 @@ export function ManagementFamilyList({ items }: ManagementFamilyProps) {
       >
         <Button
           variant="outline"
-          className="bg-blue-800 text-white rounded-lg"
+          className="bg-blue-800 text-white"
           onClick={() => router.push('./managementFamily/registerFamily')}
         >
           Nova Família
         </Button>
       </PageHeading>
+
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        dfsdfsdfsdfsdf
+      </Modal>
       <Table
-        title="Famílias"
+        title="Suas Famílias"
+        emptyMessage="Nenhuma Família Cadastrada"
         columns={columns}
         data={items}
         currentPage={currentPage}
         pageSize={pageSize}
         onPageChange={newPage => setCurrentPage(newPage)}
         onPageSizeChange={newSize => setPageSize(newSize)}
+        onRowClick={() => openModal()}
       />
     </>
   )

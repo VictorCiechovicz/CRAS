@@ -13,10 +13,12 @@ export interface TableData {
 }
 
 export interface TableProps<T> {
-  caption?: string
+  caption?: string;
   columns: Column<T>[];
   data: Page<T>[];
-  title?: string
+  title?: string;
+  emptyMessage?: string;
+  onRowClick?: (row: T) => void
 
 }
 

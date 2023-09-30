@@ -22,6 +22,7 @@ export const POST = async (request: Request) => {
       createdByUserId,
       createdByUserName,
       dependents,
+      periodBenefit,
       notes
     } = body;
 
@@ -31,11 +32,13 @@ export const POST = async (request: Request) => {
       return new NextResponse('Bad Request', { status: 400 });
     }
 
-
     if (dependents && !Array.isArray(dependents)) {
       return new NextResponse('Bad Request', { status: 400 });
     }
 
+    if (periodBenefit && !Array.isArray(periodBenefit)) {
+      return new NextResponse('Bad Request', { status: 400 });
+    }
 
 
     const newFamily = await prisma.familys.create({
@@ -56,6 +59,9 @@ export const POST = async (request: Request) => {
         createdByUserName: createdByUserName,
         dependents: {
           create: dependents
+        },
+        periodBenefit: {
+          create: periodBenefit
         }
       }
     });
@@ -70,7 +76,8 @@ export const GET = async () => {
   try {
     const families = await prisma.familys.findMany({
       include: {
-        dependents: true
+        dependents: true,
+        periodBenefit:true
       }
     });
 

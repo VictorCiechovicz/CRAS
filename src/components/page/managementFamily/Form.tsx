@@ -39,6 +39,7 @@ import {
 } from '@/src/components/common'
 
 import states from '../../../utils/states'
+import { Dependent, Familys, PeriodBenefit } from '@prisma/client'
 
 const FormSchema = z.object({
   name: z
@@ -100,22 +101,20 @@ const FormSchema = z.object({
 
 type FormValues = z.infer<typeof FormSchema>
 
-// This can come from your database or API.
-const defaultValues: Partial<FormValues> = {
-  // name: "Your name",
-  // dob: new Date("2023-01-23"),
-}
-
 interface TableCompositionsFamily {
-  name_dependent: string | undefined
-  CPF_dependent: string | undefined
-  date_birth_dependent: string | undefined
-  income_dependent: number | undefined
+  id: string
+  name_dependent: string
+  CPF_dependent: string
+  date_birth_dependent: Date
+  income_dependent: string
+  familyId: string
 }
 
 interface TableBenefitPeriod {
-  date_start: string | undefined
-  date_end: string | undefined
+  id: string
+  startDate: Date
+  endDate: Date
+  familyId: string
 }
 interface Dependents {
   name_dependent: string
@@ -132,7 +131,17 @@ type FormData = FormValues & {
   notes?: string
 }
 
-export function FamilyForm() {
+interface FamilyFormProps {
+  familie: Familys
+  dependents: Dependent[]
+  periodBenefit: PeriodBenefit[]
+}
+
+export function FamilyForm({
+  familie,
+  dependents,
+  periodBenefit
+}: FamilyFormProps) {
   const [nameDependent, setNameDependent] = useState('')
   const [CPFDependent, setCPFDependent] = useState('')
   const [dateBirthDependent, setDateBirthDependent] = useState<
@@ -148,10 +157,24 @@ export function FamilyForm() {
   )
   const [tableCompositionsFamily, setTableCompositionsFamily] = useState<
     TableCompositionsFamily[]
-  >([])
+  >(dependents ? dependents : [])
   const [tableBenefitPeriod, setTableBenefitPeriod] = useState<
     TableBenefitPeriod[]
-  >([])
+  >(periodBenefit ? periodBenefit : [])
+
+  const defaultValues: Partial<FormValues> = {
+    name: familie?.name,
+    number: familie?.number,
+    CPF: familie?.CPF,
+    RG: familie?.RG,
+    email: familie?.email,
+    phone: familie?.phone,
+    city: familie?.city,
+    neighborhood: familie?.neighborhood,
+    state: familie?.state,
+    street: familie?.street,
+    zip_code: familie?.zip_code
+  }
 
   const router = useRouter()
   const form = useForm<FormValues>({
@@ -209,8 +232,8 @@ export function FamilyForm() {
     setTableBenefitPeriod((prevItems: any) => [
       ...prevItems,
       {
-        date_start: dateStartBenefit,
-        date_end: dateEndBenefit
+        startDate: dateStartBenefit,
+        endDate: dateEndBenefit
       }
     ])
 
@@ -245,7 +268,7 @@ export function FamilyForm() {
       createdByUserId: '12321321',
       createdByUserName: 'Fulano de Tal',
       dependents: tableCompositionsFamily,
-      benefitPeriod: tableBenefitPeriod,
+      periodBenefit: tableBenefitPeriod,
       notes: data.notes
     }
 
@@ -498,8 +521,8 @@ export function FamilyForm() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {tableCompositionsFamily.length > 0 ? (
-                        tableCompositionsFamily.map((item, index) => (
+                      {tableCompositionsFamily?.length > 0 ? (
+                        tableCompositionsFamily?.map((item, index) => (
                           <TableRow key={index}>
                             <TableCell>{item.name_dependent}</TableCell>
                             <TableCell>{item.CPF_dependent}</TableCell>
@@ -543,7 +566,7 @@ export function FamilyForm() {
               <div>
                 <div className="flex w-[656px] gap-4 mb-10 flex-wrap">
                   <FormField
-                    name="date_start"
+                    name="startDate"
                     render={({ field }) => (
                       <FormItem className="flex flex-col w-[308px]">
                         <FormLabel className="mb-2.5">
@@ -588,7 +611,7 @@ export function FamilyForm() {
                   />
 
                   <FormField
-                    name="date_end"
+                    name="endDate"
                     render={({ field }) => (
                       <FormItem className="flex flex-col w-[308px]">
                         <FormLabel className="mb-2.5">Data de Saída</FormLabel>
@@ -648,14 +671,14 @@ export function FamilyForm() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {tableBenefitPeriod.length > 0 ? (
-                        tableBenefitPeriod.map((item, index) => (
+                      {tableBenefitPeriod?.length > 0 ? (
+                        tableBenefitPeriod?.map((item, index) => (
                           <TableRow key={index}>
                             <TableCell>
-                              {format(Number(item.date_start), 'dd/MM/yyyy')}
+                              {format(Number(item.startDate), 'dd/MM/yyyy')}
                             </TableCell>
                             <TableCell>
-                              {format(Number(item.date_end), 'dd/MM/yyyy')}
+                              {format(Number(item.endDate), 'dd/MM/yyyy')}
                             </TableCell>
 
                             <TableCell>
@@ -833,6 +856,7 @@ export function FamilyForm() {
                         <Textarea
                           placeholder="Anotações"
                           maxLength={1000}
+                          defaultValue={familie ? familie.notes || '' : ''}
                           {...field}
                         />
                       </FormControl>

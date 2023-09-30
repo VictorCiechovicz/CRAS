@@ -38,3 +38,5 @@ export {
   SelectTrigger,
   SelectValue
 } from './ui/select'
+
+export { Modal } from './Modal'
