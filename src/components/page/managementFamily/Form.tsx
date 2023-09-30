@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import { cn } from '@/src/lib/utils'
-import { format } from 'date-fns'
+import { format, isValid, parseISO } from 'date-fns'
 import { CalendarIcon } from '@heroicons/react/24/outline'
 import { useForm } from 'react-hook-form'
 import {
@@ -132,9 +132,9 @@ type FormData = FormValues & {
 }
 
 interface FamilyFormProps {
-  familie: Familys
-  dependents: Dependent[]
-  periodBenefit: PeriodBenefit[]
+  familie?: Familys
+  dependents?: Dependent[]
+  periodBenefit?: PeriodBenefit[]
 }
 
 export function FamilyForm({
@@ -527,10 +527,12 @@ export function FamilyForm({
                             <TableCell>{item.name_dependent}</TableCell>
                             <TableCell>{item.CPF_dependent}</TableCell>
                             <TableCell>
-                              {format(
-                                Number(item.date_birth_dependent),
-                                'dd/MM/yyyy'
-                              )}
+                              {isValid(new Date(item.date_birth_dependent))
+                                ? format(
+                                    new Date(item.date_birth_dependent),
+                                    'dd/MM/yyyy'
+                                  )
+                                : 'Data inválida'}
                             </TableCell>
                             <TableCell>{item.income_dependent}</TableCell>
                             <TableCell>
@@ -675,10 +677,15 @@ export function FamilyForm({
                         tableBenefitPeriod?.map((item, index) => (
                           <TableRow key={index}>
                             <TableCell>
-                              {format(Number(item.startDate), 'dd/MM/yyyy')}
+                              {isValid(new Date(item.startDate))
+                                ? format(new Date(item.startDate), 'dd/MM/yyyy')
+                                : 'Data inválida'}
                             </TableCell>
+
                             <TableCell>
-                              {format(Number(item.endDate), 'dd/MM/yyyy')}
+                              {isValid(new Date(item.endDate))
+                                ? format(new Date(item.endDate), 'dd/MM/yyyy')
+                                : 'Data inválida'}
                             </TableCell>
 
                             <TableCell>

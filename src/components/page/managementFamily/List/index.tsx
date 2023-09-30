@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Modal, PageHeading, Table } from '@/src/components/common'
+import { Modal, PageHeading, Table, useToast } from '@/src/components/common'
 import { columns } from './columns'
 import { FamilyList } from '@/src/schemas'
 import { Button } from '@/src/components/common/ui/button'
@@ -15,7 +15,7 @@ export function ManagementFamilyList({ items }: ManagementFamilyProps) {
   const [currentPage, setCurrentPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
   const [isModalOpen, setIsModalOpen] = useState(false)
-
+  const { toast } = useToast()
   const router = useRouter()
   const openModal = () => {
     setIsModalOpen(true)
@@ -45,7 +45,7 @@ export function ManagementFamilyList({ items }: ManagementFamilyProps) {
       <Table
         title="Suas Famílias"
         emptyMessage="Nenhuma Família Cadastrada"
-        columns={columns}
+        columns={columns(router, toast)}
         data={items}
         currentPage={currentPage}
         pageSize={pageSize}
