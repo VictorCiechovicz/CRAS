@@ -1,6 +1,5 @@
 'use client'
 
-
 import { Column } from '@/src/components/common/Table/types'
 import { FamilyList } from '@/src/schemas'
 import { formatPhoneNumber } from '@/src/utils/format/formatPhone'
@@ -27,7 +26,9 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
 }) => {
   const handleEditClick = (event: any) => {
     event.stopPropagation()
-    router.push(`managementFamily/${rowData.id}/editFamily`)
+    router.push(
+      `${rowData.createdByUserId}/editFamily/${rowData.id}`
+    )
   }
 
   const handleDeleteClick = async (event: any) => {

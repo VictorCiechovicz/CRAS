@@ -3,12 +3,12 @@ import axios from 'axios'
 
 interface EditFamilyProps {
   params: {
-    id: string
+    familyId: string
   }
 }
 
 export default async function EditFamily({ params }: EditFamilyProps) {
-  const familyId = params.id
+  const familyId = params.familyId
   const listFamily = await axios.get(
     `http://localhost:3000/api/familys/${familyId}`
   )
