@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { Table } from '@/src/components/common'
 import { columns } from './columns'
 import { FamilyList } from '@/src/schemas'
-
+import { UserGroupIcon, UserIcon } from '@heroicons/react/24/outline'
 interface FamilyListProps {
   items: FamilyList[]
 }
@@ -14,14 +14,41 @@ export function FamilyList({ items }: FamilyListProps) {
   const [pageSize, setPageSize] = useState(10)
 
   return (
-    <Table
-      title="Famílias Cadastradas"
-      columns={columns}
-      data={items}
-      currentPage={currentPage}
-      pageSize={pageSize}
-      onPageChange={newPage => setCurrentPage(newPage)}
-      onPageSizeChange={newSize => setPageSize(newSize)}
-    />
+    <div>
+      <div className="bg-white rounded-lg px-12 py-7 mb-7 flex gap-14">
+        <div className="flex gap-5">
+          <div className="bg-green-200 w-20 h-20 rounded-full flex justify-center items-center">
+            <UserGroupIcon className="w-10 h-10 text-green-600" />
+          </div>
+          <div className="flex flex-col justify-start gap-1">
+            <p className="text-sm font-normal ">Famílias Cadastradas</p>
+            <p className="text-2xl font-bold ">
+              {items.length.toLocaleString('pt-BR')}
+            </p>
+          </div>
+        </div>
+        <div className="border-l " />
+        <div className="flex gap-5">
+          <div className="bg-green-200 w-20 h-20 rounded-full flex justify-center items-center">
+            <UserIcon className="w-10 h-10 text-green-600" />
+          </div>
+          <div className="flex flex-col justify-start gap-1">
+            <p className="text-sm font-normal ">Agentes Cadastradas</p>
+            <p className="text-2xl font-bold ">
+              {items.length.toLocaleString('pt-BR')}
+            </p>
+          </div>
+        </div>
+      </div>
+      <Table
+        title="Famílias Cadastradas"
+        columns={columns}
+        data={items}
+        currentPage={currentPage}
+        pageSize={pageSize}
+        onPageChange={newPage => setCurrentPage(newPage)}
+        onPageSizeChange={newSize => setPageSize(newSize)}
+      />
+    </div>
   )
 }

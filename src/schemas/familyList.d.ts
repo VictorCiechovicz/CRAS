@@ -12,6 +12,7 @@ export interface FamilyList {
   street: string
   zip_code: string
   createdByUserId: string
+  createdByUserName: string
   dependents: Dependents[]
   periodBenefit: PeriodBenefit[]
   notes?: string
