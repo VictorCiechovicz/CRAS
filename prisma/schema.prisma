@@ -17,25 +17,26 @@ enum FamilyStatus {
 }
 
 model Familys {
-  id              String       @id @default(auto()) @map("_id") @db.ObjectId
-  name            String
-  CPF             String
-  RG              String
-  email           String
-  phone           String
-  city            String
-  neighborhood    String
-  number          String
-  state           String
-  street          String
-  zip_code        String
-  notes           String?
-  createdAt       DateTime     @default(now())
-  updatedAt       DateTime     @updatedAt
-  status          FamilyStatus @default(PENDING)
-  createdByUserId String
+  id                String          @id @default(auto()) @map("_id") @db.ObjectId
+  name              String
+  CPF               String
+  RG                String
+  email             String
+  phone             String
+  city              String
+  neighborhood      String
+  number            String
+  state             String
+  street            String
+  zip_code          String
+  notes             String?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  status            FamilyStatus    @default(PENDING)
+  createdByUserId   String
   createdByUserName String
-  dependents      Dependent[]
+  dependents        Dependent[]
+  periodBenefit     PeriodBenefit[]
 }
 
 model Dependent {
@@ -45,5 +46,13 @@ model Dependent {
   date_birth_dependent DateTime
   income_dependent     String
   familyId             String   @db.ObjectId
-  family               Familys   @relation(fields: [familyId], references: [id])
+  family               Familys  @relation(fields: [familyId], references: [id])
+}
+
+model PeriodBenefit {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  startDate DateTime
+  endDate   DateTime
+  familyId  String   @db.ObjectId
+  family    Familys  @relation(fields: [familyId], references: [id])
 }

@@ -11,20 +11,20 @@ export const formatStatus = (value?: keyof typeof StatusProps) => {
 
   if (value === 'ACTIVE') {
     return (
-      <span className="text-green-700 text-xs bg-green-50 px-2 py-1 rounded-sm border-green-700 border">
+      <span className="text-green-700 text-xs bg-green-50 font-medium px-4 py-1 rounded-xl ">
         {formattedValue}
       </span>
     )
   }
   if (value === 'INACTIVE') {
     return (
-      <span className="text-red-700 text-xs bg-red-100 px-2 py-1 rounded-sm border-red-700 border">
+      <span className="text-red-700 text-xs  bg-red-100 font-medium px-2 py-1 rounded-xl ">
         {formattedValue}
       </span>
     )
   }
   return (
-    <span className="text-yellow-500 text-xs bg-yellow-100 px-2 py-1 rounded-sm border-yellow-500 border">
+    <span className="text-yellow-500 text-xs bg-yellow-100 font-medium px-2 py-1 rounded-xl ">
       {formattedValue}
     </span>
   )

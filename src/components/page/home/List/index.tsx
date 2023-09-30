@@ -3,10 +3,10 @@
 import { useState } from 'react'
 import { Table } from '@/src/components/common'
 import { columns } from './columns'
-import { HomeList } from '@/src/schemas'
+import { FamilyList } from '@/src/schemas'
 
 interface FamilyListProps {
-  items: HomeList[]
+  items: FamilyList[]
 }
 
 export function FamilyList({ items }: FamilyListProps) {

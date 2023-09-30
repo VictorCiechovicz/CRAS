@@ -1,4 +1,4 @@
-import { SideBar } from '@/components/common'
+
 
 export default function AuthLayout({
   children

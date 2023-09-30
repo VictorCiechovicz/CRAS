@@ -8,7 +8,7 @@ export default function AuthLayout({
   return (
     <div>
       <SideBar />
-      <main className=" p-6 sm:ml-[19.375rem]">{children}</main>
+      <main className="p-6 sm:ml-[19.375rem]">{children}</main>
     </div>
   )
 }

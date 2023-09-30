@@ -106,11 +106,16 @@ const defaultValues: Partial<FormValues> = {
   // dob: new Date("2023-01-23"),
 }
 
-type TableItem = {
+interface TableCompositionsFamily {
   name_dependent: string | undefined
   CPF_dependent: string | undefined
   date_birth_dependent: string | undefined
   income_dependent: number | undefined
+}
+
+interface TableBenefitPeriod {
+  date_start: string | undefined
+  date_end: string | undefined
 }
 interface Dependents {
   name_dependent: string
@@ -123,6 +128,7 @@ type FormData = FormValues & {
   createdByUserId: string
   createdByUserName: string
   dependents: Dependents[]
+  benefitPeriod: TableBenefitPeriod[]
   notes?: string
 }
 
@@ -134,7 +140,18 @@ export function FamilyForm() {
   >(undefined)
   const [incomeDependent, setIncomeDependent] = useState('')
 
-  const [tableItems, setTableItems] = useState<TableItem[]>([])
+  const [dateStartBenefit, setDateStartBenefit] = useState<Date | undefined>(
+    undefined
+  )
+  const [dateEndBenefit, setDateEndBenefit] = useState<Date | undefined>(
+    undefined
+  )
+  const [tableCompositionsFamily, setTableCompositionsFamily] = useState<
+    TableCompositionsFamily[]
+  >([])
+  const [tableBenefitPeriod, setTableBenefitPeriod] = useState<
+    TableBenefitPeriod[]
+  >([])
 
   const router = useRouter()
   const form = useForm<FormValues>({
@@ -143,7 +160,7 @@ export function FamilyForm() {
   })
   const { toast } = useToast()
 
-  const addToTable = () => {
+  const addToTableCompositionsFamily = () => {
     if (
       !nameDependent ||
       !CPFDependent ||
@@ -157,7 +174,7 @@ export function FamilyForm() {
       })
     }
 
-    setTableItems((prevItems: any) => [
+    setTableCompositionsFamily((prevItems: any) => [
       ...prevItems,
       {
         name_dependent: nameDependent,
@@ -172,14 +189,42 @@ export function FamilyForm() {
     setIncomeDependent('')
   }
 
-  const removeFromTable = (index: any) => {
-    setTableItems(prevItems => {
+  const removeFromTableCompositionsFamily = (index: any) => {
+    setTableCompositionsFamily(prevItems => {
       const newItems = [...prevItems]
       newItems.splice(index, 1)
       return newItems
     })
   }
 
+  const addToTableBenefitPeriod = () => {
+    if (!dateStartBenefit || !dateEndBenefit) {
+      return toast({
+        title: ' Períodos de Benefício',
+        variant: 'destructive',
+        description: 'Informe as Datas do Períodosde Benefício'
+      })
+    }
+
+    setTableBenefitPeriod((prevItems: any) => [
+      ...prevItems,
+      {
+        date_start: dateStartBenefit,
+        date_end: dateEndBenefit
+      }
+    ])
+
+    setDateStartBenefit(undefined)
+    setDateEndBenefit(undefined)
+  }
+
+  const removeFromTableBenefitPeriod = (index: any) => {
+    setTableBenefitPeriod(prevItems => {
+      const newItems = [...prevItems]
+      newItems.splice(index, 1)
+      return newItems
+    })
+  }
   async function onSubmit(
     data: FormData,
     event: React.FormEvent<HTMLFormElement>
@@ -199,7 +244,8 @@ export function FamilyForm() {
       zip_code: data.zip_code,
       createdByUserId: '12321321',
       createdByUserName: 'Fulano de Tal',
-      dependents: tableItems,
+      dependents: tableCompositionsFamily,
+      benefitPeriod: tableBenefitPeriod,
       notes: data.notes
     }
 
@@ -433,8 +479,12 @@ export function FamilyForm() {
                   />
                 </div>
 
-                <Button type="button" className="mb-10" onClick={addToTable}>
-                  Adicionar à Tabela
+                <Button
+                  type="button"
+                  className="mb-10 bg-blue-800"
+                  onClick={addToTableCompositionsFamily}
+                >
+                  Adicionar
                 </Button>
                 <div className="w-[656px]">
                   <TabeBase className="bg-white rounded-sm">
@@ -448,8 +498,8 @@ export function FamilyForm() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {tableItems.length > 0 ? (
-                        tableItems.map((item, index) => (
+                      {tableCompositionsFamily.length > 0 ? (
+                        tableCompositionsFamily.map((item, index) => (
                           <TableRow key={index}>
                             <TableCell>{item.name_dependent}</TableCell>
                             <TableCell>{item.CPF_dependent}</TableCell>
@@ -463,7 +513,10 @@ export function FamilyForm() {
                             <TableCell>
                               <Button
                                 type="button"
-                                onClick={() => removeFromTable(index)}
+                                onClick={() =>
+                                  removeFromTableCompositionsFamily(index)
+                                }
+                                className="bg-red-600"
                               >
                                 Remover
                               </Button>
@@ -482,6 +535,155 @@ export function FamilyForm() {
                 </div>
               </div>
             </div>
+
+            <div className="border-b mb-5 pb-5 flex gap-8 w-full">
+              <p className="text-sm font-medium w-[324px] ">
+                Períodos de Benefício
+              </p>
+              <div>
+                <div className="flex w-[656px] gap-4 mb-10 flex-wrap">
+                  <FormField
+                    name="date_start"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col w-[308px]">
+                        <FormLabel className="mb-2.5">
+                          Data de Entrada
+                        </FormLabel>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <FormControl>
+                              <Button
+                                variant={'outline'}
+                                className={cn(
+                                  'text-left font-normal',
+                                  !dateStartBenefit && 'text-muted-foreground'
+                                )}
+                              >
+                                {dateStartBenefit ? (
+                                  format(Number(dateStartBenefit), 'dd/MM/yyyy')
+                                ) : (
+                                  <span>Selecione</span>
+                                )}
+                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={dateStartBenefit}
+                              onSelect={setDateStartBenefit}
+                              disabled={date =>
+                                date > new Date() ||
+                                date < new Date('1900-01-01')
+                              }
+                              initialFocus
+                            />
+                          </PopoverContent>
+                        </Popover>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    name="date_end"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col w-[308px]">
+                        <FormLabel className="mb-2.5">Data de Saída</FormLabel>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <FormControl>
+                              <Button
+                                variant={'outline'}
+                                className={cn(
+                                  'text-left font-normal',
+                                  !dateEndBenefit && 'text-muted-foreground'
+                                )}
+                              >
+                                {dateEndBenefit ? (
+                                  format(Number(dateEndBenefit), 'dd/MM/yyyy')
+                                ) : (
+                                  <span>Selecione</span>
+                                )}
+                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={dateEndBenefit}
+                              onSelect={setDateEndBenefit}
+                              disabled={date =>
+                                date > new Date() ||
+                                date < new Date('1900-01-01')
+                              }
+                              initialFocus
+                            />
+                          </PopoverContent>
+                        </Popover>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <Button
+                  type="button"
+                  className="mb-10 bg-blue-800"
+                  onClick={addToTableBenefitPeriod}
+                >
+                  Adicionar
+                </Button>
+                <div className="w-[656px]">
+                  <TabeBase className="bg-white rounded-sm">
+                    <TableHeader className="bg-gray-200 rounded-sm">
+                      <TableRow>
+                        <TableHead>Data de Entrada</TableHead>
+                        <TableHead>Data de Saída</TableHead>
+                        <TableHead>Ação</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {tableBenefitPeriod.length > 0 ? (
+                        tableBenefitPeriod.map((item, index) => (
+                          <TableRow key={index}>
+                            <TableCell>
+                              {format(Number(item.date_start), 'dd/MM/yyyy')}
+                            </TableCell>
+                            <TableCell>
+                              {format(Number(item.date_end), 'dd/MM/yyyy')}
+                            </TableCell>
+
+                            <TableCell>
+                              <Button
+                                type="button"
+                                onClick={() =>
+                                  removeFromTableBenefitPeriod(index)
+                                }
+                                className="bg-red-600"
+                              >
+                                Remover
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        ))
+                      ) : (
+                        <TableRow>
+                          <TableCell colSpan={5}>
+                            Não há itens na tabela.
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </TableBody>
+                  </TabeBase>
+                </div>
+              </div>
+            </div>
+
             <div className="border-b mb-5 pb-5 flex gap-8 w-full">
               <p className="text-sm font-medium w-[324px]">Endereço</p>
 
@@ -643,11 +845,17 @@ export function FamilyForm() {
             </div>
 
             <div className="flex justify-end gap-3 w-full">
-              <Button type="button" onClick={() => router.back()}>
+              <Button
+                variant={'outline'}
+                type="button"
+                onClick={() => router.back()}
+              >
                 Cancelar
               </Button>
 
-              <Button type="submit">Salvar</Button>
+              <Button type="submit" className="bg-blue-800">
+                Salvar
+              </Button>
             </div>
           </div>
         </form>
