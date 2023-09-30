@@ -15,8 +15,10 @@ export function ManagementFamilyList({ items }: ManagementFamilyProps) {
   const [currentPage, setCurrentPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
   const [isModalOpen, setIsModalOpen] = useState(false)
+
   const { toast } = useToast()
   const router = useRouter()
+
   const openModal = () => {
     setIsModalOpen(true)
   }

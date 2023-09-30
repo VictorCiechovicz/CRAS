@@ -4,9 +4,9 @@ import { useState } from 'react'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
-import * as z from 'zod'
+
 import { cn } from '@/src/lib/utils'
-import { format, isValid, parseISO } from 'date-fns'
+import { format, isValid } from 'date-fns'
 import { CalendarIcon } from '@heroicons/react/24/outline'
 import { useForm } from 'react-hook-form'
 import {
@@ -40,8 +40,15 @@ import {
 
 import states from '../../../utils/states'
 import { Dependent, Familys, PeriodBenefit } from '@prisma/client'
+import {
+  FormData,
+  FormValues,
+  TableBenefitPeriod,
+  TableCompositionsFamily
+} from './types'
+import { z } from 'zod'
 
-const FormSchema = z.object({
+export const FormSchema = z.object({
   name: z
     .string({
       required_error: 'Informe o Nome Completo do representante da Família.'
@@ -98,38 +105,6 @@ const FormSchema = z.object({
     required_error: 'Informe CEP da Família.'
   })
 })
-
-type FormValues = z.infer<typeof FormSchema>
-
-interface TableCompositionsFamily {
-  id: string
-  name_dependent: string
-  CPF_dependent: string
-  date_birth_dependent: Date
-  income_dependent: string
-  familyId: string
-}
-
-interface TableBenefitPeriod {
-  id: string
-  startDate: Date
-  endDate: Date
-  familyId: string
-}
-interface Dependents {
-  name_dependent: string
-  CPF_dependent: string
-  date_birth_dependent: string
-  income_dependent: number
-}
-
-type FormData = FormValues & {
-  createdByUserId: string
-  createdByUserName: string
-  dependents: Dependents[]
-  benefitPeriod: TableBenefitPeriod[]
-  notes?: string
-}
 
 interface FamilyFormProps {
   familie?: Familys
@@ -248,6 +223,7 @@ export function FamilyForm({
       return newItems
     })
   }
+
   async function onSubmit(
     data: FormData,
     event: React.FormEvent<HTMLFormElement>
@@ -265,31 +241,60 @@ export function FamilyForm({
       state: data.state,
       street: data.street,
       zip_code: data.zip_code,
-      createdByUserId: '12321321',
+      createdByUserId: '123',
       createdByUserName: 'Fulano de Tal',
       dependents: tableCompositionsFamily,
       periodBenefit: tableBenefitPeriod,
-      notes: data.notes
+      notes: data.notes || ''
     }
 
-    try {
-      await axios.post('http://localhost:3000/api/familys', info)
-
-      toast({
-        title: 'Cadastro de Família',
-        description: 'Família Cadastrada com Sucesso!'
-      })
-    } catch (error) {
-      console.error('Erro ao cadastrar família:', error)
-
-      toast({
-        title: 'Cadastro de Família',
-        variant: 'destructive',
-        description: 'Não foi possível Cadastrar a Família!'
-      })
+    if (familie && familie.id) {
+     await axios
+        .put(`/api/familys/${familie.id}`, {
+          ...info,
+          id: familie.id,
+          createdByUserId: familie.createdByUserId,
+          createdByUserName: familie.createdByUserName,
+          status: familie.status
+        })
+        .then(() => {
+          toast({
+            title: 'Família Modifcada',
+            description: 'Família atualizado com sucesso!',
+            variant: 'default'
+          })
+        })
+        .catch(() =>
+          toast({
+            title: 'Família não Modifcada',
+            description: 'Não foi possível atualizar a família!',
+            variant: 'destructive'
+          })
+        )
+        .finally(() => {
+          router.push('/managementFamily'), router.refresh()
+        })
+    } else {
+      axios
+        .post('http://localhost:3000/api/familys', info)
+        .then(() => {
+          toast({
+            title: 'Cadastro de Família',
+            description: 'Família Cadastrada com Sucesso!',
+            variant: 'default'
+          })
+        })
+        .catch(() =>
+          toast({
+            title: 'Cadastro de Família',
+            description: 'Não foi possível Cadastrar a Família!',
+            variant: 'destructive'
+          })
+        )
+        .finally(() => {
+          router.push('/managementFamily'), router.refresh()
+        })
     }
-    router.push('/managementFamily')
-    router.refresh()
   }
 
   return (

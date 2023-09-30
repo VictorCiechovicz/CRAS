@@ -1,19 +1,27 @@
 'use client'
 
-import { useState } from 'react'
-import { PageHeading, Table } from '@/src/components/common'
+import { useEffect, useState } from 'react'
+import { PageHeading, Table, useToast } from '@/src/components/common'
 import { columns } from './columns'
-import { HomeList } from '@/src/schemas'
-
+import { FamilyList } from '@/src/schemas'
+import { useRouter } from 'next/navigation'
 
 interface ApprovedListProps {
-  items: HomeList[]
+  items: FamilyList[]
 }
 
 export function ApprovedList({ items }: ApprovedListProps) {
   const [currentPage, setCurrentPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
+  const [filteredItems, setFilteredItems] = useState<FamilyList[]>([])
 
+  const { toast } = useToast()
+  const router = useRouter()
+
+  useEffect(() => {
+    const pendingItems = items.filter(item => item.status === 'PENDING')
+    setFilteredItems(pendingItems)
+  }, [items])
   return (
     <>
       <PageHeading
@@ -24,9 +32,9 @@ export function ApprovedList({ items }: ApprovedListProps) {
         ]}
       />
       <Table
-        title="Famílias"
-        columns={columns}
-        data={items}
+        title="Famílias Pendentes "
+        columns={columns(router, toast)}
+        data={filteredItems}
         currentPage={currentPage}
         pageSize={pageSize}
         onPageChange={newPage => setCurrentPage(newPage)}

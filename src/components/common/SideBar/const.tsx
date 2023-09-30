@@ -15,6 +15,8 @@ export interface ILinks {
   }[]
 }
 
+
+const userId='123'
 export const LinksAdmin: ILinks[] = [
   {
     text: 'Início',
@@ -23,7 +25,7 @@ export const LinksAdmin: ILinks[] = [
   },
   {
     text: 'Cadastros',
-    link: '/managementFamily',
+    link: `/managementFamily/${userId}`,
     icon: <ClipboardDocumentListIcon />
   },
   {
@@ -46,7 +48,7 @@ export const LinksAgent: ILinks[] = [
   },
   {
     text: 'Cadastros',
-    link: '/managementFamily',
+    link: `/managementFamily/${userId}`,
     icon: <ClipboardDocumentListIcon />
   }
 ]

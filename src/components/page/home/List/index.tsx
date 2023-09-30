@@ -15,7 +15,7 @@ export function FamilyList({ items }: FamilyListProps) {
 
   return (
     <Table
-      title="Famílias"
+      title="Famílias Cadastradas"
       columns={columns}
       data={items}
       currentPage={currentPage}

@@ -15,6 +15,7 @@ export interface FamilyList {
   dependents: Dependents[]
   periodBenefit: PeriodBenefit[]
   notes?: string
+  status: 'ACTIVE'|'INACTIVE'|'PENDING'
 }
 
 interface Dependents {

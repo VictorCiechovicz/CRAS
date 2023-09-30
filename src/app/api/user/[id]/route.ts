@@ -9,9 +9,9 @@ export async function GET(request: Request, { params }: { params: IParams }) {
   try {
     const { id } = params
 
-    const house = await prisma.familys.findFirst({
+    const house = await prisma.familys.findMany({
       where: {
-        id: id
+        createdByUserId: id
       },
       include: {
         dependents: true,
@@ -24,26 +24,6 @@ export async function GET(request: Request, { params }: { params: IParams }) {
     }
 
     return NextResponse.json(house)
-  } catch (error) {
-    console.error(error)
-    return new NextResponse('Internal Error', { status: 500 })
-  }
-}
-
-export async function DELETE(
-  request: Request,
-  { params }: { params: IParams }
-) {
-  try {
-    const { id } = params
-
-    const family = await prisma.familys.delete({
-      where: {
-        id: id
-      }
-    })
-
-    return NextResponse.json(family)
   } catch (error) {
     console.error(error)
     return new NextResponse('Internal Error', { status: 500 })
