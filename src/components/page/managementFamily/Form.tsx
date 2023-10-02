@@ -47,6 +47,8 @@ import {
   TableCompositionsFamily
 } from './types'
 import { z } from 'zod'
+import useLoading from '@/src/hook/useLoading'
+import Loading from '../../common/Loading'
 
 export const FormSchema = z.object({
   name: z
@@ -107,15 +109,22 @@ export const FormSchema = z.object({
 })
 
 interface FamilyFormProps {
-  familie?: Familys
+  familie: Familys
   dependents?: Dependent[]
   periodBenefit?: PeriodBenefit[]
+  userId?: string
+}
+
+interface dataEditFamily extends Familys {
+  dependents: Dependent[]
+  periodBenefit: PeriodBenefit[]
 }
 
 export function FamilyForm({
   familie,
   dependents,
-  periodBenefit
+  periodBenefit,
+  userId
 }: FamilyFormProps) {
   const [nameDependent, setNameDependent] = useState('')
   const [CPFDependent, setCPFDependent] = useState('')
@@ -157,6 +166,7 @@ export function FamilyForm({
     defaultValues
   })
   const { toast } = useToast()
+  const { isLoading, showLoading, stopLoading } = useLoading()
 
   const addToTableCompositionsFamily = () => {
     if (
@@ -187,15 +197,44 @@ export function FamilyForm({
     setIncomeDependent('')
   }
 
-  const removeFromTableCompositionsFamily = (index: any) => {
-    setTableCompositionsFamily(prevItems => {
-      const newItems = [...prevItems]
-      newItems.splice(index, 1)
-      return newItems
-    })
+  const deleteComposition = async (value: Dependent) => {
+    try {
+      await axios.delete(`/api/dependent/${value.id}`)
+      toast({
+        title: 'Success',
+        description: 'Dependente familiar deletado com sucesso!',
+        variant: 'default'
+      })
+    } catch (error) {
+      console.error('Erro ao deletar o dependente familiar:', error)
+      toast({
+        title: 'Erro',
+        description: 'Não foi possível deletar o dependente familiar!',
+        variant: 'destructive'
+      })
+    }
   }
 
-  const addToTableBenefitPeriod = () => {
+  const removeFromTableCompositionsFamily = async (
+    value: any,
+    index: number
+  ) => {
+    try {
+      if (value.id) {
+        await deleteComposition(value)
+      }
+
+      setTableCompositionsFamily(prevItems => {
+        const newItems = [...prevItems]
+        newItems.splice(index, 1)
+        return newItems
+      })
+    } catch (error) {
+      console.error('Não foi possível deletar o item', error)
+    }
+  }
+
+  const addToTablePeriodBenefit = () => {
     if (!dateStartBenefit || !dateEndBenefit) {
       return toast({
         title: ' Períodos de Benefício',
@@ -216,84 +255,117 @@ export function FamilyForm({
     setDateEndBenefit(undefined)
   }
 
-  const removeFromTableBenefitPeriod = (index: any) => {
-    setTableBenefitPeriod(prevItems => {
-      const newItems = [...prevItems]
-      newItems.splice(index, 1)
-      return newItems
-    })
+  const deletePeriodBenefit = async (value: PeriodBenefit) => {
+    try {
+      await axios.delete(`/api/periodBenefit/${value.id}`)
+      toast({
+        title: 'Success',
+        description: 'Período de benefício deletado com sucesso!',
+        variant: 'default'
+      })
+    } catch (error) {
+      console.error('Erro ao deletar o Período de benefício:', error)
+      toast({
+        title: 'Erro',
+        description: 'Não foi possível deletar o Período de benefício!',
+        variant: 'destructive'
+      })
+    } finally {
+      router.refresh()
+    }
   }
 
-  async function onSubmit(
+  const removeFromTablePeridBenefit = async (value: any, index: number) => {
+    try {
+      if (value.id) {
+        await deletePeriodBenefit(value)
+      }
+      setTableBenefitPeriod(prevItems => {
+        const newItems = [...prevItems]
+        newItems.splice(index, 1)
+        return newItems
+      })
+    } catch (error) {
+      console.error('Não foi possível deletar o item', error)
+    }
+  }
+
+  const handleUpdateFamily = async (data: Familys) => {
+    try {
+      const dataUpdate = {
+        ...data
+      }
+
+      const response = await axios.put(`/api/familys/${familie.id}`, dataUpdate)
+
+      toast({
+        title: 'Família Modificada',
+        description: 'Família atualizada com sucesso!',
+        variant: 'default'
+      })
+
+      return response.data
+    } catch (error) {
+      console.error('Erro ao atualizar a família:', error)
+
+      toast({
+        title: 'Erro',
+        description: 'Não foi possível atualizar a família!',
+        variant: 'destructive'
+      })
+    } finally {
+      router.push(`/managementFamily/${userId}`)
+      router.refresh()
+    }
+  }
+
+  const onSubmit = async (
     data: FormData,
     event: React.FormEvent<HTMLFormElement>
-  ) {
+  ) => {
     event.preventDefault()
+
     const info = {
-      name: data.name,
-      CPF: data.CPF,
-      RG: data.RG,
-      email: data.email,
-      phone: data.phone,
-      city: data.city,
-      neighborhood: data.neighborhood,
-      number: data.number,
-      state: data.state,
-      street: data.street,
-      zip_code: data.zip_code,
+      ...data,
       createdByUserId: '123',
       createdByUserName: 'Fulano de Tal',
       dependents: tableCompositionsFamily,
       periodBenefit: tableBenefitPeriod,
       notes: data.notes || ''
     }
-
-    if (familie && familie.id) {
-     await axios
-        .put(`/api/familys/${familie.id}`, {
+    showLoading()
+    try {
+      if (familie && familie.id) {
+        await handleUpdateFamily({
           ...info,
-          id: familie.id,
           createdByUserId: familie.createdByUserId,
           createdByUserName: familie.createdByUserName,
-          status: familie.status
+          status: familie.status,
+          createdAt: familie.createdAt
         })
-        .then(() => {
-          toast({
-            title: 'Família Modifcada',
-            description: 'Família atualizado com sucesso!',
-            variant: 'default'
-          })
+      } else {
+        const response = await axios.post('/api/familys', info)
+
+        toast({
+          title: 'Cadastro de Família',
+          description: 'Família cadastrada com sucesso!',
+          variant: 'default'
         })
-        .catch(() =>
-          toast({
-            title: 'Família não Modifcada',
-            description: 'Não foi possível atualizar a família!',
-            variant: 'destructive'
-          })
-        )
-        .finally(() => {
-          router.push('/managementFamily'), router.refresh()
-        })
-    } else {
-      axios
-        .post('http://localhost:3000/api/familys', info)
-        .then(() => {
-          toast({
-            title: 'Cadastro de Família',
-            description: 'Família Cadastrada com Sucesso!',
-            variant: 'default'
-          })
-        })
-        .catch(() =>
-          toast({
-            title: 'Cadastro de Família',
-            description: 'Não foi possível Cadastrar a Família!',
-            variant: 'destructive'
-          })
-        )
-        .finally(() => {
-          router.push('/managementFamily'), router.refresh()
-        })
+
+        return response.data
+      }
+    } catch (error) {
+      console.error('Erro ao salvar a família:', error)
+
+      toast({
+        title: 'Erro',
+        description: 'Não foi possível salvar a família!',
+        variant: 'destructive'
+      })
+    } finally {
+      router.push(`/managementFamily/${familie.createdByUserId}`)
+      router.refresh()
+      stopLoading()
     }
   }
 
@@ -311,6 +383,7 @@ export function FamilyForm({
       <div className="border-b mb-5 pb-5 ">
         <p className="text-lg font-medium">Nova Família</p>
       </div>
+      <Loading status={isLoading} />
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit as any)}
@@ -544,7 +617,7 @@ export function FamilyForm({
                               <Button
                                 type="button"
                                 onClick={() =>
-                                  removeFromTableCompositionsFamily(index)
+                                  removeFromTableCompositionsFamily(item, index)
                                 }
                                 className="bg-red-600"
                               >
@@ -664,7 +737,7 @@ export function FamilyForm({
                 <Button
                   type="button"
                   className="mb-10 bg-blue-800"
-                  onClick={addToTableBenefitPeriod}
+                  onClick={addToTablePeriodBenefit}
                 >
                   Adicionar
                 </Button>
@@ -697,7 +770,7 @@ export function FamilyForm({
                               <Button
                                 type="button"
                                 onClick={() =>
-                                  removeFromTableBenefitPeriod(index)
+                                  removeFromTablePeridBenefit(item, index)
                                 }
                                 className="bg-red-600"
                               >

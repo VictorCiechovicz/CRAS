@@ -6,14 +6,14 @@ export interface TableCompositionsFamily {
   CPF_dependent: string
   date_birth_dependent: Date
   income_dependent: string
-  familyId: string
+
 }
 
 export interface TableBenefitPeriod {
   id: string
   startDate: Date
   endDate: Date
-  familyId: string
+
 }
 export interface Dependents {
   name_dependent: string

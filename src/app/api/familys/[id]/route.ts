@@ -54,11 +54,9 @@ export async function DELETE(
 
 export const PUT = async (request: Request, { params }: { params: IParams }) => {
   try {
-    console.log('Iniciando a atualização');
-    const { id: paramId } = params;
-    const body = await request.json();
+    const { id } = params;
+    const body = await request.json()
     const {
-      id = paramId,
       name,
       CPF,
       RG,
@@ -70,19 +68,43 @@ export const PUT = async (request: Request, { params }: { params: IParams }) => 
       state,
       street,
       zip_code,
-      notes,
-      status,
+      createdByUserId,
+      createdByUserName,
       dependents,
-      periodBenefits,
+      periodBenefit,
+      notes,
+
     } = body;
-    console.log('Dados recebidos:', body);  
+
+    if (!name || !CPF || !RG || !email || !phone ||
+      !city || !neighborhood || !number || !state ||
+      !street || !zip_code || !createdByUserId || !createdByUserName) {
+      return new NextResponse('Bad Request', { status: 400 });
+    }
+
+    if (dependents && !Array.isArray(dependents)) {
+      return new NextResponse('Bad Request', { status: 400 });
+    }
+
+    if (periodBenefit && !Array.isArray(periodBenefit)) {
+      return new NextResponse('Bad Request', { status: 400 });
+    }
+
+
     if (!id) {
       return new NextResponse('Bad Request', { status: 400 });
     }
-    console.log('Atualizando a família com ID:', id); 
+
+    const existingDependents = dependents.filter((dep:Dependent) => dep.id);
+    const newDependents = dependents.filter((dep:Dependent) => !dep.id);
+    
+    const existingPeriodBenefits = periodBenefit.filter((period:PeriodBenefit) => period.id);
+    const newPeriodBenefits = periodBenefit.filter((period:PeriodBenefit)=> !period.id);
+
+    
 
     const updatedFamily = await prisma.familys.update({
-      where: { id: id },
+      where: { id },
       data: {
         name,
         CPF,
@@ -95,31 +117,50 @@ export const PUT = async (request: Request, { params }: { params: IParams }) => 
         state,
         street,
         zip_code,
+        createdByUserId,
+        createdByUserName,
         notes,
-        status,
         updatedAt: new Date(),
-        dependents: {
-          upsert: dependents.map((dependent: Dependent) => ({
-            where: { id: dependent.id },
-            update: dependent,
-            create: dependent
-          }))
+         dependents: {
+      update: existingDependents.map((dep:Dependent) => ({
+        where: { id: dep.id },
+        data: {
+          name_dependent: dep.name_dependent,
+          CPF_dependent: dep.CPF_dependent,
+          date_birth_dependent: dep.date_birth_dependent,
+          income_dependent: dep.income_dependent,
         },
-        periodBenefit: {
-          upsert: periodBenefits.map((periodBenefit: PeriodBenefit) => ({
-            where: { id: periodBenefit.id },
-            update: periodBenefit,
-            create: periodBenefit
-          }))
+      })),
+      create: newDependents.map((dep:Dependent) => ({
+        name_dependent: dep.name_dependent,
+        CPF_dependent: dep.CPF_dependent,
+        date_birth_dependent: dep.date_birth_dependent,
+        income_dependent: dep.income_dependent,
+      })),
+    },
+    periodBenefit: {
+      update: existingPeriodBenefits.map((period:PeriodBenefit) => ({
+        where: { id: period.id },
+        data: {
+          startDate: period.startDate,
+          endDate: period.endDate,
         },
-      },
+      })),
+      create: newPeriodBenefits.map((period:PeriodBenefit) => ({
+        startDate: period.startDate,
+        endDate: period.endDate,
+      })),
+    },
+  },
       include: {
         dependents: true,
-        periodBenefit: true
-      }
+        periodBenefit: true,
+      },
     });
-    console.log('Família atualizada:', updatedFamily);
-    return NextResponse.json(updatedFamily)
+
+
+
+    return NextResponse.json(updatedFamily);
   } catch (error) {
     console.error(error);
     return new NextResponse('Internal Error', { status: 500 });
