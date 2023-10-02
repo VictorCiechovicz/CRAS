@@ -18,6 +18,14 @@ import {
   TableHeader,
   TableRow
 } from '../ui/table'
+import { Dependent, PeriodBenefit } from '@prisma/client'
+import { format } from 'date-fns'
+
+const statusMap = {
+  ACTIVE: 'Ativo',
+  INACTIVE: 'Inativo',
+  PENDING: 'Pendente'
+} as any
 
 export function Table<T>({
   caption,
@@ -38,8 +46,33 @@ export function Table<T>({
     (currentPage - 1) * pageSize,
     currentPage * pageSize
   )
+
   const exportToCSV = () => {
     const organizedData = filteredData.map(item => {
+      const modifiedDependents = item.dependents
+        ? item.dependents.map((dependent: Dependent) => {
+            return {
+              Nome: dependent.name_dependent,
+              Cpf: dependent.CPF_dependent,
+              Data_Nascimento: format(
+                new Date(dependent.date_birth_dependent),
+                'dd/MM/yyyy'
+              ),
+              Renda: dependent.income_dependent
+            }
+          })
+        : []
+      const modifiedPeriodBenefit = item.periodBenefit
+        ? item.periodBenefit.map((period: PeriodBenefit) => {
+            return {
+              Inicio: format(new Date(period.startDate), 'dd/MM/yyyy'),
+              Fim: format(new Date(period.endDate), 'dd/MM/yyyy')
+            }
+          })
+        : []
+
+      const status = statusMap[item.status] || item.status
+
       return {
         Nome: item.name,
         CPF: item.CPF,
@@ -52,14 +85,17 @@ export function Table<T>({
         Rua: item.street,
         CEP: item.zip_code,
         Agente: item.createdByUserName,
-        Status: item.status,
-        Dependentes: item.dependents ? JSON.stringify(item.dependents) : '',
-        periodBenefit: item.periodBenefit ? 
-        `Início: ${item.periodBenefit.inicio}, Fim: ${item.periodBenefit.fim}` : ''  
+        Status: status,
+        Dependentes: JSON.stringify(modifiedDependents),
+        Perido_Beneficio: JSON.stringify(modifiedPeriodBenefit)
       }
     })
+
     console.log(organizedData)
-    const csv = Papa.unparse(organizedData)
+
+    const csv = Papa.unparse(organizedData, {
+      delimiter: ';'
+    })
 
     const blob = new Blob([csv], { type: 'text/csv' })
     saveAs(blob, 'familias.csv')
