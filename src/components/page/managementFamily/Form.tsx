@@ -581,8 +581,9 @@ export function FamilyForm({
                 </div>
 
                 <Button
+                  variant={'outline'}
                   type="button"
-                  className="mb-10 bg-blue-800"
+                  className="mb-10 bg-blue-800 text-white"
                   onClick={addToTableCompositionsFamily}
                 >
                   Adicionar
@@ -615,11 +616,12 @@ export function FamilyForm({
                             <TableCell>{item.income_dependent}</TableCell>
                             <TableCell>
                               <Button
+                                variant={'outline'}
                                 type="button"
                                 onClick={() =>
                                   removeFromTableCompositionsFamily(item, index)
                                 }
-                                className="bg-red-600"
+                                className="bg-red-600 text-white"
                               >
                                 Remover
                               </Button>
@@ -735,8 +737,9 @@ export function FamilyForm({
                 </div>
 
                 <Button
+                  variant={'outline'}
                   type="button"
-                  className="mb-10 bg-blue-800"
+                  className="mb-10 bg-blue-800 text-white"
                   onClick={addToTablePeriodBenefit}
                 >
                   Adicionar
@@ -768,11 +771,12 @@ export function FamilyForm({
 
                             <TableCell>
                               <Button
+                                variant={'outline'}
                                 type="button"
                                 onClick={() =>
                                   removeFromTablePeridBenefit(item, index)
                                 }
-                                className="bg-red-600"
+                                className="bg-red-600 text-white"
                               >
                                 Remover
                               </Button>
@@ -961,7 +965,11 @@ export function FamilyForm({
                 Cancelar
               </Button>
 
-              <Button type="submit" className="bg-blue-800">
+              <Button
+                variant={'outline'}
+                type="submit"
+                className="bg-blue-800 text-white"
+              >
                 Salvar
               </Button>
             </div>
