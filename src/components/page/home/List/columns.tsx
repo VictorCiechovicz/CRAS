@@ -39,12 +39,16 @@ export const columns =
       renderCell(_, rowData: FamilyList) {
         const totalIncome = rowData.dependents
           .map(dep => parseFloat(dep.income_dependent))
-          .reduce((acc, curr) => acc + curr, 0)
-        return totalIncome.toLocaleString('pt-BR', {
+          .reduce((acc, curr) => acc + curr, 0);
+      
+        const perCapitaIncome = totalIncome / (rowData.dependents.length || 1); 
+           
+        return perCapitaIncome.toLocaleString('pt-BR', {
           style: 'currency',
           currency: 'BRL'
-        })
+        });
       }
+      
     },
     {
       label: 'Data Entrada',

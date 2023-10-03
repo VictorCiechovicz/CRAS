@@ -21,6 +21,17 @@ export function FamilyList({ items }: FamilyListProps) {
     setIsModalOpen(true)
   }
 
+  const familiesActives = items.filter(familia => familia.status === 'ACTIVE')
+  const familiesInactives = items.filter(
+    familia => familia.status === 'INACTIVE'
+  )
+
+  const familiesDecret = items.sort(
+    (a, b) =>
+      new Date(b.createdAt || '1970-01-01').getTime() -
+      new Date(a.createdAt || '1970-01-01').getTime()
+  )
+    
   return (
     <div>
       <div className="bg-white rounded-lg px-12 py-7 mb-7 flex gap-14">
@@ -30,9 +41,7 @@ export function FamilyList({ items }: FamilyListProps) {
           </div>
           <div className="flex flex-col justify-start gap-1">
             <p className="text-sm font-normal ">Famílias Cadastradas</p>
-            <p className="text-2xl font-bold ">
-              {items.length.toLocaleString('pt-BR')}
-            </p>
+            <p className="text-2xl font-bold ">{items.length}</p>
           </div>
         </div>
         <div className="border-l " />
@@ -41,10 +50,30 @@ export function FamilyList({ items }: FamilyListProps) {
             <UserIcon className="w-10 h-10 text-green-600" />
           </div>
           <div className="flex flex-col justify-start gap-1">
-            <p className="text-sm font-normal ">Agentes Cadastradas</p>
-            <p className="text-2xl font-bold ">
-              {items.length.toLocaleString('pt-BR')}
-            </p>
+            <p className="text-sm font-normal ">Agentes Cadastrados</p>
+            <p className="text-2xl font-bold ">{items.length}</p>
+          </div>
+        </div>
+
+        <div className="border-l " />
+        <div className="flex gap-5">
+          <div className="bg-green-200 w-20 h-20 rounded-full flex justify-center items-center">
+            <UserGroupIcon className="w-10 h-10 text-green-600" />
+          </div>
+          <div className="flex flex-col justify-start gap-1">
+            <p className="text-sm font-normal ">Familias Ativas</p>
+            <p className="text-2xl font-bold ">{familiesActives.length}</p>
+          </div>
+        </div>
+
+        <div className="border-l " />
+        <div className="flex gap-5">
+          <div className="bg-red-200 w-20 h-20 rounded-full flex justify-center items-center">
+            <UserGroupIcon className="w-10 h-10 text-red-600" />
+          </div>
+          <div className="flex flex-col justify-start gap-1">
+            <p className="text-sm font-normal ">Famílias Inativas</p>
+            <p className="text-2xl font-bold ">{familiesInactives.length}</p>
           </div>
         </div>
       </div>
@@ -56,7 +85,7 @@ export function FamilyList({ items }: FamilyListProps) {
       <Table
         title="Famílias Cadastradas"
         columns={columns}
-        data={items}
+        data={familiesDecret}
         currentPage={currentPage}
         pageSize={pageSize}
         onPageChange={newPage => setCurrentPage(newPage)}

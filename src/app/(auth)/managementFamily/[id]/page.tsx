@@ -15,7 +15,7 @@ export default async function ManagementFamily({
 
   return (
     <div className="w-full">
-      <ManagementFamilyList items={listFamily.data} />
+      <ManagementFamilyList items={listFamily.data} userId={userId} />
     </div>
   )
 }

@@ -8,6 +8,7 @@ import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
 import axios from 'axios'
 import { format } from 'date-fns'
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
+import { Tooltip } from 'react-tooltip'
 
 interface ActionButtonsProps {
   router: AppRouterInstance
@@ -26,9 +27,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
 }) => {
   const handleEditClick = (event: any) => {
     event.stopPropagation()
-    router.push(
-      `${rowData.createdByUserId}/editFamily/${rowData.id}`
-    )
+    router.push(`${rowData.createdByUserId}/editFamily/${rowData.id}`)
   }
 
   const handleDeleteClick = async (event: any) => {
@@ -55,13 +54,27 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
   }
 
   return (
-    <div className="flex space-x-2">
-      <button onClick={handleEditClick}>
-        <PencilIcon className="w-5 h-5" />
-      </button>
-      <button onClick={handleDeleteClick}>
-        <TrashIcon className="w-5 h-5" />
-      </button>
+    <div className="flex space-x-6">
+      <div
+        data-tooltip-id="tooltip-edit"
+        data-tooltip-content={'Editar'}
+        data-tooltip-place="top"
+      >
+        <button onClick={handleEditClick}>
+          <Tooltip id="tooltip-edit" />
+          <PencilIcon className="w-5 h-5" />
+        </button>
+      </div>
+      <div
+        data-tooltip-id="tooltip-delete"
+        data-tooltip-content={'Excluir'}
+        data-tooltip-place="top"
+      >
+        <button onClick={handleDeleteClick}>
+          <Tooltip id="tooltip-delete" />
+          <TrashIcon className="w-5 h-5" />
+        </button>
+      </div>
     </div>
   )
 }
@@ -107,7 +120,10 @@ export const columns = (
         const totalIncome = rowData.dependents
           .map(dep => parseFloat(dep.income_dependent))
           .reduce((acc, curr) => acc + curr, 0)
-        return totalIncome.toLocaleString('pt-BR', {
+
+        const perCapitaIncome = totalIncome / (rowData.dependents.length || 1)
+
+        return perCapitaIncome.toLocaleString('pt-BR', {
           style: 'currency',
           currency: 'BRL'
         })

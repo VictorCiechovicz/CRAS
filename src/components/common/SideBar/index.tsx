@@ -8,16 +8,17 @@ import {
   ArrowRightOnRectangleIcon,
   HomeIcon
 } from '@heroicons/react/24/outline'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { Avatar } from '@/src/components/common/ui/avatar'
 import ImageAvatar from '../../../../public/images/placeholder.jpg'
 import Image from 'next/image'
 import clsx from 'clsx'
+import { Tooltip } from 'react-tooltip'
 
 export function SideBar() {
   const [isAdmin, setIsAdmin] = useState(true)
   const [hoveredLink, setHoveredLink] = useState<string | null>(null)
-
+  const router = useRouter()
   const pathname = usePathname()
 
   const linksToRender = isAdmin ? LinksAdmin : LinksAgent
@@ -28,7 +29,10 @@ export function SideBar() {
       aria-label="Sidebar"
     >
       <div className="relative h-full px-4 pb-6 pt-5 overflow-y-auto bg-white">
-        <div className="mb-14 ml-6 flex items-end gap-2">
+        <div
+          className="mb-14 ml-6 flex items-end gap-2 cursor-pointer"
+          onClick={() => router.push('/home')}
+        >
           <HomeIcon className="w-8 h-8 text-black" />
           <p className="text-black text-2xl font-semibold">CRAS</p>
         </div>
@@ -86,7 +90,14 @@ export function SideBar() {
             <p className="text-base mt-2 text-gray-500">Fulano de Tal</p>
           </div>
 
-          <div className="cursor-pointer" onClick={() => {}}>
+          <div
+            className="cursor-pointer"
+            onClick={() => {}}
+            data-tooltip-id="tooltip-signout"
+            data-tooltip-content={'Sair'}
+            data-tooltip-place="top"
+          >
+            <Tooltip id="tooltip-signout" />
             <ArrowRightOnRectangleIcon className="w-7 h-7 text-gray-500 hover:text-gray-400" />
           </div>
         </div>

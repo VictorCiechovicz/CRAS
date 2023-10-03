@@ -1,7 +1,13 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { PageHeading, Table, useToast } from '@/src/components/common'
+import {
+  Button,
+  Modal,
+  PageHeading,
+  Table,
+  useToast
+} from '@/src/components/common'
 import { columns } from './columns'
 import { FamilyList } from '@/src/schemas'
 import { useRouter } from 'next/navigation'
@@ -15,21 +21,30 @@ export function ApprovedList({ items }: ApprovedListProps) {
   const [currentPage, setCurrentPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
   const [filteredItems, setFilteredItems] = useState<FamilyList[]>([])
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isModalDetailsOpen, setIsModalDetailsOpen] = useState(false)
   const [selectedItem, setSelectedItem] = useState<FamilyList | null>(null)
 
-  const openModal = (item: FamilyList) => {
+ 
+
+  const openModalDetails = (item: FamilyList) => {
     setSelectedItem(item)
-    setIsModalOpen(true)
+    setIsModalDetailsOpen(true)
   }
 
   const { toast } = useToast()
   const router = useRouter()
 
   useEffect(() => {
-    const pendingItems = items.filter(item => item.status === 'PENDING')
+    const sortedItems = items.sort(
+      (a, b) =>
+        new Date(b.createdAt || '1970-01-01').getTime() -
+        new Date(a.createdAt || '1970-01-01').getTime()
+    )
+
+    const pendingItems = sortedItems.filter(item => item.status === 'PENDING')
     setFilteredItems(pendingItems)
   }, [items])
+
   return (
     <>
       <PageHeading
@@ -39,9 +54,10 @@ export function ApprovedList({ items }: ApprovedListProps) {
           { href: '#', name: 'Gestão de Aprovações' }
         ]}
       />
+
       <FamilyDetailsModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        isOpen={isModalDetailsOpen}
+        onClose={() => setIsModalDetailsOpen(false)}
         family={selectedItem}
       />
 
@@ -53,7 +69,7 @@ export function ApprovedList({ items }: ApprovedListProps) {
         pageSize={pageSize}
         onPageChange={newPage => setCurrentPage(newPage)}
         onPageSizeChange={newSize => setPageSize(newSize)}
-        onRowClick={item => openModal(item)}
+        onRowClick={item => openModalDetails(item)}
       />
     </>
   )

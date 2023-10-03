@@ -1,13 +1,18 @@
-import {  FamilyForm } from "@/src/components/page"
+import { FamilyForm } from '@/src/components/page'
 
+interface RegisterFamilyProps {
+  params: {
+    id: string
+    familyId: string
+  }
+}
 
+export default async function RegisterFamily({ params }: RegisterFamilyProps) {
+  const userId = params.id
 
-export default async function RegisterFamily() {
-
- 
   return (
     <div className="w-full">
-      <FamilyForm />
+      <FamilyForm userId={userId} />
     </div>
   )
 }

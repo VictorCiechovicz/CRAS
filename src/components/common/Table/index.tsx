@@ -20,6 +20,7 @@ import {
 } from '../ui/table'
 import { Dependent, PeriodBenefit } from '@prisma/client'
 import { format } from 'date-fns'
+import { Tooltip } from 'react-tooltip'
 
 const statusMap = {
   ACTIVE: 'Ativo',
@@ -125,12 +126,21 @@ export function Table<T>({
     <div className="bg-white rounded-lg">
       <div className="pb-12 pt-11 w-full flex justify-between items-center px-7 ">
         <p className="text-2xl font-semibold">{title}</p>
-        <div className="flex gap-4">
-          <Search onSearchChange={setSearchQuery} />
-          <ArrowDownTrayIcon
-            onClick={exportToCSV}
-            className="btn btn-primary w-6 he-6"
-          />
+        <div className="flex items-end gap-4">
+          <div>
+            <Search onSearchChange={setSearchQuery} />
+          </div>
+          <div
+            data-tooltip-id="tooltip-exportcsv"
+            data-tooltip-content={'Download CSV'}
+            data-tooltip-place="top"
+          >
+            <Tooltip id="tooltip-exportcsv" />
+            <ArrowDownTrayIcon
+              onClick={exportToCSV}
+              className="btn btn-primary w-6 he-6"
+            />
+          </div>
         </div>
       </div>
 

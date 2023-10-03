@@ -29,15 +29,18 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
 
   useEffect(() => {
     if (family) {
-      const income = family.dependents
+      const totalIncome = family.dependents
         .map(dep => parseFloat(dep.income_dependent))
         .reduce((acc, curr) => acc + curr, 0)
-        .toLocaleString('pt-BR', {
-          style: 'currency',
-          currency: 'BRL'
-        })
 
-      setTotalIncome(income)
+      const perCapitaIncome = totalIncome / (family.dependents.length || 1)
+
+      const formattedIncome = perCapitaIncome.toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+      })
+
+      setTotalIncome(formattedIncome)
     }
   }, [family])
 

@@ -105,19 +105,15 @@ export const FormSchema = z.object({
 
   zip_code: z.string({
     required_error: 'Informe CEP da Família.'
-  })
+  }),
+  notes: z.string().optional()
 })
 
 interface FamilyFormProps {
-  familie: Familys
+  familie?: Familys
   dependents?: Dependent[]
   periodBenefit?: PeriodBenefit[]
   userId?: string
-}
-
-interface dataEditFamily extends Familys {
-  dependents: Dependent[]
-  periodBenefit: PeriodBenefit[]
 }
 
 export function FamilyForm({
@@ -157,7 +153,8 @@ export function FamilyForm({
     neighborhood: familie?.neighborhood,
     state: familie?.state,
     street: familie?.street,
-    zip_code: familie?.zip_code
+    zip_code: familie?.zip_code,
+    notes: familie?.notes
   }
 
   const router = useRouter()
@@ -296,7 +293,10 @@ export function FamilyForm({
         ...data
       }
 
-      const response = await axios.put(`/api/familys/${familie.id}`, dataUpdate)
+      const response = await axios.put(
+        `/api/familys/${familie?.id}`,
+        dataUpdate
+      )
 
       toast({
         title: 'Família Modificada',
@@ -331,7 +331,7 @@ export function FamilyForm({
       createdByUserName: 'Fulano de Tal',
       dependents: tableCompositionsFamily,
       periodBenefit: tableBenefitPeriod,
-      notes: data.notes || ''
+      notes: data.notes
     }
     showLoading()
     try {
@@ -363,7 +363,7 @@ export function FamilyForm({
         variant: 'destructive'
       })
     } finally {
-      router.push(`/managementFamily/${familie.createdByUserId}`)
+      router.push(`/managementFamily/${userId}`)
       router.refresh()
       stopLoading()
     }
@@ -941,7 +941,6 @@ export function FamilyForm({
                         <Textarea
                           placeholder="Anotações"
                           maxLength={1000}
-                          defaultValue={familie ? familie.notes || '' : ''}
                           {...field}
                         />
                       </FormControl>

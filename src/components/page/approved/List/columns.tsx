@@ -1,14 +1,16 @@
 'use client'
 
-
 import axios from 'axios'
 import { Column } from '@/src/components/common/Table/types'
 import { FamilyList } from '@/src/schemas'
 import { formatPhoneNumber } from '@/src/utils/format/formatPhone'
 import { formatStatus } from '@/src/utils/format/status'
-import { PencilIcon, TrashIcon,XCircleIcon,CheckCircleIcon } from '@heroicons/react/24/outline'
+import { XCircleIcon, CheckCircleIcon } from '@heroicons/react/24/outline'
 import { format } from 'date-fns'
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
+import { Tooltip } from 'react-tooltip'
+import { Button, Modal } from '@/src/components/common'
+import { useState } from 'react'
 
 interface ActionButtonsProps {
   router: AppRouterInstance
@@ -25,9 +27,10 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
   rowData,
   toast
 }) => {
+  const [isModalConfirmOpen, setIsModalConfirmOpen] = useState(false)
+  const [typeUpdate, setTypeUpdate] = useState('')
 
-  const handleUpdateStatus = async (status: string) => {  
-  
+  const handleUpdateStatus = async (status: string) => {
     await axios
       .put(`/api/approved/${rowData.id}`, { status })
       .then(() => {
@@ -35,29 +38,91 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
           title: 'Família Aceita',
           description: 'Família atualizada com sucesso!',
           variant: 'default'
-        });
+        })
       })
       .catch(() => {
         toast({
           title: 'Família Não Aceita',
           description: 'Não foi possível atualizar a família!',
           variant: 'destructive'
-        });
+        })
       })
       .finally(() => {
-        router.refresh();
-      });
+        setIsModalConfirmOpen(false)
+        router.refresh()
+      })
   }
-  
 
   return (
-    <div className="flex space-x-2">
-      <button onClick={() => handleUpdateStatus("ACTIVE")} >  
-        <CheckCircleIcon className="w-7 h-7 text-green-500" />
-      </button>
-      <button onClick={() => handleUpdateStatus("INACTIVE")} >
-        <XCircleIcon className="w-7 h-7 text-red-500" />
-      </button>
+    <div className="flex space-x-4">
+      <Modal
+        isOpen={isModalConfirmOpen}
+        onClose={() => setIsModalConfirmOpen(false)}
+        isCloseButton={false}
+      >
+        <div>
+          <div className="flex justify-center pb-10">
+            <p className="text-xl font-bold">
+              Deseja{' '}
+              {typeUpdate === 'ACTIVE'
+                ? 'Aprovar o cadastro desta Família?'
+                : 'Reprovar o cadastro desta Família?'}{' '}
+            </p>
+          </div>
+
+          <div className="flex justify-center gap-2  ">
+            <Button
+              className="w-40"
+              variant={'outline'}
+              onClick={event => {
+                event.stopPropagation(), setIsModalConfirmOpen(false)
+              }}
+            >
+              Nao
+            </Button>
+            <Button
+              className="bg-blue-800 w-40"
+              onClick={event => {
+                event.stopPropagation(), handleUpdateStatus(typeUpdate)
+              }}
+            >
+              Sim
+            </Button>
+          </div>
+        </div>
+      </Modal>
+      <div
+        data-tooltip-id="tooltip-active"
+        data-tooltip-content={'Aprovar'}
+        data-tooltip-place="top"
+      >
+        <button
+          onClick={event => {
+            event.stopPropagation()
+            setIsModalConfirmOpen(true)
+            setTypeUpdate('ACTIVE')
+          }}
+        >
+          <Tooltip id="tooltip-active" />
+          <CheckCircleIcon className="w-7 h-7 text-green-500" />
+        </button>
+      </div>
+      <div
+        data-tooltip-id="tooltip-inactive"
+        data-tooltip-content={'Reprovar'}
+        data-tooltip-place="top"
+      >
+        <button
+          onClick={event => {
+            event.stopPropagation()
+            setIsModalConfirmOpen(true)
+            setTypeUpdate('INACTIVE')
+          }}
+        >
+          <Tooltip id="tooltip-inactive" />
+          <XCircleIcon className="w-7 h-7 text-red-500" />
+        </button>
+      </div>
     </div>
   )
 }
