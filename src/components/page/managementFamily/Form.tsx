@@ -198,14 +198,14 @@ export function FamilyForm({
     try {
       await axios.delete(`/api/dependent/${value.id}`)
       toast({
-        title: 'Success',
-        description: 'Dependente familiar deletado com sucesso!',
+        title: 'Dependente familiar removido',
+        description: 'Dependente familiar removido com sucesso!',
         variant: 'default'
       })
     } catch (error) {
       console.error('Erro ao deletar o dependente familiar:', error)
       toast({
-        title: 'Erro',
+        title: 'Dependente Familiar não removido',
         description: 'Não foi possível deletar o dependente familiar!',
         variant: 'destructive'
       })
@@ -216,6 +216,7 @@ export function FamilyForm({
     value: any,
     index: number
   ) => {
+    showLoading()
     try {
       if (value.id) {
         await deleteComposition(value)
@@ -229,6 +230,7 @@ export function FamilyForm({
     } catch (error) {
       console.error('Não foi possível deletar o item', error)
     }
+    stopLoading()
   }
 
   const addToTablePeriodBenefit = () => {
@@ -253,17 +255,18 @@ export function FamilyForm({
   }
 
   const deletePeriodBenefit = async (value: PeriodBenefit) => {
+  
     try {
       await axios.delete(`/api/periodBenefit/${value.id}`)
       toast({
-        title: 'Success',
-        description: 'Período de benefício deletado com sucesso!',
+        title: 'Período de benefício removido',
+        description: 'Período de benefício removido com sucesso!',
         variant: 'default'
       })
     } catch (error) {
       console.error('Erro ao deletar o Período de benefício:', error)
       toast({
-        title: 'Erro',
+        title: 'Período de benefício não removido',
         description: 'Não foi possível deletar o Período de benefício!',
         variant: 'destructive'
       })
@@ -273,6 +276,7 @@ export function FamilyForm({
   }
 
   const removeFromTablePeridBenefit = async (value: any, index: number) => {
+    showLoading()
     try {
       if (value.id) {
         await deletePeriodBenefit(value)
@@ -285,6 +289,7 @@ export function FamilyForm({
     } catch (error) {
       console.error('Não foi possível deletar o item', error)
     }
+    stopLoading()
   }
 
   const handleUpdateFamily = async (data: Familys) => {
@@ -299,7 +304,7 @@ export function FamilyForm({
       )
 
       toast({
-        title: 'Família Modificada',
+        title: 'Família Atualizada',
         description: 'Família atualizada com sucesso!',
         variant: 'default'
       })
@@ -309,8 +314,8 @@ export function FamilyForm({
       console.error('Erro ao atualizar a família:', error)
 
       toast({
-        title: 'Erro',
-        description: 'Não foi possível atualizar a família!',
+        title: 'Família não Atualizada',
+        description: 'Não foi possível atualizar a Família!',
         variant: 'destructive'
       })
     } finally {
@@ -358,7 +363,7 @@ export function FamilyForm({
       console.error('Erro ao salvar a família:', error)
 
       toast({
-        title: 'Erro',
+        title: 'Cadastro de Família',
         description: 'Não foi possível salvar a família!',
         variant: 'destructive'
       })
@@ -383,7 +388,8 @@ export function FamilyForm({
       <div className="border-b mb-5 pb-5 ">
         <p className="text-lg font-medium">Nova Família</p>
       </div>
-      <Loading status={isLoading} />
+      {isLoading && <Loading status={isLoading} />}
+
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit as any)}

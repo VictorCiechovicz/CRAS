@@ -50,7 +50,7 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
       <div>
         <div className="flex justify-between items-center pb-10">
           <div className="flex gap-3">
-            <div>{formatStatus('ACTIVE')}</div>
+            <div>{formatStatus(family?.status)}</div>
             <p className="text-2xl font-semibold whitespace-nowrap">
               Detalhes da Família
             </p>

@@ -2,7 +2,7 @@ import {
   UserGroupIcon,
   ClipboardDocumentCheckIcon,
   ClipboardDocumentListIcon,
-  UserPlusIcon
+
 } from '@heroicons/react/24/outline'
 
 export interface ILinks {
@@ -33,11 +33,7 @@ export const LinksAdmin: ILinks[] = [
     link: '/approved',
     icon: <ClipboardDocumentCheckIcon />
   },
-  {
-    text: 'Agentes',
-    link: '/managementAgents',
-    icon: <UserPlusIcon />
-  }
+  
 ]
 
 export const LinksAgent: ILinks[] = [
