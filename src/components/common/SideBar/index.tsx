@@ -1,26 +1,33 @@
-'use client'
+"use client";
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from "react";
 
-import Link from 'next/link'
-import { LinksAdmin, LinksAgent } from './const'
+import Link from "next/link";
+import { LinksAdmin, LinksAgent } from "./const";
 import {
   ArrowRightOnRectangleIcon,
-  HomeIcon
-} from '@heroicons/react/24/outline'
-import { usePathname } from 'next/navigation'
-import { Avatar } from '@/src/components/common/ui/avatar'
-import ImageAvatar from '../../../../public/images/placeholder.jpg'
-import Image from 'next/image'
-import clsx from 'clsx'
+  HomeIcon,
+} from "@heroicons/react/24/outline";
+import { usePathname } from "next/navigation";
+import { Avatar } from "@/src/components/common/ui/avatar";
+import ImageAvatar from "../../../../public/images/placeholder.jpg";
+import Image from "next/image";
+import clsx from "clsx";
+import { signOut, useSession } from "next-auth/react";
 
 export function SideBar() {
-  const [isAdmin, setIsAdmin] = useState(true)
-  const [hoveredLink, setHoveredLink] = useState<string | null>(null)
+  const [isAdmin, setIsAdmin] = useState(true);
+  const [hoveredLink, setHoveredLink] = useState<string | null>(null);
 
-  const pathname = usePathname()
+  const { data: session } = useSession();
 
-  const linksToRender = isAdmin ? LinksAdmin : LinksAgent
+  const pathname = usePathname();
+
+  const linksToRender = isAdmin ? LinksAdmin : LinksAgent;
+
+  const handleSignOut = async () => {
+    await signOut({ callbackUrl: "/" });
+  };
 
   return (
     <aside
@@ -34,20 +41,20 @@ export function SideBar() {
         </div>
         <ul className="space-y-2 font-medium">
           <li>
-            {linksToRender.map(link => {
-              const isActive = pathname.includes(link.link)
-              const isHovered = hoveredLink === link.link
+            {linksToRender.map((link) => {
+              const isActive = pathname.includes(link.link);
+              const isHovered = hoveredLink === link.link;
               const linkClass = clsx(
-                'flex items-center my-1 p-3 h-12 text-gray-500 text-base leading-6 font-medium rounded-sm group',
+                "flex items-center my-1 p-3 h-12 text-gray-500 text-base leading-6 font-medium rounded-sm group",
                 {
-                  'bg-blue-800 text-white': isActive || isHovered
+                  "bg-blue-800 text-white": isActive || isHovered,
                 }
-              )
+              );
 
-              const iconClass = clsx('w-6 h-6', {
-                'text-white': isActive || isHovered,
-                'text-gray-500': !isActive && !isHovered
-              })
+              const iconClass = clsx("w-6 h-6", {
+                "text-white": isActive || isHovered,
+                "text-gray-500": !isActive && !isHovered,
+              });
 
               return (
                 <Link
@@ -60,18 +67,19 @@ export function SideBar() {
                 >
                   <div className={iconClass}>
                     {React.cloneElement(link.icon, {
-                      color: isActive || isHovered ? '#FFFFFF' : 'text-gray-500'
+                      color:
+                        isActive || isHovered ? "#FFFFFF" : "text-gray-500",
                     })}
                   </div>
                   <span
                     className={`ml-3 ${
-                      isActive || isHovered ? 'text-white' : ''
+                      isActive || isHovered ? "text-white" : ""
                     }`}
                   >
                     {link.text}
                   </span>
                 </Link>
-              )
+              );
             })}
           </li>
         </ul>
@@ -83,14 +91,16 @@ export function SideBar() {
               </Avatar>
             </div>
 
-            <p className="text-base mt-2 text-gray-500">Fulano de Tal</p>
+            <p className="text-base mt-2 text-gray-500">
+              {session?.user?.name}
+            </p>
           </div>
 
-          <div className="cursor-pointer" onClick={() => {}}>
+          <div className="cursor-pointer" onClick={handleSignOut}>
             <ArrowRightOnRectangleIcon className="w-7 h-7 text-gray-500 hover:text-gray-400" />
           </div>
         </div>
       </div>
     </aside>
-  )
+  );
 }

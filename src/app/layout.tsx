@@ -1,28 +1,29 @@
-import type { Metadata } from 'next'
-import { cn } from '@/src/lib/utils'
-import { Inter } from 'next/font/google'
+import type { Metadata } from "next";
+import { cn } from "@/src/lib/utils";
+import { Inter } from "next/font/google";
 
-import './globals.css'
-import { Toaster } from '@/src/components/common/ui/toaster';
+import "./globals.css";
+import { Toaster } from "@/src/components/common/ui/toaster";
+import AuthContext from "../context/AuthContext";
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'CRAS App',
-  description: 'CRAS App'
-}
+  title: "CRAS App",
+  description: "CRAS App",
+};
 
 export default function RootLayout({
-  children
+  children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="en">
-      <body className={cn(inter.className, 'bg-gray-100 min-h-screen')}>
+      <body className={cn(inter.className, "bg-gray-100 min-h-screen")}>
         <Toaster />
-        {children}
+        <AuthContext>{children}</AuthContext>
       </body>
     </html>
-  )
+  );
 }
