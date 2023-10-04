@@ -13,7 +13,7 @@ This application is project to Family Management using Next.js 13, Shadcn-ui, Pr
 - Zod
 - Prisma
 - MongoDB
-- JWT with bcrypt
+- Keycloak
 - Route Handlers
 - Axios
 - Papaparse
