@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState } from 'react'
-
 import Link from 'next/link'
 import { LinksAdmin, LinksAgent } from './const'
 import {
@@ -14,14 +13,21 @@ import ImageAvatar from '../../../../public/images/placeholder.jpg'
 import Image from 'next/image'
 import clsx from 'clsx'
 import { Tooltip } from 'react-tooltip'
+import { signOut, useSession } from 'next-auth/react'
 
 export function SideBar() {
   const [isAdmin, setIsAdmin] = useState(true)
   const [hoveredLink, setHoveredLink] = useState<string | null>(null)
+
   const router = useRouter()
   const pathname = usePathname()
+  const { data: session } = useSession()
 
   const linksToRender = isAdmin ? LinksAdmin : LinksAgent
+
+  const handleSignOut = async () => {
+    await signOut({ callbackUrl: '/' })
+  }
 
   return (
     <aside
@@ -87,7 +93,9 @@ export function SideBar() {
               </Avatar>
             </div>
 
-            <p className="text-base mt-2 text-gray-500">Fulano de Tal</p>
+            <p className="text-base mt-2 text-gray-500">
+              {session?.user?.name}
+            </p>
           </div>
 
           <div
@@ -98,7 +106,9 @@ export function SideBar() {
             data-tooltip-place="top"
           >
             <Tooltip id="tooltip-signout" />
-            <ArrowRightOnRectangleIcon className="w-7 h-7 text-gray-500 hover:text-gray-400" />
+            <div className="cursor-pointer" onClick={handleSignOut}>
+              <ArrowRightOnRectangleIcon className="w-7 h-7 text-gray-500 hover:text-gray-400" />
+            </div>
           </div>
         </div>
       </div>
