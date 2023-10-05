@@ -348,7 +348,7 @@ export function FamilyForm({
 
     const info = {
       ...data,
-      createdByUserId: session?.data?.user?.id,
+      createdByUserId:(session?.data?.user as any)?.id,
       createdByUserName: session?.data?.user?.name,
       dependents: tableCompositionsFamily,
       periodBenefit: tableBenefitPeriod,

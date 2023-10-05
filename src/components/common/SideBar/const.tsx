@@ -15,7 +15,8 @@ export interface ILinks {
 
 export const useNavigationLinks = () => {
   const  session = useSession();
-  const userId = session?.data?.user?.id ?? 'default'; 
+  const userId = (session?.data?.user as any)?.id ?? 'default';
+
   const LinksAdmin: ILinks[] = [
     {
       text: 'Início',
