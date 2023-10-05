@@ -1,14 +1,17 @@
-'use client';
+'use client'
 
-import { Button } from "../components/common";
-
-
+import { Button } from '../components/common'
 
 export default function Error({ reset }: { reset: () => void }) {
   return (
-    <div>
-      <h2>Erro ao buscar informações no servidor</h2>
-      <Button title="Tentar novamente" color="error" onClick={() => reset()} />
+    <div className="flex  justify-center items-center">
+      <div className="flex flex-col">
+        <p className="font-bold text-9xl mt-4">404</p>
+        <h2 className="mt-2">Erro ao buscar informações no servidor</h2>
+        <Button color="error" onClick={() => reset()}>
+          Tentar novamente
+        </Button>
+      </div>
     </div>
-  );
+  )
 }
