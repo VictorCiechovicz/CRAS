@@ -15,13 +15,13 @@ export function Pagination({
   const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1)
 
   return (
-    <div className="flex items-center space-x-4 justify-between px-6 py-6 shadow-lg">
+    <div className="flex items-center rounded-3xl space-x-4 justify-between px-6 py-6 shadow-sm">
       <div>
         <label htmlFor="pageSize">Exibindo:</label>
         <select
           id="pageSize"
           value={pageSize}
-          className=" justify-center items-center gap-3 w-11 h-10 rounded-sm bg-gray-200 ml-3"
+          className=" justify-center items-center gap-3 w-11 h-10 rounded-sm bg-gray-100 ml-3"
           onChange={e => onPageSizeChange(Number(e.target.value))}
         >
           {[10, 20, 30, 50].map(size => (
@@ -53,9 +53,9 @@ export function Pagination({
               rounded-sm
               border
               border-gray-300
-              hover:bg-gray-300
+              hover:bg-blue-400
               `,
-              num === currentPage && ' bg-gray-300 border-gray-400 '
+              num === currentPage && ' bg-blue-700 border-blue-400 text-white'
             )}
           >
             {num}

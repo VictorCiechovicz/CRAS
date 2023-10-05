@@ -123,7 +123,7 @@ export function Table<T>({
   }, [searchQuery, data, columns])
 
   return (
-    <div className="bg-white rounded-lg">
+    <div className="bg-white rounded-3xl shadow-md">
       <div className="pb-12 pt-11 w-full flex justify-between items-center px-7 ">
         <p className="text-2xl font-semibold">{title}</p>
         <div className="flex items-end gap-4">

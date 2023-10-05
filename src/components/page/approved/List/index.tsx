@@ -24,7 +24,7 @@ export function ApprovedList({ items }: ApprovedListProps) {
   const [filteredItems, setFilteredItems] = useState<FamilyList[]>([])
   const [isModalDetailsOpen, setIsModalDetailsOpen] = useState(false)
   const [selectedItem, setSelectedItem] = useState<FamilyList | null>(null)
-  const [typeStatus, setTypeStatus] = useState('PENDING')
+
   const openModalDetails = (item: FamilyList) => {
     setSelectedItem(item)
     setIsModalDetailsOpen(true)
@@ -40,9 +40,9 @@ export function ApprovedList({ items }: ApprovedListProps) {
         new Date(a.createdAt || '1970-01-01').getTime()
     )
 
-    const pendingItems = sortedItems.filter(item => item.status === typeStatus)
+    const pendingItems = sortedItems.filter(item => item.status === 'PENDING')
     setFilteredItems(pendingItems)
-  }, [items, typeStatus])
+  }, [items])
 
   return (
     <>
@@ -53,31 +53,7 @@ export function ApprovedList({ items }: ApprovedListProps) {
           { href: '#', name: 'Gestão de Aprovações' }
         ]}
       />
-      <Tab
-        options={[
-          {
-            title: 'Pendentes',
-            active: typeStatus === 'PENDING' ? true : false,
-            onClick() {
-              setTypeStatus('PENDING')
-            }
-          },
-          {
-            title: 'Ativas',
-            active: typeStatus === 'ACTIVE' ? true : false,
-            onClick() {
-              setTypeStatus('ACTIVE')
-            }
-          },
-          {
-            title: 'Inativas',
-            active: typeStatus === 'INACTIVE' ? true : false,
-            onClick() {
-              setTypeStatus('INACTIVE')
-            }
-          }
-        ]}
-      />
+      
       <FamilyDetailsModal
         isOpen={isModalDetailsOpen}
         onClose={() => setIsModalDetailsOpen(false)}

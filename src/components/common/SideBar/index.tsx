@@ -48,13 +48,13 @@ export function SideBar() {
         className="fixed top-0 left-0 z-50 h-screen bg-sidebar transition duration-150 ease-in-out w-[19.5rem] shadow-lg"
         aria-label="Sidebar"
       >
-        <div className="relative h-full px-4 pb-6 pt-5 overflow-y-auto bg-white">
+        <div className="relative h-full px-4 pb-6 pt-8 overflow-y-auto bg-white">
           <div
             className="mb-14 ml-6 flex items-end gap-2 cursor-pointer"
             onClick={() => router.push('/home')}
           >
-            <HomeIcon className="w-8 h-8 text-black" />
-            <p className="text-black text-2xl font-semibold">CRAS</p>
+            <HomeIcon className="w-12 h-12 text-black" />
+            <p className="text-black text-3xl font-semibold">CRAS</p>
           </div>
           {session && (
             <>

@@ -1,11 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Table } from '@/src/components/common'
 import { columns } from './columns'
 import { FamilyList } from '@/src/schemas'
 import { UserGroupIcon, UserIcon } from '@heroicons/react/24/outline'
 import FamilyDetailsModal from '@/src/components/common/Modal/ModalDetails'
+import axios from 'axios'
 interface FamilyListProps {
   items: FamilyList[]
 }
@@ -31,12 +32,24 @@ export function FamilyList({ items }: FamilyListProps) {
       new Date(b.createdAt || '1970-01-01').getTime() -
       new Date(a.createdAt || '1970-01-01').getTime()
   )
-    
+
+  useEffect(() => {
+    const atualizarStatus = async () => {
+      try {
+        await axios.get('/api/updateStatus')
+      } catch (error) {
+        console.error('Erro ao atualizar o status das famílias:', error)
+      }
+    }
+
+    atualizarStatus()
+  }, [])
+
   return (
     <div>
-      <div className="bg-white rounded-lg px-40 py-7 mb-7 flex justify-around gap-14">
+      <div className="bg-white rounded-3xl px-40 py-7 mb-7 flex justify-around gap-14 shadow-md">
         <div className="flex gap-5">
-          <div className="bg-green-200 w-20 h-20 rounded-full flex justify-center items-center">
+          <div className="bg-green-200 w-20 h-20 rounded-full flex justify-center items-center ">
             <UserGroupIcon className="w-10 h-10 text-green-600" />
           </div>
           <div className="flex flex-col justify-start gap-1">
@@ -44,7 +57,6 @@ export function FamilyList({ items }: FamilyListProps) {
             <p className="text-2xl font-bold ">{items.length}</p>
           </div>
         </div>
-     
 
         <div className="border-l " />
         <div className="flex gap-5">

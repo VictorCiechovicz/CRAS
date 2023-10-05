@@ -107,7 +107,7 @@ export const FormSchema = z.object({
   zip_code: z.string({
     required_error: 'Informe CEP da Família.'
   }),
-  notes: z.string().optional()
+  notes: z.string().nullable().default('')
 })
 
 interface FamilyFormProps {
@@ -334,7 +334,9 @@ export function FamilyForm({
       })
     } finally {
       router.push(`/managementFamily/${userId}`)
-      router.refresh()
+      setTimeout(() => {
+        router.refresh()
+      }, 2000)
     }
   }
 
@@ -698,10 +700,6 @@ export function FamilyForm({
                               mode="single"
                               selected={dateStartBenefit}
                               onSelect={setDateStartBenefit}
-                              disabled={date =>
-                                date > new Date() ||
-                                date < new Date('1900-01-01')
-                              }
                               initialFocus
                             />
                           </PopoverContent>
@@ -741,10 +739,6 @@ export function FamilyForm({
                               mode="single"
                               selected={dateEndBenefit}
                               onSelect={setDateEndBenefit}
-                              disabled={date =>
-                                date > new Date() ||
-                                date < new Date('1900-01-01')
-                              }
                               initialFocus
                             />
                           </PopoverContent>

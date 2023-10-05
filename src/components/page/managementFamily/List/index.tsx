@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { PageHeading, Table, useToast } from '@/src/components/common'
 import { columns } from './columns'
 import { FamilyList } from '@/src/schemas'
@@ -8,6 +8,7 @@ import { Button } from '@/src/components/common/ui/button'
 import { useRouter } from 'next/navigation'
 
 import FamilyDetailsModal from '@/src/components/common/Modal/ModalDetails'
+import axios from 'axios'
 
 interface ManagementFamilyProps {
   items: FamilyList[]
@@ -32,6 +33,19 @@ export function ManagementFamilyList({ items, userId }: ManagementFamilyProps) {
       new Date(b.createdAt || '1970-01-01').getTime() -
       new Date(a.createdAt || '1970-01-01').getTime()
   )
+
+  useEffect(() => {
+    const atualizarStatus = async () => {
+      try {
+        await axios.get('/api/updateStatus')
+      } catch (error) {
+        console.error('Erro ao atualizar o status das famílias:', error)
+      }
+    }
+
+    atualizarStatus()
+  }, [router])
+
   return (
     <>
       <PageHeading

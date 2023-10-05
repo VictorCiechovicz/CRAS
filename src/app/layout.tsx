@@ -20,7 +20,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={cn(inter.className, "bg-gray-100 min-h-screen")}>
+      <body className={cn(inter.className, "bg-gray-50 min-h-screen")}>
         <Toaster />
         <AuthContext>{children}</AuthContext>
       </body>
