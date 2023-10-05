@@ -184,8 +184,8 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
             </div>
             <div className="p-2">
               <p>
-                {family?.street}, {family?.number} - {family?.neighborhood}, CEP
-                {family?.zip_code}
+                {family?.street}, {family?.number} - {family?.neighborhood},
+                CEP: {family?.zip_code}, {family?.city}-{family?.state}
               </p>
             </div>
           </div>

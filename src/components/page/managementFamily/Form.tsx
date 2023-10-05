@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -49,6 +49,7 @@ import {
 import { z } from 'zod'
 import useLoading from '@/src/hook/useLoading'
 import Loading from '../../common/Loading'
+import { useSession } from 'next-auth/react'
 
 export const FormSchema = z.object({
   name: z
@@ -141,6 +142,19 @@ export function FamilyForm({
   const [tableBenefitPeriod, setTableBenefitPeriod] = useState<
     TableBenefitPeriod[]
   >(periodBenefit ? periodBenefit : [])
+  const [selectedState, setSelectedState] = useState('')
+  const [citys, setCitys] = useState<{ id: number; nome: string }[]>([])
+
+  useEffect(() => {
+    const fetch = async () => {
+      const response = await axios.get(
+        `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${selectedState}/municipios`
+      )
+      setCitys(response.data)
+    }
+
+    fetch()
+  }, [selectedState])
 
   const defaultValues: Partial<FormValues> = {
     name: familie?.name,
@@ -156,6 +170,7 @@ export function FamilyForm({
     zip_code: familie?.zip_code,
     notes: familie?.notes
   }
+  const session = useSession()
 
   const router = useRouter()
   const form = useForm<FormValues>({
@@ -255,7 +270,6 @@ export function FamilyForm({
   }
 
   const deletePeriodBenefit = async (value: PeriodBenefit) => {
-  
     try {
       await axios.delete(`/api/periodBenefit/${value.id}`)
       toast({
@@ -332,8 +346,8 @@ export function FamilyForm({
 
     const info = {
       ...data,
-      createdByUserId: '123',
-      createdByUserName: 'Fulano de Tal',
+      createdByUserId: session?.data?.user?.id,
+      createdByUserName: session?.data?.user?.name,
       dependents: tableCompositionsFamily,
       periodBenefit: tableBenefitPeriod,
       notes: data.notes
@@ -884,7 +898,10 @@ export function FamilyForm({
                       <FormLabel>Estado</FormLabel>
                       <FormControl>
                         <Select
-                          onValueChange={field.onChange}
+                          onValueChange={value => {
+                            field.onChange(value)
+                            setSelectedState(value)
+                          }}
                           defaultValue={field.value}
                         >
                           <FormControl>
@@ -923,10 +940,9 @@ export function FamilyForm({
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {' '}
-                            {states.map(state => (
-                              <SelectItem value={state.value}>
-                                {state.label}
+                            {citys.map(city => (
+                              <SelectItem key={city.id} value={city.nome}>
+                                {city.nome}
                               </SelectItem>
                             ))}
                           </SelectContent>

@@ -23,13 +23,16 @@ const handler = NextAuth({
       }
     },
     async jwt({ token, account, profile, user, session }) {
+
       if (account) {
         const profileJWT = profile as ProfileExtends;
         return {
           ...token,
           idToken: account?.id_token,
           accessToken: `Bearer ${account?.access_token}`,
+          userId: profileJWT.sub,
           role: profileJWT.role || "agent",
+
         };
       }
 
@@ -42,6 +45,7 @@ const handler = NextAuth({
       return {
         ...session,
         user: {
+          id: token.userId,
           role: token.role,
           ...session.user,
         },
@@ -66,5 +70,7 @@ const handler = NextAuth({
     },
   },
 });
+
+
 
 export { handler as GET, handler as POST };
