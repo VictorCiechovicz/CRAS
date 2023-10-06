@@ -1,14 +1,13 @@
-import { ApprovedList } from "@/src/components/page"
-import axios from "axios"
-
+import { ApprovedList } from '@/src/components/page'
+import getFamilys from '../../actions/getFamilys'
 
 
 export default async function Approved() {
+  const listFamily = await getFamilys()
 
-  const listFamily = await axios.get('/api/familys')
   return (
     <div className="w-full">
-      <ApprovedList items={listFamily.data} />
+      <ApprovedList items={listFamily as any} />
     </div>
   )
 }

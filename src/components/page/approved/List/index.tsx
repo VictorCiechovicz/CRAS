@@ -10,11 +10,11 @@ import {
   useToast
 } from '@/src/components/common'
 import { columns } from './columns'
-import { FamilyList } from '@/src/schemas'
+import { FamilyList, } from '@/src/schemas'
 import { useRouter } from 'next/navigation'
 import FamilyDetailsModal from '@/src/components/common/Modal/ModalDetails'
 
-interface ApprovedListProps {
+interface ApprovedListProps   {
   items: FamilyList[]
 }
 

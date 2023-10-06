@@ -1,11 +1,11 @@
 import { FamilyList } from '@/src/components/page'
-import axios from 'axios'
+import getFamilys from '../../actions/getFamilys'
 
 export default async function Home() {
-  const listFamily = await axios.get('/api/familys')
+  const listFamily = await getFamilys()
   return (
     <div className="w-full">
-      <FamilyList items={listFamily.data} />
+      <FamilyList items={listFamily as any} />
     </div>
   )
 }
