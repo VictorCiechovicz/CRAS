@@ -14,8 +14,7 @@ const handler = NextAuth({
       issuer: `${process.env.KEYCLOAK_DOMAIN}/realms/cras-realm`,
     }),
   ],
-  debug: process.env.NODE_ENV === 'development',
-  secret: process.env.NEXTAUTH_SECRET,
+
   callbacks: {
     async signIn({ user, account }) {
       if (account && user) {
