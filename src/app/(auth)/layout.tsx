@@ -1,14 +1,14 @@
+'use client'
 import { SideBar } from '@/src/components/common'
-import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
-import { authOptions } from '../api/auth/[...nextauth]/route'
+import { useSession } from 'next-auth/react'
 
-export default async function AuthLayout({
+export default  function AuthLayout({
   children
 }: {
   children: React.ReactNode
 }) {
-  const session = await getServerSession(authOptions)
+  const session =  useSession()
   if (!session) redirect('/')
   return (
     <div>

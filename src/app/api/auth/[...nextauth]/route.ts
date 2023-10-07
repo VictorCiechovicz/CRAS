@@ -1,12 +1,12 @@
 import axios from "axios";
-import NextAuth, { AuthOptions, Profile } from "next-auth";
+import NextAuth, { Profile } from "next-auth";
 import KeycloakProvider from "next-auth/providers/keycloak";
 
 type ProfileExtends = Profile & {
   role?: "master";
 };
 
-export const authOptions: AuthOptions = {
+const handler = NextAuth({
   providers: [
     KeycloakProvider({
       clientId: process.env.KEYCLOAK_CLIENT_ID || "",
@@ -70,8 +70,7 @@ export const authOptions: AuthOptions = {
       }
     },
   },
-}
+});
 
-const handler = NextAuth(authOptions)
 
 export { handler as GET, handler as POST };
