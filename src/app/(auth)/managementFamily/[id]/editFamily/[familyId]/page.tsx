@@ -1,6 +1,5 @@
-import getFamilyDetails from '@/src/app/actions/getFamilyDetails'
+import { getFamilyDetails } from '@/src/app/(auth)/services/callApi'
 import { FamilyForm } from '@/src/components/page'
-import axios from 'axios'
 
 interface EditFamilyProps {
   params: {
@@ -12,14 +11,14 @@ interface EditFamilyProps {
 export default async function EditFamily({ params }: EditFamilyProps) {
   const familyId = params.familyId
   const userId = params.id
-  const familyDetails = await getFamilyDetails({ familyId })
+  const listFamily = await getFamilyDetails(familyId)
 
   return (
     <div className="w-full">
       <FamilyForm
-        familie={familyDetails as any}
-        dependents={(familyDetails as any)?.dependents}
-        periodBenefit={(familyDetails as any)?.periodBenefit}
+        familie={listFamily.data}
+        dependents={listFamily.data.dependents}
+        periodBenefit={listFamily.data.periodBenefit}
         userId={userId}
       />
     </div>

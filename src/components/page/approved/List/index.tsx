@@ -1,20 +1,13 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import {
-  Button,
-  Modal,
-  PageHeading,
-  Tab,
-  Table,
-  useToast
-} from '@/src/components/common'
+import { PageHeading, Table, useToast } from '@/src/components/common'
 import { columns } from './columns'
-import { FamilyList, } from '@/src/schemas'
+import { FamilyList } from '@/src/schemas'
 import { useRouter } from 'next/navigation'
 import FamilyDetailsModal from '@/src/components/common/Modal/ModalDetails'
 
-interface ApprovedListProps   {
+interface ApprovedListProps {
   items: FamilyList[]
 }
 
@@ -40,8 +33,8 @@ export function ApprovedList({ items }: ApprovedListProps) {
         new Date(a.createdAt || '1970-01-01').getTime()
     )
 
-    const pendingItems = sortedItems.filter(item => item.status === 'PENDING')
-    setFilteredItems(pendingItems)
+     const pendingItems = sortedItems.filter(item => item.status === 'PENDING')
+    setFilteredItems(pendingItems) 
   }, [items])
 
   return (
@@ -53,7 +46,7 @@ export function ApprovedList({ items }: ApprovedListProps) {
           { href: '#', name: 'Gestão de Aprovações' }
         ]}
       />
-      
+
       <FamilyDetailsModal
         isOpen={isModalDetailsOpen}
         onClose={() => setIsModalDetailsOpen(false)}
@@ -61,7 +54,7 @@ export function ApprovedList({ items }: ApprovedListProps) {
       />
 
       <Table
-        title="Famílias Pendentes "
+        title="Famílias Pendentes"
         columns={columns(router, toast)}
         data={filteredItems}
         currentPage={currentPage}

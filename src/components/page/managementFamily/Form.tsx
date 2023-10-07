@@ -142,19 +142,25 @@ export function FamilyForm({
   const [tableBenefitPeriod, setTableBenefitPeriod] = useState<
     TableBenefitPeriod[]
   >(periodBenefit ? periodBenefit : [])
-  const [selectedState, setSelectedState] = useState('')
+  const [selectedState, setSelectedState] = useState(
+    familie?.state ? familie?.state : 'rs'
+  )
   const [citys, setCitys] = useState<{ id: number; nome: string }[]>([])
-
+console.log( familie)
   useEffect(() => {
     const fetch = async () => {
-      const response = await axios.get(
-        `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${selectedState}/municipios`
-      )
-      setCitys(response.data)
-    }
-
-    fetch()
-  }, [selectedState])
+      try {
+        const response = await axios.get(
+          `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${selectedState}/municipios`
+        );
+        setCitys(response.data);
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+  
+    fetch();
+  }, []); 
 
   const defaultValues: Partial<FormValues> = {
     name: familie?.name,
@@ -348,7 +354,7 @@ export function FamilyForm({
 
     const info = {
       ...data,
-      createdByUserId:(session?.data?.user as any)?.id,
+      createdByUserId: (session?.data?.user as any)?.id,
       createdByUserName: session?.data?.user?.name,
       dependents: tableCompositionsFamily,
       periodBenefit: tableBenefitPeriod,
@@ -896,7 +902,7 @@ export function FamilyForm({
                             field.onChange(value)
                             setSelectedState(value)
                           }}
-                          defaultValue={field.value}
+                          defaultValue={selectedState}
                         >
                           <FormControl>
                             <SelectTrigger>
@@ -935,7 +941,7 @@ export function FamilyForm({
                           </FormControl>
                           <SelectContent>
                             {citys.map(city => (
-                              <SelectItem key={city.id} value={city.nome}>
+                              <SelectItem value={city.nome}>
                                 {city.nome}
                               </SelectItem>
                             ))}

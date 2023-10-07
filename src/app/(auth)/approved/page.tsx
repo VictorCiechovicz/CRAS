@@ -1,5 +1,5 @@
 import { ApprovedList } from '@/src/components/page'
-import getFamilys from '../../actions/getFamilys'
+import { getFamilys } from '../services/callApi'
 
 
 export default async function Approved() {
@@ -7,7 +7,7 @@ export default async function Approved() {
 
   return (
     <div className="w-full">
-      <ApprovedList items={listFamily as any} />
+      <ApprovedList items={listFamily.data} />
     </div>
   )
 }
