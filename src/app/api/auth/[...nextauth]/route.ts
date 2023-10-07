@@ -14,7 +14,6 @@ const handler = NextAuth({
       issuer: `${process.env.KEYCLOAK_DOMAIN}/realms/cras-realm`,
     }),
   ],
-
   callbacks: {
     async signIn({ user, account }) {
       if (account && user) {
@@ -71,6 +70,7 @@ const handler = NextAuth({
     },
   },
 });
+
 
 
 export { handler as GET, handler as POST };
