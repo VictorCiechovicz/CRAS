@@ -55,10 +55,16 @@ export const columns =
       field: 'startDate',
       renderCell(value, rowData: FamilyList) {
         if (rowData.periodBenefit.length > 0) {
-          const date = new Date(rowData.periodBenefit[0].startDate)
-          return format(date, 'dd/MM/yyyy')
+              const sortedPeriods = rowData.periodBenefit.sort((a, b) => 
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
+    
+              const mostRecentPeriod = sortedPeriods[0];
+    
+          const date = new Date(mostRecentPeriod.startDate);
+          return format(date, 'dd/MM/yyyy');
         }
-        return 'N/A'
+        return 'N/A';
       }
     },
     {
@@ -66,10 +72,16 @@ export const columns =
       field: 'endDate',
       renderCell(value, rowData: FamilyList) {
         if (rowData.periodBenefit.length > 0) {
-          const date = new Date(rowData.periodBenefit[0].endDate)
-          return format(date, 'dd/MM/yyyy')
+                 const sortedPeriods = rowData.periodBenefit.sort((a, b) => 
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
+    
+          const mostRecentPeriod = sortedPeriods[0];
+    
+          const date = new Date(mostRecentPeriod.endDate);
+          return format(date, 'dd/MM/yyyy');
         }
-        return 'N/A'
+        return 'N/A';
       }
     },
 
