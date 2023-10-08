@@ -1,6 +1,6 @@
 
 
-export default function AuthLayout({
+export default function NoAuthLayout({
   children
 }: {
   children: React.ReactNode

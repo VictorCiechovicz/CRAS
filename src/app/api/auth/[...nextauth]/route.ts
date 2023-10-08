@@ -6,7 +6,7 @@ type ProfileExtends = Profile & {
   role?: "master";
 };
 
-export const authptions: AuthOptions = {
+export const authOptions: AuthOptions = {
   providers: [
     KeycloakProvider({
       clientId: process.env.KEYCLOAK_CLIENT_ID || "",
@@ -74,6 +74,6 @@ export const authptions: AuthOptions = {
   },
 };
 
-const handler = NextAuth(authptions)
+const handler = NextAuth(authOptions)
 
 export { handler as GET, handler as POST };
