@@ -19,6 +19,7 @@ export const authOptions: AuthOptions = {
 
   callbacks: {
     async signIn({ user, account }) {
+      console.log('signIn callback error:', account); 
       if (account && user) {
         return true;
       } else {
