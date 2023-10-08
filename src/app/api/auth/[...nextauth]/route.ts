@@ -1,12 +1,12 @@
 import axios from "axios";
-import NextAuth, { Profile } from "next-auth";
+import NextAuth, { AuthOptions, Profile } from "next-auth";
 import KeycloakProvider from "next-auth/providers/keycloak";
 
 type ProfileExtends = Profile & {
   role?: "master";
 };
 
-const handler = NextAuth({
+export const authptions: AuthOptions = {
   providers: [
     KeycloakProvider({
       clientId: process.env.KEYCLOAK_CLIENT_ID || "",
@@ -14,6 +14,9 @@ const handler = NextAuth({
       issuer: `${process.env.KEYCLOAK_DOMAIN}/realms/cras-realm`,
     }),
   ],
+  debug: process.env.NODE_ENV === 'development',
+  secret: process.env.NEXTAUTH_SECRET,
+
   callbacks: {
     async signIn({ user, account }) {
       if (account && user) {
@@ -69,8 +72,8 @@ const handler = NextAuth({
       }
     },
   },
-});
+};
 
-
+const handler = NextAuth(authptions)
 
 export { handler as GET, handler as POST };
