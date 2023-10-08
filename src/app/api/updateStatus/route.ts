@@ -4,7 +4,7 @@ import { FamilyStatus } from '@prisma/client';
 import { NextResponse } from 'next/server';
 
 
-export const GET = async () => {
+export const POST = async () => {
   try {
     const familias = await prisma.familys.findMany({
       include: {

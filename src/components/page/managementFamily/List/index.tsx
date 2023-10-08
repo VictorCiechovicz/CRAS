@@ -37,7 +37,7 @@ export function ManagementFamilyList({ items, userId }: ManagementFamilyProps) {
   useEffect(() => {
     const atualizarStatus = async () => {
       try {
-        await axios.get('/api/updateStatus')
+        await axios.post('/api/updateStatus')
       } catch (error) {
         console.error('Erro ao atualizar o status das famílias:', error)
       }
