@@ -92,7 +92,7 @@ export function Table<T>({
       }
     })
 
-    console.log(organizedData)
+  
 
     const csv = Papa.unparse(organizedData, {
       delimiter: ';'

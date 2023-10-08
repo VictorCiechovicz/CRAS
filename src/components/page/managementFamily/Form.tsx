@@ -146,7 +146,7 @@ export function FamilyForm({
     familie?.state ? familie?.state : 'rs'
   )
   const [citys, setCitys] = useState<{ id: number; nome: string }[]>([])
-console.log( familie)
+
   useEffect(() => {
     const fetch = async () => {
       try {

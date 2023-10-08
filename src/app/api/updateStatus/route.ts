@@ -1,6 +1,6 @@
 // pages/api/updateStatus.js
-
 import prisma from '@/src/lib/prismadb';
+import { FamilyStatus } from '@prisma/client';
 import { NextResponse } from 'next/server';
 
 
@@ -24,28 +24,32 @@ export const GET = async () => {
     });
 
     const agora = new Date(Date.now() - (new Date().getTimezoneOffset() * 60000));
+   
+    let updated = 0;
 
     for (const familia of familias) {
       const periodoBeneficio = familia.periodBenefit[0];
 
       if (!periodoBeneficio) continue;
 
-
       const startDate = new Date(periodoBeneficio.startDate);
       const endDate = new Date(periodoBeneficio.endDate);
 
-      if (agora > endDate && familia.status !== 'INACTIVE') {
+      if (agora > endDate && familia.status !== FamilyStatus.INACTIVE) {
+        updated++;
         await prisma.familys.update({
           where: { id: familia.id },
-          data: { status: 'INACTIVE' },
+          data: { status: FamilyStatus.INACTIVE },
         });
-      } else if (agora > startDate && agora < endDate && familia.status !== 'ACTIVE') {
+      } else if (agora >= startDate && agora <= endDate && familia.status !== FamilyStatus.ACTIVE) {
+        updated++;
         await prisma.familys.update({
           where: { id: familia.id },
-          data: { status: 'ACTIVE' },
+          data: { status: FamilyStatus.ACTIVE },
         });
       }
     }
+
 
     return NextResponse.json({ message: 'Status das famílias atualizado com sucesso.' });
   } catch (error) {
