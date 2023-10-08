@@ -1,5 +1,5 @@
 import { ManagementFamilyList } from '@/src/components/page'
-import { getFamilysByUser } from '../../services/callApi'
+import getFamilysByUser from '@/src/actions/getFamilysByUser'
 
 interface ManagementFamilyProps {
   params: {
@@ -11,11 +11,11 @@ export default async function ManagementFamily({
   params
 }: ManagementFamilyProps) {
   const userId = params.id
-  const listFamily = await getFamilysByUser(userId)
+  const listFamily = await getFamilysByUser({userId})
 
   return (
     <div className="w-full">
-      <ManagementFamilyList items={listFamily.data} userId={userId} />
+      <ManagementFamilyList items={listFamily as any} userId={userId} />
     </div>
   )
 }
