@@ -40,7 +40,7 @@ export const PUT = async () => {
           where: { id: familia.id },
           data: { status: 'INACTIVE' },
         });
-      } else if (agora >= startDate && agora <= endDate && familia.status !== 'ACTIVE') {
+      } else if ((agora >= startDate && agora <= endDate) || agora < startDate && familia.status !== 'ACTIVE') {
         updated++;
         await prisma.familys.update({
           where: { id: familia.id },
