@@ -23,7 +23,7 @@ export const POST = async () => {
       }
     });
 
-    const agora = new Date(Date.now() - (new Date().getTimezoneOffset() * 60000));
+    const agora = new Date();
     let updated = 0;
 
     for (const familia of familias) {
