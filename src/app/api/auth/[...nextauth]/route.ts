@@ -7,9 +7,6 @@ type ProfileExtends = Profile & {
 };
 
 
-if (process.env.NODE_ENV === 'production') {
-  process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-}
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -24,7 +21,6 @@ export const authOptions: AuthOptions = {
 
   callbacks: {
     async signIn({ user, account }) {
-      console.log('signIn callback error:', account); 
       if (account && user) {
         return true;
       } else {
