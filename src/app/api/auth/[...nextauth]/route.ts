@@ -69,7 +69,9 @@ export const authOptions: AuthOptions = {
       } catch (error) {
         console.error(
           "next-auth-sign-out-err",
-          `error trying to sign out: ${error}`
+
+          
+          `error trying to sign out:${error}`
         );
       }
     },
