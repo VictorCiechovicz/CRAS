@@ -1,14 +1,14 @@
-'use client'
+"use client";
 
-import { useEffect, useState } from 'react'
-import axios from 'axios'
-import { useRouter } from 'next/navigation'
-import { zodResolver } from '@hookform/resolvers/zod'
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-import { cn } from '@/src/lib/utils'
-import { format, isValid } from 'date-fns'
-import { CalendarIcon } from '@heroicons/react/24/outline'
-import { useForm } from 'react-hook-form'
+import { cn } from "@/src/lib/utils";
+import { addDays, format, isValid } from "date-fns";
+import { CalendarIcon } from "@heroicons/react/24/outline";
+import { useForm } from "react-hook-form";
 import {
   Button,
   Calendar,
@@ -35,117 +35,117 @@ import {
   TableHeader,
   TableRow,
   Textarea,
-  useToast
-} from '@/src/components/common'
+  useToast,
+} from "@/src/components/common";
 
-import states from '../../../utils/states'
-import { Dependent, Familys, PeriodBenefit } from '@prisma/client'
+import states from "../../../utils/states";
+import { Dependent, Familys, PeriodBenefit } from "@prisma/client";
 import {
   FormData,
   FormValues,
   TableBenefitPeriod,
-  TableCompositionsFamily
-} from './types'
-import { z } from 'zod'
-import useLoading from '@/src/hook/useLoading'
-import Loading from '../../common/Loading'
-import { useSession } from 'next-auth/react'
+  TableCompositionsFamily,
+} from "./types";
+import { z } from "zod";
+import useLoading from "@/src/hook/useLoading";
+import Loading from "../../common/Loading";
+import { useSession } from "next-auth/react";
 
 export const FormSchema = z.object({
   name: z
     .string({
-      required_error: 'Informe o Nome Completo do representante da Família.'
+      required_error: "Informe o Nome Completo do representante da Família.",
     })
 
     .min(1, {
-      message: 'Nome muito curto.'
+      message: "Nome muito curto.",
     })
     .max(30, {
-      message: 'Nome com numero máximo de 30 caracteres.'
+      message: "Nome com numero máximo de 30 caracteres.",
     }),
   CPF: z.string({
-    required_error: 'Informe CPF do representante da Família.'
+    required_error: "Informe CPF do representante da Família.",
   }),
   RG: z
     .string({
-      required_error: 'Informe RG do representante da Família.'
+      required_error: "Informe RG do representante da Família.",
     })
     .min(1, {
-      message: 'RG muito curto.'
+      message: "RG muito curto.",
     })
     .max(8, {
-      message: 'RG com numero máximo de 8 caracteres.'
+      message: "RG com numero máximo de 8 caracteres.",
     }),
   email: z
     .string({
-      required_error: 'Informe Email do representante da Família.'
+      required_error: "Informe Email do representante da Família.",
     })
-    .email('Formato de Email inválido!'),
+    .email("Formato de Email inválido!"),
   phone: z.string({
-    required_error: 'Informe Celular do representante da Família.'
+    required_error: "Informe Celular do representante da Família.",
   }),
   city: z.string({
-    required_error: 'Informe Cidade da Família.'
+    required_error: "Informe Cidade da Família.",
   }),
 
   neighborhood: z.string({
-    required_error: 'Informe a Bairro da Família.'
+    required_error: "Informe a Bairro da Família.",
   }),
 
   number: z.string({
-    required_error: 'Informe Número da Família.'
+    required_error: "Informe Número da Família.",
   }),
 
   state: z.string({
-    required_error: 'Informe Estado da Família.'
+    required_error: "Informe Estado da Família.",
   }),
 
   street: z.string({
-    required_error: 'Informe Rua da Família.'
+    required_error: "Informe Rua da Família.",
   }),
 
   zip_code: z.string({
-    required_error: 'Informe CEP da Família.'
+    required_error: "Informe CEP da Família.",
   }),
-  notes: z.string().nullable().default('')
-})
+  notes: z.string().nullable().default(""),
+});
 
 interface FamilyFormProps {
-  familie?: Familys
-  dependents?: Dependent[]
-  periodBenefit?: PeriodBenefit[]
-  userId?: string
+  familie?: Familys;
+  dependents?: Dependent[];
+  periodBenefit?: PeriodBenefit[];
+  userId?: string;
 }
 
 export function FamilyForm({
   familie,
   dependents,
   periodBenefit,
-  userId
+  userId,
 }: FamilyFormProps) {
-  const [nameDependent, setNameDependent] = useState('')
-  const [CPFDependent, setCPFDependent] = useState('')
+  const [nameDependent, setNameDependent] = useState("");
+  const [CPFDependent, setCPFDependent] = useState("");
   const [dateBirthDependent, setDateBirthDependent] = useState<
     Date | undefined
-  >(undefined)
-  const [incomeDependent, setIncomeDependent] = useState('')
+  >(undefined);
+  const [incomeDependent, setIncomeDependent] = useState("");
 
   const [dateStartBenefit, setDateStartBenefit] = useState<Date | undefined>(
     undefined
-  )
+  );
   const [dateEndBenefit, setDateEndBenefit] = useState<Date | undefined>(
     undefined
-  )
+  );
   const [tableCompositionsFamily, setTableCompositionsFamily] = useState<
     TableCompositionsFamily[]
-  >(dependents ? dependents : [])
+  >(dependents ? dependents : []);
   const [tableBenefitPeriod, setTableBenefitPeriod] = useState<
     TableBenefitPeriod[]
-  >(periodBenefit ? periodBenefit : [])
+  >(periodBenefit ? periodBenefit : []);
   const [selectedState, setSelectedState] = useState(
-    familie?.state ? familie?.state : 'rs'
-  )
-  const [citys, setCitys] = useState<{ id: number; nome: string }[]>([])
+    familie?.state ? familie?.state : "rs"
+  );
+  const [citys, setCitys] = useState<{ id: number; nome: string }[]>([]);
 
   useEffect(() => {
     const fetch = async () => {
@@ -155,12 +155,12 @@ export function FamilyForm({
         );
         setCitys(response.data);
       } catch (error) {
-        console.error('Error:', error);
+        console.error("Error:", error);
       }
     };
-  
+
     fetch();
-  }, []); 
+  }, []);
 
   const defaultValues: Partial<FormValues> = {
     name: familie?.name,
@@ -174,17 +174,17 @@ export function FamilyForm({
     state: familie?.state,
     street: familie?.street,
     zip_code: familie?.zip_code,
-    notes: familie?.notes
-  }
-  const session = useSession()
+    notes: familie?.notes,
+  };
+  const session = useSession();
 
-  const router = useRouter()
+  const router = useRouter();
   const form = useForm<FormValues>({
     resolver: zodResolver(FormSchema),
-    defaultValues
-  })
-  const { toast } = useToast()
-  const { isLoading, showLoading, stopLoading } = useLoading()
+    defaultValues,
+  });
+  const { toast } = useToast();
+  const { isLoading, showLoading, stopLoading } = useLoading();
 
   const addToTableCompositionsFamily = () => {
     if (
@@ -194,10 +194,10 @@ export function FamilyForm({
       !incomeDependent
     ) {
       return toast({
-        title: 'Composição Familiar',
-        variant: 'destructive',
-        description: 'Informe as Informações Componente Familiar'
-      })
+        title: "Composição Familiar",
+        variant: "destructive",
+        description: "Informe as Informações Componente Familiar",
+      });
     }
 
     setTableCompositionsFamily((prevItems: any) => [
@@ -206,151 +206,151 @@ export function FamilyForm({
         name_dependent: nameDependent,
         CPF_dependent: CPFDependent,
         date_birth_dependent: dateBirthDependent,
-        income_dependent: incomeDependent
-      }
-    ])
-    setNameDependent('')
-    setCPFDependent('')
-    setDateBirthDependent(undefined)
-    setIncomeDependent('')
-  }
+        income_dependent: incomeDependent,
+      },
+    ]);
+    setNameDependent("");
+    setCPFDependent("");
+    setDateBirthDependent(undefined);
+    setIncomeDependent("");
+  };
 
   const deleteComposition = async (value: Dependent) => {
     try {
-      await axios.delete(`/api/dependent/${value.id}`)
+      await axios.delete(`/api/dependent/${value.id}`);
       toast({
-        title: 'Dependente familiar removido',
-        description: 'Dependente familiar removido com sucesso!',
-        variant: 'default'
-      })
+        title: "Dependente familiar removido",
+        description: "Dependente familiar removido com sucesso!",
+        variant: "default",
+      });
     } catch (error) {
-      console.error('Erro ao deletar o dependente familiar:', error)
+      console.error("Erro ao deletar o dependente familiar:", error);
       toast({
-        title: 'Dependente Familiar não removido',
-        description: 'Não foi possível deletar o dependente familiar!',
-        variant: 'destructive'
-      })
+        title: "Dependente Familiar não removido",
+        description: "Não foi possível deletar o dependente familiar!",
+        variant: "destructive",
+      });
     }
-  }
+  };
 
   const removeFromTableCompositionsFamily = async (
     value: any,
     index: number
   ) => {
-    showLoading()
+    showLoading();
     try {
       if (value.id) {
-        await deleteComposition(value)
+        await deleteComposition(value);
       }
 
-      setTableCompositionsFamily(prevItems => {
-        const newItems = [...prevItems]
-        newItems.splice(index, 1)
-        return newItems
-      })
+      setTableCompositionsFamily((prevItems) => {
+        const newItems = [...prevItems];
+        newItems.splice(index, 1);
+        return newItems;
+      });
     } catch (error) {
-      console.error('Não foi possível deletar o item', error)
+      console.error("Não foi possível deletar o item", error);
     }
-    stopLoading()
-  }
+    stopLoading();
+  };
 
   const addToTablePeriodBenefit = () => {
     if (!dateStartBenefit || !dateEndBenefit) {
       return toast({
-        title: ' Períodos de Benefício',
-        variant: 'destructive',
-        description: 'Informe as Datas do Períodosde Benefício'
-      })
+        title: " Períodos de Benefício",
+        variant: "destructive",
+        description: "Informe as Datas do Períodosde Benefício",
+      });
     }
 
     setTableBenefitPeriod((prevItems: any) => [
       ...prevItems,
       {
         startDate: dateStartBenefit,
-        endDate: dateEndBenefit
-      }
-    ])
+        endDate: dateEndBenefit,
+      },
+    ]);
 
-    setDateStartBenefit(undefined)
-    setDateEndBenefit(undefined)
-  }
+    setDateStartBenefit(undefined);
+    setDateEndBenefit(undefined);
+  };
 
   const deletePeriodBenefit = async (value: PeriodBenefit) => {
     try {
-      await axios.delete(`/api/periodBenefit/${value.id}`)
+      await axios.delete(`/api/periodBenefit/${value.id}`);
       toast({
-        title: 'Período de benefício removido',
-        description: 'Período de benefício removido com sucesso!',
-        variant: 'default'
-      })
+        title: "Período de benefício removido",
+        description: "Período de benefício removido com sucesso!",
+        variant: "default",
+      });
     } catch (error) {
-      console.error('Erro ao deletar o Período de benefício:', error)
+      console.error("Erro ao deletar o Período de benefício:", error);
       toast({
-        title: 'Período de benefício não removido',
-        description: 'Não foi possível deletar o Período de benefício!',
-        variant: 'destructive'
-      })
+        title: "Período de benefício não removido",
+        description: "Não foi possível deletar o Período de benefício!",
+        variant: "destructive",
+      });
     } finally {
-      router.refresh()
+      router.refresh();
     }
-  }
+  };
 
   const removeFromTablePeridBenefit = async (value: any, index: number) => {
-    showLoading()
+    showLoading();
     try {
       if (value.id) {
-        await deletePeriodBenefit(value)
+        await deletePeriodBenefit(value);
       }
-      setTableBenefitPeriod(prevItems => {
-        const newItems = [...prevItems]
-        newItems.splice(index, 1)
-        return newItems
-      })
+      setTableBenefitPeriod((prevItems) => {
+        const newItems = [...prevItems];
+        newItems.splice(index, 1);
+        return newItems;
+      });
     } catch (error) {
-      console.error('Não foi possível deletar o item', error)
+      console.error("Não foi possível deletar o item", error);
     }
-    stopLoading()
-  }
+    stopLoading();
+  };
 
   const handleUpdateFamily = async (data: Familys) => {
     try {
       const dataUpdate = {
-        ...data
-      }
+        ...data,
+      };
 
       const response = await axios.put(
         `/api/familys/${familie?.id}`,
         dataUpdate
-      )
+      );
 
       toast({
-        title: 'Família Atualizada',
-        description: 'Família atualizada com sucesso!',
-        variant: 'default'
-      })
+        title: "Família Atualizada",
+        description: "Família atualizada com sucesso!",
+        variant: "default",
+      });
 
-      return response.data
+      return response.data;
     } catch (error) {
-      console.error('Erro ao atualizar a família:', error)
+      console.error("Erro ao atualizar a família:", error);
 
       toast({
-        title: 'Família não Atualizada',
-        description: 'Não foi possível atualizar a Família!',
-        variant: 'destructive'
-      })
+        title: "Família não Atualizada",
+        description: "Não foi possível atualizar a Família!",
+        variant: "destructive",
+      });
     } finally {
-      router.push(`/managementFamily/${userId}`)
+      router.push(`/managementFamily/${userId}`);
       setTimeout(() => {
-        router.refresh()
-      }, 2000)
+        router.refresh();
+      }, 2000);
     }
-  }
+  };
 
   const onSubmit = async (
     data: FormData,
     event: React.FormEvent<HTMLFormElement>
   ) => {
-    event.preventDefault()
+    event.preventDefault();
 
     const info = {
       ...data,
@@ -358,9 +358,9 @@ export function FamilyForm({
       createdByUserName: session?.data?.user?.name,
       dependents: tableCompositionsFamily,
       periodBenefit: tableBenefitPeriod,
-      notes: data.notes
-    }
-    showLoading()
+      notes: data.notes,
+    };
+    showLoading();
     try {
       if (familie && familie.id) {
         await handleUpdateFamily({
@@ -368,42 +368,59 @@ export function FamilyForm({
           createdByUserId: familie.createdByUserId,
           createdByUserName: familie.createdByUserName,
           status: familie.status,
-          createdAt: familie.createdAt
-        })
+          createdAt: familie.createdAt,
+        });
       } else {
-        const response = await axios.post('/api/familys', info)
+        const response = await axios.post("/api/familys", info);
 
         toast({
-          title: 'Cadastro de Família',
-          description: 'Família cadastrada com sucesso!',
-          variant: 'default'
-        })
+          title: "Cadastro de Família",
+          description: "Família cadastrada com sucesso!",
+          variant: "default",
+        });
 
-        return response.data
+        return response.data;
       }
     } catch (error) {
-      console.error('Erro ao salvar a família:', error)
+      console.error("Erro ao salvar a família:", error);
 
       toast({
-        title: 'Cadastro de Família',
-        description: 'Não foi possível salvar a família!',
-        variant: 'destructive'
-      })
+        title: "Cadastro de Família",
+        description: "Não foi possível salvar a família!",
+        variant: "destructive",
+      });
     } finally {
-      router.push(`/managementFamily/${userId}`)
-      router.refresh()
-      stopLoading()
+      router.push(`/managementFamily/${userId}`);
+      router.refresh();
+      stopLoading();
     }
-  }
+  };
+
+  const daysInNextMonths = (months: number) => {
+    const startDate = new Date();
+    const endDate = new Date();
+
+    endDate.setMonth(startDate.getMonth() + months);
+
+    const differenceInTime = endDate.getTime() - startDate.getTime();
+    const differenceInDays = differenceInTime / (1000 * 3600 * 24);
+
+    return differenceInDays.toString();
+  };
+
+  useEffect(() => {
+    console.log({ dateStartBenefit });
+    console.log({ dateEndBenefit });
+  }, [dateStartBenefit, dateEndBenefit]);
 
   return (
     <div>
       <PageHeading
         title="Gestão de Famílias"
         paths={[
-          { href: '/home', name: 'Início' },
-          { href: '/managementFamily', name: 'Gestão de Famílias' },
-          { href: '#', name: 'Cadastro de Família' }
+          { href: "/home", name: "Início" },
+          { href: "/managementFamily", name: "Gestão de Famílias" },
+          { href: "#", name: "Cadastro de Família" },
         ]}
       />
 
@@ -517,7 +534,7 @@ export function FamilyForm({
                           <Input
                             placeholder="Nome"
                             value={nameDependent}
-                            onChange={e => setNameDependent(e.target.value)}
+                            onChange={(e) => setNameDependent(e.target.value)}
                           />
                         </FormControl>
 
@@ -534,7 +551,7 @@ export function FamilyForm({
                           <Input
                             placeholder="CPF"
                             value={CPFDependent}
-                            onChange={e => setCPFDependent(e.target.value)}
+                            onChange={(e) => setCPFDependent(e.target.value)}
                           />
                         </FormControl>
 
@@ -554,16 +571,16 @@ export function FamilyForm({
                           <PopoverTrigger asChild>
                             <FormControl>
                               <Button
-                                variant={'outline'}
+                                variant={"outline"}
                                 className={cn(
-                                  'text-left font-normal',
-                                  !dateBirthDependent && 'text-muted-foreground'
+                                  "text-left font-normal",
+                                  !dateBirthDependent && "text-muted-foreground"
                                 )}
                               >
                                 {dateBirthDependent ? (
                                   format(
                                     Number(dateBirthDependent),
-                                    'dd/MM/yyyy'
+                                    "dd/MM/yyyy"
                                   )
                                 ) : (
                                   <span>Selecione</span>
@@ -577,9 +594,9 @@ export function FamilyForm({
                               mode="single"
                               selected={dateBirthDependent}
                               onSelect={setDateBirthDependent}
-                              disabled={date =>
+                              disabled={(date) =>
                                 date > new Date() ||
-                                date < new Date('1900-01-01')
+                                date < new Date("1900-01-01")
                               }
                               initialFocus
                             />
@@ -599,7 +616,7 @@ export function FamilyForm({
                           <Input
                             placeholder="Renda"
                             value={incomeDependent}
-                            onChange={e => setIncomeDependent(e.target.value)}
+                            onChange={(e) => setIncomeDependent(e.target.value)}
                           />
                         </FormControl>
                         <FormMessage />
@@ -609,7 +626,7 @@ export function FamilyForm({
                 </div>
 
                 <Button
-                  variant={'outline'}
+                  variant={"outline"}
                   type="button"
                   className="mb-10 bg-blue-800 text-white"
                   onClick={addToTableCompositionsFamily}
@@ -637,14 +654,14 @@ export function FamilyForm({
                               {isValid(new Date(item.date_birth_dependent))
                                 ? format(
                                     new Date(item.date_birth_dependent),
-                                    'dd/MM/yyyy'
+                                    "dd/MM/yyyy"
                                   )
-                                : 'Data inválida'}
+                                : "Data inválida"}
                             </TableCell>
                             <TableCell>{item.income_dependent}</TableCell>
                             <TableCell>
                               <Button
-                                variant={'outline'}
+                                variant={"outline"}
                                 type="button"
                                 onClick={() =>
                                   removeFromTableCompositionsFamily(item, index)
@@ -674,7 +691,7 @@ export function FamilyForm({
                 Períodos de Benefício
               </p>
               <div>
-                <div className="flex w-[656px] gap-4 mb-10 flex-wrap">
+                <div className="flex justify-between w-[656px] gap-4 mb-10 flex-wrap">
                   <FormField
                     name="startDate"
                     render={({ field }) => (
@@ -686,28 +703,68 @@ export function FamilyForm({
                           <PopoverTrigger asChild>
                             <FormControl>
                               <Button
-                                variant={'outline'}
+                                variant={"outline"}
                                 className={cn(
-                                  'text-left font-normal',
-                                  !dateStartBenefit && 'text-muted-foreground'
+                                  "w-[360px] justify-between text-left font-normal",
+                                  !dateStartBenefit && "text-muted-foreground"
                                 )}
                               >
                                 {dateStartBenefit ? (
-                                  format(Number(dateStartBenefit), 'dd/MM/yyyy')
+                                  format(Number(dateStartBenefit), "dd/MM/yyyy")
                                 ) : (
-                                  <span>Selecione</span>
+                                  <span>
+                                    Selecione uma data de entrada e um período
+                                  </span>
                                 )}
-                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                <CalendarIcon className="mr-2 h-4 w-4" />
                               </Button>
                             </FormControl>
                           </PopoverTrigger>
                           <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar
-                              mode="single"
-                              selected={dateStartBenefit}
-                              onSelect={setDateStartBenefit}
-                              initialFocus
-                            />
+                            <Select
+                              onValueChange={(value) =>
+                                setDateEndBenefit(
+                                  addDays(
+                                    dateStartBenefit
+                                      ? dateStartBenefit
+                                      : new Date(),
+                                    parseInt(value)
+                                  )
+                                )
+                              }
+                            >
+                              <SelectTrigger>
+                                <SelectValue placeholder="Selecione um período de benefício" />
+                              </SelectTrigger>
+                              <SelectContent position="popper">
+                                <SelectItem value={daysInNextMonths(1)}>
+                                  1 Mês
+                                </SelectItem>
+                                <SelectItem value={daysInNextMonths(2)}>
+                                  2 Meses
+                                </SelectItem>
+                                <SelectItem value={daysInNextMonths(3)}>
+                                  3 Meses
+                                </SelectItem>
+                                <SelectItem value={daysInNextMonths(4)}>
+                                  4 Meses
+                                </SelectItem>
+                                <SelectItem value={daysInNextMonths(5)}>
+                                  5 Meses
+                                </SelectItem>
+                                <SelectItem value={daysInNextMonths(6)}>
+                                  6 Meses
+                                </SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <div className="rounded-md border">
+                              <Calendar
+                                mode="single"
+                                selected={dateStartBenefit}
+                                onSelect={setDateStartBenefit}
+                                initialFocus
+                              />
+                            </div>
                           </PopoverContent>
                         </Popover>
 
@@ -719,35 +776,27 @@ export function FamilyForm({
                   <FormField
                     name="endDate"
                     render={({ field }) => (
-                      <FormItem className="flex flex-col w-[308px]">
+                      <FormItem className="flex flex-col w-[280px]">
                         <FormLabel className="mb-2.5">Data de Saída</FormLabel>
                         <Popover>
                           <PopoverTrigger asChild>
                             <FormControl>
                               <Button
-                                variant={'outline'}
+                                variant={"outline"}
                                 className={cn(
-                                  'text-left font-normal',
-                                  !dateEndBenefit && 'text-muted-foreground'
+                                  "text-left font-normal",
+                                  !dateEndBenefit && "text-muted-foreground",
+                                  "noHover"
                                 )}
                               >
                                 {dateEndBenefit ? (
-                                  format(Number(dateEndBenefit), 'dd/MM/yyyy')
+                                  format(Number(dateEndBenefit), "dd/MM/yyyy")
                                 ) : (
-                                  <span>Selecione</span>
+                                  <span>Data de Saída</span>
                                 )}
-                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                               </Button>
                             </FormControl>
                           </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar
-                              mode="single"
-                              selected={dateEndBenefit}
-                              onSelect={setDateEndBenefit}
-                              initialFocus
-                            />
-                          </PopoverContent>
                         </Popover>
 
                         <FormMessage />
@@ -757,7 +806,7 @@ export function FamilyForm({
                 </div>
 
                 <Button
-                  variant={'outline'}
+                  variant={"outline"}
                   type="button"
                   className="mb-10 bg-blue-800 text-white"
                   onClick={addToTablePeriodBenefit}
@@ -779,19 +828,19 @@ export function FamilyForm({
                           <TableRow key={index}>
                             <TableCell>
                               {isValid(new Date(item.startDate))
-                                ? format(new Date(item.startDate), 'dd/MM/yyyy')
-                                : 'Data inválida'}
+                                ? format(new Date(item.startDate), "dd/MM/yyyy")
+                                : "Data inválida"}
                             </TableCell>
 
                             <TableCell>
                               {isValid(new Date(item.endDate))
-                                ? format(new Date(item.endDate), 'dd/MM/yyyy')
-                                : 'Data inválida'}
+                                ? format(new Date(item.endDate), "dd/MM/yyyy")
+                                : "Data inválida"}
                             </TableCell>
 
                             <TableCell>
                               <Button
-                                variant={'outline'}
+                                variant={"outline"}
                                 type="button"
                                 onClick={() =>
                                   removeFromTablePeridBenefit(item, index)
@@ -898,9 +947,9 @@ export function FamilyForm({
                       <FormLabel>Estado</FormLabel>
                       <FormControl>
                         <Select
-                          onValueChange={value => {
-                            field.onChange(value)
-                            setSelectedState(value)
+                          onValueChange={(value) => {
+                            field.onChange(value);
+                            setSelectedState(value);
                           }}
                           defaultValue={selectedState}
                         >
@@ -910,7 +959,7 @@ export function FamilyForm({
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {states.map(state => (
+                            {states.map((state) => (
                               <SelectItem value={state.value}>
                                 {state.label}
                               </SelectItem>
@@ -940,7 +989,7 @@ export function FamilyForm({
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {citys.map(city => (
+                            {citys.map((city) => (
                               <SelectItem value={city.nome}>
                                 {city.nome}
                               </SelectItem>
@@ -980,7 +1029,7 @@ export function FamilyForm({
 
             <div className="flex justify-end gap-3 w-full">
               <Button
-                variant={'outline'}
+                variant={"outline"}
                 type="button"
                 onClick={() => router.back()}
               >
@@ -988,7 +1037,7 @@ export function FamilyForm({
               </Button>
 
               <Button
-                variant={'outline'}
+                variant={"outline"}
                 type="submit"
                 className="bg-blue-800 text-white"
               >
@@ -999,5 +1048,5 @@ export function FamilyForm({
         </form>
       </Form>
     </div>
-  )
+  );
 }
