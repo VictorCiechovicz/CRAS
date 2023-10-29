@@ -33,7 +33,7 @@ export function FamilyList({ items }: FamilyListProps) {
       new Date(a.createdAt || '1970-01-01').getTime()
   )
 
-  useEffect(() => {
+/*   useEffect(() => {
     const atualizarStatus = async () => {
       try {
         await axios.put('/api/updateStatus')
@@ -43,7 +43,7 @@ export function FamilyList({ items }: FamilyListProps) {
     }
 
     atualizarStatus()
-  }, []) 
+  }, [])  */
 
   return (
     <div>

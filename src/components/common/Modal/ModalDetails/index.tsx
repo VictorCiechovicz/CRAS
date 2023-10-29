@@ -70,9 +70,9 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
         <div>
           <div className="border rounded-sm mb-4">
             <div className="bg-gray-100 p-2">
-              <p>Dados de Pessoais</p>
+              <p>Dados Responsável</p>
             </div>
-            <div className="p-2 flex gap-2 w-full">
+            <div className="p-2 flex gap-2  flex-wrap">
               <div className="pb-1 flex gap-1">
                 <p className="font-semibold">Nome:</p> {family?.name}
               </div>
@@ -82,14 +82,19 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
               <div className="pb-1 flex gap-1">
                 <p className="font-semibold">RG:</p> {family?.RG}
               </div>
-            </div>
-          </div>
+              <div className="pb-1 flex gap-1">
+                <p className="font-semibold">Data Nascimento:</p>
+                {format(new Date(family?.date_birth_responsible), 'dd/MM/yyyy')}
+              </div>
+              <div className="pb-1 flex gap-1">
+                <p className="font-semibold">Profissão:</p>
+                {family?.profession_responsible}
+              </div>
+              <div className="pb-1 flex gap-1">
+                <p className="font-semibold">NIS:</p>
+                {family?.nis_responsible}
+              </div>
 
-          <div className="border rounded-sm mb-4">
-            <div className="bg-gray-100 p-2 ">
-              <p>Dados de Contato</p>
-            </div>
-            <div className="p-2 flex gap-2">
               <div className="pb-1 flex gap-1">
                 <p className="font-semibold">Celular:</p> {family?.phone}
               </div>
@@ -107,7 +112,13 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
                     <TableHead>Nome</TableHead>
                     <TableHead>CPF</TableHead>
                     <TableHead>Data de Nascimento</TableHead>
+                    <TableHead>Estado Civil</TableHead>
+                    <TableHead>Profissão</TableHead>
+                    <TableHead>Parentesco</TableHead>
+                    <TableHead>Escolaridade</TableHead>
                     <TableHead>Renda</TableHead>
+                    <TableHead>Tipo de Renda</TableHead>
+                    <TableHead>NIS</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -124,7 +135,13 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
                               )
                             : 'Data inválida'}
                         </TableCell>
+                        <TableCell>{item.maritial_status_dependent}</TableCell>
+                        <TableCell>{item.profession_dependent}</TableCell>
+                        <TableCell>{item.kinship_dependent}</TableCell>
+                        <TableCell>{item.schooling_dependent}</TableCell>
                         <TableCell>{item.income_dependent}</TableCell>
+                        <TableCell>{item.type_income_dependent}</TableCell>
+                        <TableCell>{item.nis_dependent}</TableCell>
                       </TableRow>
                     ))
                   ) : (
@@ -187,6 +204,62 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
 
           <div className="border rounded-sm mb-4">
             <div className="bg-gray-100 p-2">
+              <p>Residência</p>
+            </div>
+            <div className="p-2">
+              <div className="pb-1 flex gap-1">
+                <p className="font-semibold">Tipo:</p> {family?.type_residence}
+              </div>
+              <div className="pb-1 flex gap-1">
+                <p className="font-semibold">Possui Banheiro:</p>
+                {family?.is_bathroom}
+              </div>
+              <div className="pb-1 flex gap-1">
+                <p className="font-semibold">Casa de:</p>
+                {family?.type_house}
+              </div>
+              <div className="pb-1 flex gap-1">
+                <p className="font-semibold">Tempo de Moradia:</p>
+                {family?.length_of_residence}
+              </div>
+            </div>
+          </div>
+
+          <div className="border rounded-sm mb-4">
+            <div className="bg-gray-100 p-2">
+              <p>Benefícios</p>
+            </div>
+            <div className="p-2">
+              <div className="pb-1 flex gap-1">
+                <p className="font-semibold">Possui Bolsa Família:</p>{' '}
+                {family?.is_bolsa_familia}
+              </div>
+              {family?.value_bolsa_familia && (
+                <div className="pb-1 flex gap-1">
+                  <p className="font-semibold">Valor Bolsa Família:</p>
+                  {family?.value_bolsa_familia}
+                </div>
+              )}
+
+              <div className="pb-1 flex gap-1">
+                <p className="font-semibold">BPC:</p>
+                {family?.BPC}
+              </div>
+              <div className="pb-1 flex gap-1">
+                <p className="font-semibold">
+                  Inserido em algum Programa da Assistência Social:
+                </p>
+                {family?.social_assistance_program}
+              </div>
+              <div className="pb-1 flex gap-1">
+                <p className="font-semibold">Possui Cadastro Único:</p>
+                {family?.is_single_cadastre}
+              </div>
+            </div>
+          </div>
+
+          <div className="border rounded-sm mb-4">
+            <div className="bg-gray-100 p-2">
               <p>Endereço</p>
             </div>
             <div className="p-2">
@@ -196,13 +269,22 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
               </p>
             </div>
           </div>
-
-          <div className="border rounded-sm">
-            <div className="bg-gray-100 p-2">
-              <p>Anotações</p>
+          {family?.notes && (
+            <div className="border rounded-sm">
+              <div className="bg-gray-100 p-2">
+                <p>Anotações</p>
+              </div>
+              <div className="p-2">{family?.notes}</div>
             </div>
-            <div className="p-2">{family?.notes}</div>
-          </div>
+          )}
+          {family?.notes_reprove && (
+            <div className="border rounded-sm">
+              <div className="bg-gray-100 p-2">
+                <p>Motivo de Reprovação</p>
+              </div>
+              <div className="p-2">{family?.notes_reprove}</div>
+            </div>
+          )}
         </div>
       </div>
     </Modal>

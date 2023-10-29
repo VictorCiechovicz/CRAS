@@ -45,7 +45,7 @@ export function ManagementFamilyList({ items, userId }: ManagementFamilyProps) {
 
     atualizarStatus()
   }, [router])
- */
+  */
   return (
     <>
       <PageHeading

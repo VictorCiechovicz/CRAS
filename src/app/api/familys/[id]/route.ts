@@ -72,12 +72,52 @@ export const PUT = async (request: Request, { params }: { params: IParams }) => 
       dependents,
       periodBenefit,
       notes,
-      status
+      status,
+      notes_reprove,
+      date_birth_responsible,
+      profession_responsible,
+      nis_responsible,
+      type_residence,
+      is_bathroom,
+      type_house,
+      length_of_residence,
+      is_bolsa_familia,
+      value_bolsa_familia,
+      BPC,
+      social_assistance_program,
+      is_single_cadastre,
+      date_visited
     } = body;
 
-    if (!name || !CPF || !RG || !phone ||
-      !city || !neighborhood || !number || !state ||
-      !street || !zip_code || !createdByUserId || !createdByUserName || !status) {
+    if (
+      !name ||
+      !CPF ||
+      !RG ||
+      !phone ||
+      !city ||
+      !neighborhood ||
+      !number ||
+      !state ||
+      !street ||
+      !zip_code ||
+      !createdByUserId ||
+      !createdByUserName ||
+      !status ||
+      !notes_reprove ||
+      !date_birth_responsible ||
+      !profession_responsible ||
+      !nis_responsible ||
+      !type_residence ||
+      !is_bathroom ||
+      !type_house ||
+      !length_of_residence ||
+      !is_bolsa_familia ||
+      !value_bolsa_familia ||
+      !BPC ||
+      !social_assistance_program ||
+      !is_single_cadastre ||
+      !date_visited
+    ) {
       return new NextResponse('Bad Request', { status: 400 });
     }
 
@@ -119,6 +159,20 @@ export const PUT = async (request: Request, { params }: { params: IParams }) => 
         createdByUserName,
         notes,
         status,
+        notes_reprove,
+        date_birth_responsible,
+        profession_responsible,
+        nis_responsible,
+        type_residence,
+        is_bathroom,
+        type_house,
+        length_of_residence,
+        is_bolsa_familia,
+        value_bolsa_familia,
+        BPC,
+        social_assistance_program,
+        is_single_cadastre,
+        date_visited,
         updatedAt: new Date(),
         dependents: {
           update: existingDependents.map((dep: Dependent) => ({

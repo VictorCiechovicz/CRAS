@@ -55,10 +55,13 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
     try {
       const data = {
         status,
-        periodBenefit: {
-          startDate: dateStartBenefit,
-          endDate: dateEndBenefit
-        },
+        periodBenefit:
+          typeUpdate !== 'INACTIVE'
+            ? {
+                startDate: dateStartBenefit,
+                endDate: dateEndBenefit
+              }
+            : [],
         notes_reprove: typeUpdate === 'INACTIVE' ? notesReprove : ''
       }
 
@@ -68,6 +71,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
         description: 'Família atualizada com sucesso!',
         variant: 'default'
       })
+     
     } catch (error) {
       toast({
         title: 'Erro',
@@ -75,6 +79,9 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
         variant: 'destructive'
       })
     } finally {
+      setNotesReprove('')
+      setDateStartBenefit(undefined)
+      setDateEndBenefit(undefined)
       setIsModalConfirmOpen(false)
       router.refresh()
     }

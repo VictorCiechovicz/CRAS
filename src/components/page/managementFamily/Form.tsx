@@ -485,7 +485,7 @@ export function FamilyForm({
         title="Gestão de Famílias"
         paths={[
           { href: '/home', name: 'Início' },
-          { href: '/managementFamily', name: 'Gestão de Famílias' },
+          { href: `/managementFamily/${userId}`, name: 'Gestão de Famílias' },
           { href: '#', name: 'Cadastro de Família' }
         ]}
       />
@@ -636,12 +636,7 @@ export function FamilyForm({
                     </FormItem>
                   )}
                 />
-              </div>
-            </div>
 
-            <div className="border-b mb-5 pb-5 flex gap-8 w-full">
-              <p className="text-sm font-medium w-[324px] ">Dados de Contato</p>
-              <div className="w-[656px] flex gap-4">
                 <FormField
                   control={form.control}
                   name="phone"
@@ -991,63 +986,68 @@ export function FamilyForm({
                 </div>
               </div>
             </div>
+            {familie && (
+              <div className="border-b mb-5 pb-5 flex gap-8 w-full">
+                <p className="text-sm font-medium w-[324px] ">
+                  Períodos de Benefício
+                </p>
+                <div>
+                  <div className="w-[656px]">
+                    <TabeBase className="bg-white rounded-sm">
+                      <TableHeader className="bg-gray-200 rounded-sm">
+                        <TableRow>
+                          <TableHead>Data de Entrada</TableHead>
+                          <TableHead>Data de Saída</TableHead>
+                          <TableHead>Ação</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {tableBenefitPeriod?.length > 0 ? (
+                          tableBenefitPeriod?.map((item, index) => (
+                            <TableRow key={index}>
+                              <TableCell>
+                                {isValid(new Date(item.startDate))
+                                  ? format(
+                                      new Date(item.startDate),
+                                      'dd/MM/yyyy'
+                                    )
+                                  : 'Data inválida'}
+                              </TableCell>
 
-            <div className="border-b mb-5 pb-5 flex gap-8 w-full">
-              <p className="text-sm font-medium w-[324px] ">
-                Períodos de Benefício
-              </p>
-              <div>
-                <div className="w-[656px]">
-                  <TabeBase className="bg-white rounded-sm">
-                    <TableHeader className="bg-gray-200 rounded-sm">
-                      <TableRow>
-                        <TableHead>Data de Entrada</TableHead>
-                        <TableHead>Data de Saída</TableHead>
-                        <TableHead>Ação</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {tableBenefitPeriod?.length > 0 ? (
-                        tableBenefitPeriod?.map((item, index) => (
-                          <TableRow key={index}>
-                            <TableCell>
-                              {isValid(new Date(item.startDate))
-                                ? format(new Date(item.startDate), 'dd/MM/yyyy')
-                                : 'Data inválida'}
-                            </TableCell>
+                              <TableCell>
+                                {isValid(new Date(item.endDate))
+                                  ? format(new Date(item.endDate), 'dd/MM/yyyy')
+                                  : 'Data inválida'}
+                              </TableCell>
 
-                            <TableCell>
-                              {isValid(new Date(item.endDate))
-                                ? format(new Date(item.endDate), 'dd/MM/yyyy')
-                                : 'Data inválida'}
-                            </TableCell>
-
-                            <TableCell>
-                              <Button
-                                variant={'outline'}
-                                type="button"
-                                onClick={() =>
-                                  removeFromTablePeridBenefit(item, index)
-                                }
-                                className="bg-red-600 text-white"
-                              >
-                                Remover
-                              </Button>
+                              <TableCell>
+                                <Button
+                                  variant={'outline'}
+                                  type="button"
+                                  onClick={() =>
+                                    removeFromTablePeridBenefit(item, index)
+                                  }
+                                  className="bg-red-600 text-white"
+                                >
+                                  Remover
+                                </Button>
+                              </TableCell>
+                            </TableRow>
+                          ))
+                        ) : (
+                          <TableRow>
+                            <TableCell colSpan={5}>
+                              Não há itens na tabela.
                             </TableCell>
                           </TableRow>
-                        ))
-                      ) : (
-                        <TableRow>
-                          <TableCell colSpan={5}>
-                            Não há itens na tabela.
-                          </TableCell>
-                        </TableRow>
-                      )}
-                    </TableBody>
-                  </TabeBase>
+                        )}
+                      </TableBody>
+                    </TabeBase>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
+
             <div className="border-b mb-5 pb-5 flex gap-8 w-full">
               <p className="text-sm font-medium w-[324px] ">Residência</p>
               <div className="w-[956px] flex gap-4 flex-wrap">
@@ -1087,7 +1087,7 @@ export function FamilyForm({
                   name="is_bathroom"
                   render={({ field }) => (
                     <FormItem className="w-[308px]">
-                      <FormLabel>Possuí Banheiro</FormLabel>
+                      <FormLabel>Possui Banheiro</FormLabel>
                       <FormControl>
                         <Select
                           onValueChange={value => {
@@ -1166,7 +1166,7 @@ export function FamilyForm({
                   name="is_bolsa_familia"
                   render={({ field }) => (
                     <FormItem className="w-[308px]">
-                      <FormLabel>Possuí Bolsa Família?</FormLabel>
+                      <FormLabel>Possui Bolsa Família?</FormLabel>
                       <FormControl>
                         <Select
                           onValueChange={value => {
@@ -1520,7 +1520,6 @@ export function FamilyForm({
                   type="submit"
                   onClick={() => {
                     setIsRevision(true)
-             
                   }}
                   className="bg-yellow-300 text-black"
                 >
