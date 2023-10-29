@@ -185,6 +185,7 @@ export function FamilyForm({
     familie?.state ? familie?.state : 'ac'
   )
   const [citys, setCitys] = useState<{ id: number; nome: string }[]>([])
+  const [isRevision, setIsRevision] = useState(false)
 
   const defaultValues: Partial<FormValues> = {
     name: familie?.name,
@@ -435,7 +436,7 @@ export function FamilyForm({
           ...info,
           createdByUserId: familie.createdByUserId,
           createdByUserName: familie.createdByUserName,
-          status: familie.status,
+          status: isRevision ? 'PENDING' : familie.status,
           createdAt: familie.createdAt
         })
       } else {
@@ -996,96 +997,6 @@ export function FamilyForm({
                 Períodos de Benefício
               </p>
               <div>
-                <div className="flex w-[656px] gap-4 mb-10 flex-wrap">
-                  <FormField
-                    name="startDate"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-col w-[308px]">
-                        <FormLabel className="mb-2.5">
-                          Data de Entrada
-                        </FormLabel>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <FormControl>
-                              <Button
-                                variant={'outline'}
-                                className={cn(
-                                  'text-left font-normal',
-                                  !dateStartBenefit && 'text-muted-foreground'
-                                )}
-                              >
-                                {dateStartBenefit ? (
-                                  format(Number(dateStartBenefit), 'dd/MM/yyyy')
-                                ) : (
-                                  <span>Selecione</span>
-                                )}
-                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                              </Button>
-                            </FormControl>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar
-                              mode="single"
-                              selected={dateStartBenefit}
-                              onSelect={setDateStartBenefit}
-                              initialFocus
-                            />
-                          </PopoverContent>
-                        </Popover>
-
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    name="endDate"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-col w-[308px]">
-                        <FormLabel className="mb-2.5">Data de Saída</FormLabel>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <FormControl>
-                              <Button
-                                variant={'outline'}
-                                className={cn(
-                                  'text-left font-normal',
-                                  !dateEndBenefit && 'text-muted-foreground'
-                                )}
-                              >
-                                {dateEndBenefit ? (
-                                  format(Number(dateEndBenefit), 'dd/MM/yyyy')
-                                ) : (
-                                  <span>Selecione</span>
-                                )}
-                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                              </Button>
-                            </FormControl>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar
-                              mode="single"
-                              selected={dateEndBenefit}
-                              onSelect={setDateEndBenefit}
-                              initialFocus
-                            />
-                          </PopoverContent>
-                        </Popover>
-
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                <Button
-                  variant={'outline'}
-                  type="button"
-                  className="mb-10 bg-blue-800 text-white"
-                  onClick={addToTablePeriodBenefit}
-                >
-                  Adicionar
-                </Button>
                 <div className="w-[656px]">
                   <TabeBase className="bg-white rounded-sm">
                     <TableHeader className="bg-gray-200 rounded-sm">
@@ -1603,6 +1514,19 @@ export function FamilyForm({
               >
                 Cancelar
               </Button>
+              {familie && (
+                <Button
+                  variant={'outline'}
+                  type="submit"
+                  onClick={() => {
+                    setIsRevision(true)
+             
+                  }}
+                  className="bg-yellow-300 text-black"
+                >
+                  Enviar para Revisão
+                </Button>
+              )}
 
               <Button
                 variant={'outline'}

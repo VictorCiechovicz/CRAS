@@ -34,7 +34,7 @@ export function ManagementFamilyList({ items, userId }: ManagementFamilyProps) {
       new Date(a.createdAt || '1970-01-01').getTime()
   )
 
-  useEffect(() => {
+/*   useEffect(() => {
     const atualizarStatus = async () => {
       try {
         await axios.put('/api/updateStatus')
@@ -45,7 +45,7 @@ export function ManagementFamilyList({ items, userId }: ManagementFamilyProps) {
 
     atualizarStatus()
   }, [router])
-
+ */
   return (
     <>
       <PageHeading
