@@ -135,6 +135,7 @@ export const FormSchema = z.object({
     required_error: 'Informe CEP.'
   }),
   notes: z.string().nullable().default(''),
+  notes_reprove: z.string().nullable().default(''),
   date_visited: z.date({
     required_error: 'Informe Data da Visita.'
   })
@@ -181,7 +182,7 @@ export function FamilyForm({
   >(periodBenefit ? periodBenefit : [])
 
   const [selectedState, setSelectedState] = useState(
-    familie?.state ? familie?.state : 'rs'
+    familie?.state ? familie?.state : 'ac'
   )
   const [citys, setCitys] = useState<{ id: number; nome: string }[]>([])
 
@@ -190,14 +191,31 @@ export function FamilyForm({
     number: familie?.number,
     CPF: familie?.CPF,
     RG: familie?.RG,
+    date_birth_responsible: familie?.date_birth_responsible,
+    profession_responsible: familie?.profession_responsible,
+    nis_responsible: familie?.nis_responsible,
     phone: familie?.phone,
     city: familie?.city,
     neighborhood: familie?.neighborhood,
     state: familie?.state,
     street: familie?.street,
     zip_code: familie?.zip_code,
-    notes: familie?.notes
+    notes: familie?.notes,
+    type_residence: familie?.type_residence,
+    is_bathroom: familie?.is_bathroom,
+    type_house: familie?.type_house,
+    length_of_residence: familie?.length_of_residence,
+    is_bolsa_familia: familie?.is_bolsa_familia,
+    value_bolsa_familia: familie?.value_bolsa_familia
+      ? familie?.value_bolsa_familia
+      : '',
+    BPC: familie?.BPC,
+    social_assistance_program: familie?.social_assistance_program,
+    is_single_cadastre: familie?.is_single_cadastre,
+    notes_reprove: familie?.notes_reprove,
+    date_visited: familie?.date_visited
   }
+
   const session = useSession()
 
   const router = useRouter()
@@ -408,7 +426,7 @@ export function FamilyForm({
       dependents: tableCompositionsFamily,
       periodBenefit: tableBenefitPeriod,
       notes: data.notes,
-      notes_reprove:''
+      notes_reprove: ''
     }
     showLoading()
     try {
@@ -548,11 +566,10 @@ export function FamilyForm({
                               )}
                               {...field}
                             >
-                              {field.value ? (
-                                format(Number(field.value), 'dd/MM/yyyy')
-                              ) : (
-                                <span>Selecione</span>
-                              )}
+                              {isValid(new Date(field.value))
+                                ? format(new Date(field.value), 'dd/MM/yyyy')
+                                : 'Data inválida'}
+
                               <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                             </Button>
                           </FormControl>
@@ -596,11 +613,12 @@ export function FamilyForm({
                     <FormItem className="w-[308px]">
                       <FormLabel>NIS</FormLabel>
                       <FormControl>
-                      <Select
+                        <Select
                           onValueChange={value => {
                             field.onChange(value)
-                     
-                          }}>
+                          }}
+                          defaultValue={field.value}
+                        >
                           <FormControl>
                             <SelectTrigger>
                               <SelectValue placeholder="Selecione" {...field} />
@@ -730,7 +748,6 @@ export function FamilyForm({
                   />
 
                   <FormField
-                 
                     name="maritial_status_dependent"
                     render={({ field }) => (
                       <FormItem className="w-[308px]">
@@ -738,7 +755,6 @@ export function FamilyForm({
                         <FormControl>
                           <Select
                             onValueChange={value => {
-                            
                               setMaritialStatusDependent(value)
                             }}
                             defaultValue={maritialStatusDependent}
@@ -768,7 +784,6 @@ export function FamilyForm({
                     )}
                   />
                   <FormField
-                 
                     name="profession_dependent"
                     render={({ field }) => (
                       <FormItem className="w-[308px]">
@@ -788,7 +803,6 @@ export function FamilyForm({
                     )}
                   />
                   <FormField
-               
                     name="kinship_dependent"
                     render={({ field }) => (
                       <FormItem className="w-[308px]">
@@ -840,7 +854,6 @@ export function FamilyForm({
                     )}
                   />
                   <FormField
-            
                     name="type_income_dependent"
                     render={({ field }) => (
                       <FormItem className="w-[308px]">
@@ -848,7 +861,6 @@ export function FamilyForm({
                         <FormControl>
                           <Select
                             onValueChange={value => {
-                      
                               setTypeIncomeDependent(value)
                             }}
                             defaultValue={typeIncomeDependent}
@@ -875,7 +887,6 @@ export function FamilyForm({
                     )}
                   />
                   <FormField
-                   
                     name="nis_dependent"
                     render={({ field }) => (
                       <FormItem className="w-[308px]">
@@ -883,7 +894,6 @@ export function FamilyForm({
                         <FormControl>
                           <Select
                             onValueChange={value => {
-                            
                               setNisDependent(value)
                             }}
                             defaultValue={nisDependent}
@@ -1141,6 +1151,7 @@ export function FamilyForm({
                           onValueChange={value => {
                             field.onChange(value)
                           }}
+                          defaultValue={field.value}
                         >
                           <FormControl>
                             <SelectTrigger>
@@ -1171,6 +1182,7 @@ export function FamilyForm({
                           onValueChange={value => {
                             field.onChange(value)
                           }}
+                          defaultValue={field.value}
                         >
                           <FormControl>
                             <SelectTrigger>
@@ -1199,9 +1211,8 @@ export function FamilyForm({
                         <Select
                           onValueChange={value => {
                             field.onChange(value)
-                      
                           }}
-                      
+                          defaultValue={field.value}
                         >
                           <FormControl>
                             <SelectTrigger>
@@ -1249,9 +1260,8 @@ export function FamilyForm({
                         <Select
                           onValueChange={value => {
                             field.onChange(value)
-                    
                           }}
-                        
+                          defaultValue={field.value}
                         >
                           <FormControl>
                             <SelectTrigger>
@@ -1284,7 +1294,6 @@ export function FamilyForm({
                   )}
                 />
 
-
                 <FormField
                   control={form.control}
                   name="BPC"
@@ -1297,9 +1306,8 @@ export function FamilyForm({
                         <Select
                           onValueChange={value => {
                             field.onChange(value)
-                        
                           }}
-                        
+                          defaultValue={field.value}
                         >
                           <FormControl>
                             <SelectTrigger>
@@ -1329,9 +1337,8 @@ export function FamilyForm({
                         <Select
                           onValueChange={value => {
                             field.onChange(value)
-                     
                           }}
-                       
+                          defaultValue={field.value}
                         >
                           <FormControl>
                             <SelectTrigger>
@@ -1359,9 +1366,8 @@ export function FamilyForm({
                         <Select
                           onValueChange={value => {
                             field.onChange(value)
-                         
                           }}
-               
+                          defaultValue={field.value}
                         >
                           <FormControl>
                             <SelectTrigger>
@@ -1562,11 +1568,10 @@ export function FamilyForm({
                               )}
                               {...field}
                             >
-                              {field.value ? (
-                                format(Number(field.value), 'dd/MM/yyyy')
-                              ) : (
-                                <span>Selecione</span>
-                              )}
+                              {isValid(new Date(field.value))
+                                ? format(new Date(field.value), 'dd/MM/yyyy')
+                                : 'Data inválida'}
+
                               <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                             </Button>
                           </FormControl>

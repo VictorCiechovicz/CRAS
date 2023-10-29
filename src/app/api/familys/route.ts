@@ -69,11 +69,11 @@ export const POST = async (request: Request) => {
     }
 
     if (dependents && !Array.isArray(dependents)) {
-      return new NextResponse('Bad Request dependents', { status: 400 });
+      return new NextResponse('Bad Request', { status: 400 });
     }
 
     if (periodBenefit && !Array.isArray(periodBenefit)) {
-      return new NextResponse('Bad Request periodBenefit', { status: 400 });
+      return new NextResponse('Bad Request', { status: 400 });
     }
 
 

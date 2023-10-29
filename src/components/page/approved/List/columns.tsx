@@ -5,12 +5,25 @@ import { Column } from '@/src/components/common/Table/types'
 import { FamilyList } from '@/src/schemas'
 import { formatPhoneNumber } from '@/src/utils/format/formatPhone'
 import { formatStatus } from '@/src/utils/format/status'
-import { XCircleIcon, CheckCircleIcon } from '@heroicons/react/24/outline'
+import {
+  XCircleIcon,
+  CheckCircleIcon,
+  CalendarIcon
+} from '@heroicons/react/24/outline'
 import { format } from 'date-fns'
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
 import { Tooltip } from 'react-tooltip'
-import { Button, Modal } from '@/src/components/common'
+import {
+  Button,
+  Calendar,
+  Modal,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  Textarea
+} from '@/src/components/common'
 import { useState } from 'react'
+import { cn } from '@/src/lib/utils'
 
 interface ActionButtonsProps {
   router: AppRouterInstance
@@ -29,28 +42,42 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
 }) => {
   const [isModalConfirmOpen, setIsModalConfirmOpen] = useState(false)
   const [typeUpdate, setTypeUpdate] = useState('')
+  const [dateStartBenefit, setDateStartBenefit] = useState<Date | undefined>(
+    undefined
+  )
+  const [dateEndBenefit, setDateEndBenefit] = useState<Date | undefined>(
+    undefined
+  )
+
+  const [notesReprove, setNotesReprove] = useState('')
 
   const handleUpdateStatus = async (status: string) => {
-    await axios
-      .put(`/api/approved/${rowData.id}`, { status })
-      .then(() => {
-        toast({
-          title: 'Família Aceita',
-          description: 'Família atualizada com sucesso!',
-          variant: 'default'
-        })
+    try {
+      const data = {
+        status,
+        periodBenefit: {
+          startDate: dateStartBenefit,
+          endDate: dateEndBenefit
+        },
+        notes_reprove: typeUpdate === 'INACTIVE' ? notesReprove : ''
+      }
+
+      await axios.put(`/api/approved/${rowData.id}`, data)
+      toast({
+        title: 'Sucesso',
+        description: 'Família atualizada com sucesso!',
+        variant: 'default'
       })
-      .catch(() => {
-        toast({
-          title: 'Família Não Aceita',
-          description: 'Não foi possível atualizar a família!',
-          variant: 'destructive'
-        })
+    } catch (error) {
+      toast({
+        title: 'Erro',
+        description: 'Não foi possível atualizar a família!',
+        variant: 'destructive'
       })
-      .finally(() => {
-        setIsModalConfirmOpen(false)
-        router.refresh()
-      })
+    } finally {
+      setIsModalConfirmOpen(false)
+      router.refresh()
+    }
   }
 
   return (
@@ -70,6 +97,83 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
             </p>
           </div>
 
+          {typeUpdate !== 'ACTIVE' ? (
+            <div>
+              <Textarea
+                className="mb-3"
+                placeholder="Informe motivo da Reprovação"
+                maxLength={1000}
+                value={notesReprove}
+                onChange={e => setNotesReprove(e.target.value)}
+              />
+            </div>
+          ) : (
+            <div>
+              <p className="text-lg font-medium ">Períodos de Benefício</p>
+
+              <div className="flex gap-4 mb-10 justify-center">
+                <div>
+                  <p className="text-sm font-medium ">Data de Entrada</p>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant={'outline'}
+                        className={cn(
+                          'text-left font-normal',
+                          !dateStartBenefit && 'text-muted-foreground'
+                        )}
+                      >
+                        {dateStartBenefit ? (
+                          format(Number(dateStartBenefit), 'dd/MM/yyyy')
+                        ) : (
+                          <span>Selecione</span>
+                        )}
+                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={dateStartBenefit}
+                        onSelect={setDateStartBenefit}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+                <div>
+                  <p className="text-sm font-medium ">Data de Saída</p>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant={'outline'}
+                        className={cn(
+                          'text-left font-normal',
+                          !dateEndBenefit && 'text-muted-foreground'
+                        )}
+                      >
+                        {dateEndBenefit ? (
+                          format(Number(dateEndBenefit), 'dd/MM/yyyy')
+                        ) : (
+                          <span>Selecione</span>
+                        )}
+                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={dateEndBenefit}
+                        onSelect={setDateEndBenefit}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="flex justify-center gap-2  ">
             <Button
               className="w-40"
@@ -78,9 +182,10 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
                 event.stopPropagation(), setIsModalConfirmOpen(false)
               }}
             >
-             Cancelar
+              Cancelar
             </Button>
             <Button
+              disabled={typeUpdate === 'INACTIVE' && !notesReprove}
               className="bg-blue-800 w-40"
               onClick={event => {
                 event.stopPropagation(), handleUpdateStatus(typeUpdate)
@@ -145,10 +250,7 @@ export const columns = (
       field: 'phone',
       valueFormatter: formatPhoneNumber
     },
-    {
-      label: 'Email',
-      field: 'email'
-    },
+
     {
       label: 'Agente',
       field: 'createdByUserName'

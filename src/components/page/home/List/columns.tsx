@@ -17,10 +17,7 @@ export const columns =
       field: 'phone',
       valueFormatter: formatPhoneNumber
     },
-    {
-      label: 'Email',
-      field: 'email'
-    },
+   
     {
       label: 'Agente',
       field: 'createdByUserName'
