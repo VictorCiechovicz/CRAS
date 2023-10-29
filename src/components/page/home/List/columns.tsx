@@ -34,7 +34,7 @@ export const columns =
       }
     },
     {
-      label: 'Renda',
+      label: 'Renda Percapta',
       field: 'income_dependent',
       renderCell(_, rowData: FamilyList) {
         const totalIncome = rowData.dependents
@@ -50,7 +50,7 @@ export const columns =
       }
       
     },
-    {
+     {
       label: 'Data Entrada',
       field: 'startDate',
       renderCell(value, rowData: FamilyList) {
@@ -83,7 +83,7 @@ export const columns =
         }
         return 'N/A';
       }
-    },
+    }, 
 
     {
       label: 'Endereço',

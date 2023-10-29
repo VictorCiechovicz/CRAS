@@ -78,7 +78,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
                 event.stopPropagation(), setIsModalConfirmOpen(false)
               }}
             >
-              Nao
+             Cancelar
             </Button>
             <Button
               className="bg-blue-800 w-40"
@@ -162,13 +162,16 @@ export const columns = (
       }
     },
     {
-      label: 'Renda',
+      label: 'Renda Percapta',
       field: 'income_dependent',
       renderCell(_, rowData: FamilyList) {
         const totalIncome = rowData.dependents
           .map(dep => parseFloat(dep.income_dependent))
           .reduce((acc, curr) => acc + curr, 0)
-        return totalIncome.toLocaleString('pt-BR', {
+
+        const perCapitaIncome = totalIncome / (rowData.dependents.length || 1)
+
+        return perCapitaIncome.toLocaleString('pt-BR', {
           style: 'currency',
           currency: 'BRL'
         })

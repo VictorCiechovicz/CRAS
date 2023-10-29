@@ -19,7 +19,7 @@ export interface TableProps<T> {
   title?: string;
   emptyMessage?: string;
   onRowClick?: (row: T) => void
-
+  isFilterStatus?: boolean
 }
 
 export interface PaginationProps {

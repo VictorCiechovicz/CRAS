@@ -60,7 +60,6 @@ export const PUT = async (request: Request, { params }: { params: IParams }) => 
       name,
       CPF,
       RG,
-      email,
       phone,
       city,
       neighborhood,
@@ -76,7 +75,7 @@ export const PUT = async (request: Request, { params }: { params: IParams }) => 
 
     } = body;
 
-    if (!name || !CPF || !RG || !email || !phone ||
+    if (!name || !CPF || !RG || !phone ||
       !city || !neighborhood || !number || !state ||
       !street || !zip_code || !createdByUserId || !createdByUserName) {
       return new NextResponse('Bad Request', { status: 400 });
@@ -95,13 +94,13 @@ export const PUT = async (request: Request, { params }: { params: IParams }) => 
       return new NextResponse('Bad Request', { status: 400 });
     }
 
-    const existingDependents = dependents.filter((dep:Dependent) => dep.id);
-    const newDependents = dependents.filter((dep:Dependent) => !dep.id);
-    
-    const existingPeriodBenefits = periodBenefit.filter((period:PeriodBenefit) => period.id);
-    const newPeriodBenefits = periodBenefit.filter((period:PeriodBenefit)=> !period.id);
+    const existingDependents = dependents.filter((dep: Dependent) => dep.id);
+    const newDependents = dependents.filter((dep: Dependent) => !dep.id);
 
-    
+    const existingPeriodBenefits = periodBenefit.filter((period: PeriodBenefit) => period.id);
+    const newPeriodBenefits = periodBenefit.filter((period: PeriodBenefit) => !period.id);
+
+
 
     const updatedFamily = await prisma.familys.update({
       where: { id },
@@ -109,7 +108,6 @@ export const PUT = async (request: Request, { params }: { params: IParams }) => 
         name,
         CPF,
         RG,
-        email,
         phone,
         city,
         neighborhood,
@@ -121,37 +119,37 @@ export const PUT = async (request: Request, { params }: { params: IParams }) => 
         createdByUserName,
         notes,
         updatedAt: new Date(),
-         dependents: {
-      update: existingDependents.map((dep:Dependent) => ({
-        where: { id: dep.id },
-        data: {
-          name_dependent: dep.name_dependent,
-          CPF_dependent: dep.CPF_dependent,
-          date_birth_dependent: dep.date_birth_dependent,
-          income_dependent: dep.income_dependent,
+        dependents: {
+          update: existingDependents.map((dep: Dependent) => ({
+            where: { id: dep.id },
+            data: {
+              name_dependent: dep.name_dependent,
+              CPF_dependent: dep.CPF_dependent,
+              date_birth_dependent: dep.date_birth_dependent,
+              income_dependent: dep.income_dependent,
+            },
+          })),
+          create: newDependents.map((dep: Dependent) => ({
+            name_dependent: dep.name_dependent,
+            CPF_dependent: dep.CPF_dependent,
+            date_birth_dependent: dep.date_birth_dependent,
+            income_dependent: dep.income_dependent,
+          })),
         },
-      })),
-      create: newDependents.map((dep:Dependent) => ({
-        name_dependent: dep.name_dependent,
-        CPF_dependent: dep.CPF_dependent,
-        date_birth_dependent: dep.date_birth_dependent,
-        income_dependent: dep.income_dependent,
-      })),
-    },
-    periodBenefit: {
-      update: existingPeriodBenefits.map((period:PeriodBenefit) => ({
-        where: { id: period.id },
-        data: {
-          startDate: period.startDate,
-          endDate: period.endDate,
+        periodBenefit: {
+          update: existingPeriodBenefits.map((period: PeriodBenefit) => ({
+            where: { id: period.id },
+            data: {
+              startDate: period.startDate,
+              endDate: period.endDate,
+            },
+          })),
+          create: newPeriodBenefits.map((period: PeriodBenefit) => ({
+            startDate: period.startDate,
+            endDate: period.endDate,
+          })),
         },
-      })),
-      create: newPeriodBenefits.map((period:PeriodBenefit) => ({
-        startDate: period.startDate,
-        endDate: period.endDate,
-      })),
-    },
-  },
+      },
       include: {
         dependents: true,
         periodBenefit: true,

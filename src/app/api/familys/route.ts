@@ -10,7 +10,6 @@ export const POST = async (request: Request) => {
       name,
       CPF,
       RG,
-      email,
       phone,
       city,
       neighborhood,
@@ -22,21 +21,59 @@ export const POST = async (request: Request) => {
       createdByUserName,
       dependents,
       periodBenefit,
-      notes
+      notes,
+      notes_reprove,
+      date_birth_responsible,
+      profession_responsible,
+      nis_responsible,
+      type_residence,
+      is_bathroom,
+      type_house,
+      length_of_residence,
+      is_bolsa_familia,
+      value_bolsa_familia,
+      BPC,
+      social_assistance_program,
+      is_single_cadastre,
+      date_visited
     } = body;
 
-    if (!name || !CPF || !RG || !email || !phone ||
-      !city || !neighborhood || !number || !state ||
-      !street || !zip_code || !createdByUserId || !createdByUserName) {
+    if (
+      !name ||
+      !CPF ||
+      !RG ||
+      !phone ||
+      !city ||
+      !neighborhood ||
+      !number ||
+      !state ||
+      !street ||
+      !zip_code ||
+      !createdByUserId ||
+      !createdByUserName ||
+      !date_birth_responsible ||
+      !profession_responsible ||
+      !nis_responsible ||
+      !type_residence ||
+      !is_bathroom ||
+      !type_house ||
+      !length_of_residence ||
+      !is_bolsa_familia ||
+      !value_bolsa_familia ||
+      !BPC ||
+      !social_assistance_program ||
+      !is_single_cadastre ||
+      !date_visited
+    ) {
       return new NextResponse('Bad Request', { status: 400 });
     }
 
     if (dependents && !Array.isArray(dependents)) {
-      return new NextResponse('Bad Request', { status: 400 });
+      return new NextResponse('Bad Request dependents', { status: 400 });
     }
 
     if (periodBenefit && !Array.isArray(periodBenefit)) {
-      return new NextResponse('Bad Request', { status: 400 });
+      return new NextResponse('Bad Request periodBenefit', { status: 400 });
     }
 
 
@@ -45,7 +82,6 @@ export const POST = async (request: Request) => {
         name: name,
         CPF: CPF,
         RG: RG,
-        email: email,
         phone: phone,
         city: city,
         neighborhood: neighborhood,
@@ -54,6 +90,20 @@ export const POST = async (request: Request) => {
         street: street,
         zip_code: zip_code,
         notes: notes,
+        notes_reprove,
+        date_birth_responsible,
+        profession_responsible,
+        nis_responsible,
+        type_residence,
+        is_bathroom,
+        type_house,
+        length_of_residence,
+        is_bolsa_familia,
+        value_bolsa_familia,
+        BPC,
+        social_assistance_program,
+        is_single_cadastre,
+        date_visited,
         createdByUserId: createdByUserId,
         createdByUserName: createdByUserName,
         dependents: {
@@ -76,7 +126,7 @@ export const GET = async () => {
     const families = await prisma.familys.findMany({
       include: {
         dependents: true,
-        periodBenefit:true
+        periodBenefit: true
       }
     });
 

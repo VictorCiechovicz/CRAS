@@ -55,6 +55,16 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
               Detalhes da Família
             </p>
           </div>
+          <div>
+            <p className="text-xs font-normal whitespace-nowrap">
+              Criada em{' '}
+              {family?.createdAt
+                ? new Date(family.createdAt).toLocaleDateString('pt-BR') +
+                  ' às ' +
+                  new Date(family.createdAt).toLocaleTimeString('pt-BR')
+                : ''}
+            </p>
+          </div>
         </div>
 
         <div>
@@ -80,9 +90,6 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
               <p>Dados de Contato</p>
             </div>
             <div className="p-2 flex gap-2">
-              <div className="pb-1 flex gap-1">
-                <p className="font-semibold">Email:</p> {family?.email}
-              </div>
               <div className="pb-1 flex gap-1">
                 <p className="font-semibold">Celular:</p> {family?.phone}
               </div>

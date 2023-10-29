@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { Table } from '@/src/components/common'
 import { columns } from './columns'
 import { FamilyList } from '@/src/schemas'
-import { UserGroupIcon, UserIcon } from '@heroicons/react/24/outline'
+import { UserGroupIcon } from '@heroicons/react/24/outline'
 import FamilyDetailsModal from '@/src/components/common/Modal/ModalDetails'
 import axios from 'axios'
 interface FamilyListProps {
@@ -22,12 +22,12 @@ export function FamilyList({ items }: FamilyListProps) {
     setIsModalOpen(true)
   }
 
-  const familiesActives = items.filter(familia => familia.status === 'ACTIVE')
-  const familiesInactives = items.filter(
+  const familiesActives = items?.filter(familia => familia.status === 'ACTIVE')
+  const familiesInactives = items?.filter(
     familia => familia.status === 'INACTIVE'
   )
 
-  const familiesDecret = items.sort(
+  const familiesDecret = items?.sort(
     (a, b) =>
       new Date(b.createdAt || '1970-01-01').getTime() -
       new Date(a.createdAt || '1970-01-01').getTime()
@@ -43,7 +43,7 @@ export function FamilyList({ items }: FamilyListProps) {
     }
 
     atualizarStatus()
-  }, [])
+  }, []) 
 
   return (
     <div>
@@ -54,7 +54,7 @@ export function FamilyList({ items }: FamilyListProps) {
           </div>
           <div className="flex flex-col justify-start gap-1">
             <p className="text-base font-normal ">Famílias Cadastradas</p>
-            <p className="text-2xl font-bold ">{items.length}</p>
+            <p className="text-2xl font-bold ">{items?.length}</p>
           </div>
         </div>
 
@@ -65,7 +65,7 @@ export function FamilyList({ items }: FamilyListProps) {
           </div>
           <div className="flex flex-col justify-start gap-1">
             <p className="text-base font-normal ">Familias Ativas</p>
-            <p className="text-2xl font-bold ">{familiesActives.length}</p>
+            <p className="text-2xl font-bold ">{familiesActives?.length}</p>
           </div>
         </div>
 
@@ -76,7 +76,7 @@ export function FamilyList({ items }: FamilyListProps) {
           </div>
           <div className="flex flex-col justify-start gap-1">
             <p className="text-base font-normal ">Famílias Inativas</p>
-            <p className="text-2xl font-bold ">{familiesInactives.length}</p>
+            <p className="text-2xl font-bold ">{familiesInactives?.length}</p>
           </div>
         </div>
       </div>
@@ -94,6 +94,7 @@ export function FamilyList({ items }: FamilyListProps) {
         onPageChange={newPage => setCurrentPage(newPage)}
         onPageSizeChange={newSize => setPageSize(newSize)}
         onRowClick={item => openModal(item)}
+        isFilterStatus
       />
     </div>
   )

@@ -81,6 +81,7 @@ export function ManagementFamilyList({ items, userId }: ManagementFamilyProps) {
         onPageChange={newPage => setCurrentPage(newPage)}
         onPageSizeChange={newSize => setPageSize(newSize)}
         onRowClick={item => openModal(item)}
+        isFilterStatus
       />
     </>
   )

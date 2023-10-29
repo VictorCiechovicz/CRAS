@@ -1,4 +1,4 @@
-export type FormValues = z.infer<typeof FormSchema>
+
 
 export interface TableCompositionsFamily {
   id: string
@@ -6,7 +6,12 @@ export interface TableCompositionsFamily {
   CPF_dependent: string
   date_birth_dependent: Date
   income_dependent: string
-
+  maritial_status_dependent: string
+  profession_dependent: string
+  kinship_dependent: string
+  schooling_dependent: string
+  type_income_dependent: string
+  nis_dependent: string
 }
 
 export interface TableBenefitPeriod {

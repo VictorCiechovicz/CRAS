@@ -40,16 +40,14 @@ import {
 
 import states from '../../../utils/states'
 import { Dependent, Familys, PeriodBenefit } from '@prisma/client'
-import {
-  FormData,
-  FormValues,
-  TableBenefitPeriod,
-  TableCompositionsFamily
-} from './types'
+import { FormData, TableBenefitPeriod, TableCompositionsFamily } from './types'
 import { z } from 'zod'
 import useLoading from '@/src/hook/useLoading'
 import Loading from '../../common/Loading'
 import { useSession } from 'next-auth/react'
+import { validateCPF } from '@/src/utils/validateCPF'
+
+export type FormValues = z.infer<typeof FormSchema>
 
 export const FormSchema = z.object({
   name: z
@@ -63,12 +61,12 @@ export const FormSchema = z.object({
     .max(30, {
       message: 'Nome com numero máximo de 30 caracteres.'
     }),
-  CPF: z.string({
-    required_error: 'Informe CPF do representante da Família.'
+  CPF: z.string().refine(data => validateCPF(data), {
+    message: 'CPF inválido.'
   }),
   RG: z
     .string({
-      required_error: 'Informe RG do representante da Família.'
+      required_error: 'Informe RG do Responsável da Família.'
     })
     .min(1, {
       message: 'RG muito curto.'
@@ -76,38 +74,70 @@ export const FormSchema = z.object({
     .max(8, {
       message: 'RG com numero máximo de 8 caracteres.'
     }),
-  email: z
-    .string({
-      required_error: 'Informe Email do representante da Família.'
-    })
-    .email('Formato de Email inválido!'),
+  date_birth_responsible: z.date({
+    required_error: 'Informe Data de Nascimento do Responsável da Família.'
+  }),
+  profession_responsible: z.string({
+    required_error: 'Informe Profissáo.'
+  }),
+  nis_responsible: z.string({
+    required_error: 'Informe NIS.'
+  }),
+  type_residence: z.string({
+    required_error: 'Informe Tipo de Residência.'
+  }),
+  is_bathroom: z.string({
+    required_error: 'Informe se possui banheiro.'
+  }),
+  type_house: z.string({
+    required_error: 'Informe Tipo da Casa.'
+  }),
+  length_of_residence: z.string({
+    required_error: 'Informe Tempo de Moradia.'
+  }),
+  is_bolsa_familia: z.string({
+    required_error: 'Informe se possuí Bolsa Família.'
+  }),
+  value_bolsa_familia: z.string().default(''),
+  BPC: z.string({
+    required_error: 'Informe se possuí BPC.'
+  }),
+  social_assistance_program: z.string({
+    required_error: 'Informe se possuí algum Programa da Assistência Social.'
+  }),
+  is_single_cadastre: z.string({
+    required_error: 'Informe se possuí Cadastro Único.'
+  }),
   phone: z.string({
-    required_error: 'Informe Celular do representante da Família.'
+    required_error: 'Informe Celular.'
   }),
   city: z.string({
-    required_error: 'Informe Cidade da Família.'
+    required_error: 'Informe Cidade.'
   }),
 
   neighborhood: z.string({
-    required_error: 'Informe a Bairro da Família.'
+    required_error: 'Informe a Bairro.'
   }),
 
   number: z.string({
-    required_error: 'Informe Número da Família.'
+    required_error: 'Informe Número.'
   }),
 
   state: z.string({
-    required_error: 'Informe Estado da Família.'
+    required_error: 'Informe Estado.'
   }),
 
   street: z.string({
-    required_error: 'Informe Rua da Família.'
+    required_error: 'Informe Rua.'
   }),
 
   zip_code: z.string({
-    required_error: 'Informe CEP da Família.'
+    required_error: 'Informe CEP.'
   }),
-  notes: z.string().nullable().default('')
+  notes: z.string().nullable().default(''),
+  date_visited: z.date({
+    required_error: 'Informe Data da Visita.'
+  })
 })
 
 interface FamilyFormProps {
@@ -128,7 +158,13 @@ export function FamilyForm({
   const [dateBirthDependent, setDateBirthDependent] = useState<
     Date | undefined
   >(undefined)
+  const [maritialStatusDependent, setMaritialStatusDependent] = useState('')
+  const [professionDependent, setProfessionDependent] = useState('')
+  const [kinshipDependent, setKinshipDependent] = useState('')
+  const [schoolingDependent, setSchoolingDependent] = useState('')
   const [incomeDependent, setIncomeDependent] = useState('')
+  const [typeIncomeDependent, setTypeIncomeDependent] = useState('')
+  const [nisDependent, setNisDependent] = useState('')
 
   const [dateStartBenefit, setDateStartBenefit] = useState<Date | undefined>(
     undefined
@@ -139,35 +175,21 @@ export function FamilyForm({
   const [tableCompositionsFamily, setTableCompositionsFamily] = useState<
     TableCompositionsFamily[]
   >(dependents ? dependents : [])
+
   const [tableBenefitPeriod, setTableBenefitPeriod] = useState<
     TableBenefitPeriod[]
   >(periodBenefit ? periodBenefit : [])
+
   const [selectedState, setSelectedState] = useState(
     familie?.state ? familie?.state : 'rs'
   )
   const [citys, setCitys] = useState<{ id: number; nome: string }[]>([])
-
-  useEffect(() => {
-    const fetch = async () => {
-      try {
-        const response = await axios.get(
-          `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${selectedState}/municipios`
-        );
-        setCitys(response.data);
-      } catch (error) {
-        console.error('Error:', error);
-      }
-    };
-  
-    fetch();
-  }, []); 
 
   const defaultValues: Partial<FormValues> = {
     name: familie?.name,
     number: familie?.number,
     CPF: familie?.CPF,
     RG: familie?.RG,
-    email: familie?.email,
     phone: familie?.phone,
     city: familie?.city,
     neighborhood: familie?.neighborhood,
@@ -191,12 +213,18 @@ export function FamilyForm({
       !nameDependent ||
       !CPFDependent ||
       !dateBirthDependent ||
-      !incomeDependent
+      !maritialStatusDependent ||
+      !professionDependent ||
+      !kinshipDependent ||
+      !schoolingDependent ||
+      !incomeDependent ||
+      !typeIncomeDependent ||
+      !nisDependent
     ) {
       return toast({
         title: 'Composição Familiar',
         variant: 'destructive',
-        description: 'Informe as Informações Componente Familiar'
+        description: 'Informe as Informações do Componente Familiar'
       })
     }
 
@@ -206,13 +234,26 @@ export function FamilyForm({
         name_dependent: nameDependent,
         CPF_dependent: CPFDependent,
         date_birth_dependent: dateBirthDependent,
-        income_dependent: incomeDependent
+        maritial_status_dependent: maritialStatusDependent,
+        profession_dependent: professionDependent,
+        kinship_dependent: kinshipDependent,
+        schooling_dependent: schoolingDependent,
+        income_dependent: incomeDependent,
+        type_income_dependent: typeIncomeDependent,
+        nis_dependent: nisDependent
       }
     ])
+
     setNameDependent('')
     setCPFDependent('')
     setDateBirthDependent(undefined)
+    setMaritialStatusDependent('')
+    setProfessionDependent('')
+    setKinshipDependent('')
+    setSchoolingDependent('')
     setIncomeDependent('')
+    setTypeIncomeDependent('')
+    setNisDependent('')
   }
 
   const deleteComposition = async (value: Dependent) => {
@@ -259,7 +300,15 @@ export function FamilyForm({
       return toast({
         title: ' Períodos de Benefício',
         variant: 'destructive',
-        description: 'Informe as Datas do Períodosde Benefício'
+        description: 'Informe as Datas do Períodos de Benefício'
+      })
+    }
+
+    if (dateStartBenefit > dateEndBenefit) {
+      return toast({
+        title: ' Períodos de Benefício',
+        variant: 'destructive',
+        description: 'Data de Entrada maior que Data de Entrada '
       })
     }
 
@@ -358,7 +407,8 @@ export function FamilyForm({
       createdByUserName: session?.data?.user?.name,
       dependents: tableCompositionsFamily,
       periodBenefit: tableBenefitPeriod,
-      notes: data.notes
+      notes: data.notes,
+      notes_reprove:''
     }
     showLoading()
     try {
@@ -371,7 +421,7 @@ export function FamilyForm({
           createdAt: familie.createdAt
         })
       } else {
-        const response = await axios.post('/api/familys', info)
+        await axios.post('/api/familys', info)
 
         toast({
           title: 'Cadastro de Família',
@@ -379,7 +429,8 @@ export function FamilyForm({
           variant: 'default'
         })
 
-        return response.data
+        router.push(`/managementFamily/${userId}`)
+        router.refresh()
       }
     } catch (error) {
       console.error('Erro ao salvar a família:', error)
@@ -390,11 +441,24 @@ export function FamilyForm({
         variant: 'destructive'
       })
     } finally {
-      router.push(`/managementFamily/${userId}`)
-      router.refresh()
       stopLoading()
     }
   }
+
+  useEffect(() => {
+    const fetch = async () => {
+      try {
+        const response = await axios.get(
+          `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${selectedState}/municipios`
+        )
+        setCitys(response.data)
+      } catch (error) {
+        console.error('Error:', error)
+      }
+    }
+
+    fetch()
+  }, [])
 
   return (
     <div>
@@ -419,9 +483,9 @@ export function FamilyForm({
         >
           <div className="flex flex-col items-start w-full">
             <div className="border-b mb-5 pb-5 flex gap-8 w-full">
-              <p className="text-sm font-medium w-[324px]">Dados de Pessoais</p>
+              <p className="text-sm font-medium w-[324px]">Dados Responsável</p>
 
-              <div className=" flex gap-4  w-[656px] flex-wrap ">
+              <div className=" flex gap-4  w-[956px] flex-wrap ">
                 <FormField
                   control={form.control}
                   name="name"
@@ -440,7 +504,7 @@ export function FamilyForm({
                   control={form.control}
                   name="CPF"
                   render={({ field }) => (
-                    <FormItem className="w-[328px]">
+                    <FormItem className="w-[308px]">
                       <FormLabel>CPF</FormLabel>
                       <FormControl>
                         <Input placeholder="CPF" {...field} />
@@ -465,6 +529,94 @@ export function FamilyForm({
                     </FormItem>
                   )}
                 />
+
+                <FormField
+                  name="date_birth_responsible"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col w-[308px]">
+                      <FormLabel className="mb-2.5">
+                        Data de Nascimento
+                      </FormLabel>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant={'outline'}
+                              className={cn(
+                                'text-left font-normal',
+                                !field.value && 'text-muted-foreground'
+                              )}
+                              {...field}
+                            >
+                              {field.value ? (
+                                format(Number(field.value), 'dd/MM/yyyy')
+                              ) : (
+                                <span>Selecione</span>
+                              )}
+                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={field.value}
+                            onSelect={date => {
+                              field.onChange(date)
+                            }}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="profession_responsible"
+                  render={({ field }) => (
+                    <FormItem className="w-[308px]">
+                      <FormLabel>Profissão</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Profissão" {...field} />
+                      </FormControl>
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="nis_responsible"
+                  render={({ field }) => (
+                    <FormItem className="w-[308px]">
+                      <FormLabel>NIS</FormLabel>
+                      <FormControl>
+                      <Select
+                          onValueChange={value => {
+                            field.onChange(value)
+                     
+                          }}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Selecione" {...field} />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="SIM">Sim</SelectItem>
+                            <SelectItem value="NAO">Não</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
             </div>
 
@@ -473,23 +625,9 @@ export function FamilyForm({
               <div className="w-[656px] flex gap-4">
                 <FormField
                   control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem className="w-[308px]">
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Email" {...field} />
-                      </FormControl>
-
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
                   name="phone"
                   render={({ field }) => (
-                    <FormItem className="w-[328px]">
+                    <FormItem className="w-[308px]">
                       <FormLabel>Celular</FormLabel>
                       <FormControl>
                         <Input placeholder="Celular" {...field} />
@@ -507,7 +645,7 @@ export function FamilyForm({
                 Composição Familiar
               </p>
               <div>
-                <div className="flex w-[656px] gap-4 mb-10 flex-wrap">
+                <div className="flex w-[956px] gap-4 mb-10 flex-wrap">
                   <FormField
                     name="name_dependent"
                     render={({ field }) => (
@@ -528,7 +666,7 @@ export function FamilyForm({
                   <FormField
                     name="CPF_dependent"
                     render={({ field }) => (
-                      <FormItem className="w-[328px]">
+                      <FormItem className="w-[308px]">
                         <FormLabel>CPF</FormLabel>
                         <FormControl>
                           <Input
@@ -590,10 +728,105 @@ export function FamilyForm({
                       </FormItem>
                     )}
                   />
+
+                  <FormField
+                 
+                    name="maritial_status_dependent"
+                    render={({ field }) => (
+                      <FormItem className="w-[308px]">
+                        <FormLabel>Estado Civil</FormLabel>
+                        <FormControl>
+                          <Select
+                            onValueChange={value => {
+                            
+                              setMaritialStatusDependent(value)
+                            }}
+                            defaultValue={maritialStatusDependent}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Selecione" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="SOLTEIRO">Solteiro</SelectItem>
+                              <SelectItem value="NAMORANDO">
+                                Namorando
+                              </SelectItem>
+                              <SelectItem value="CASADO">Casado</SelectItem>
+                              <SelectItem value="SEPARADO">Separado</SelectItem>
+                              <SelectItem value="DIVORCIADO">
+                                Divorciado
+                              </SelectItem>
+                              <SelectItem value="VIUVO">Viúvo</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                 
+                    name="profession_dependent"
+                    render={({ field }) => (
+                      <FormItem className="w-[308px]">
+                        <FormLabel>Profissão</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Profissão"
+                            value={professionDependent}
+                            onChange={e =>
+                              setProfessionDependent(e.target.value)
+                            }
+                          />
+                        </FormControl>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+               
+                    name="kinship_dependent"
+                    render={({ field }) => (
+                      <FormItem className="w-[308px]">
+                        <FormLabel>Parentesco</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Parentesco"
+                            value={kinshipDependent}
+                            onChange={e => setKinshipDependent(e.target.value)}
+                          />
+                        </FormControl>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    name="schooling_dependent"
+                    render={({ field }) => (
+                      <FormItem className="w-[308px]">
+                        <FormLabel>Escolaridade</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Escolaridade"
+                            value={schoolingDependent}
+                            onChange={e =>
+                              setSchoolingDependent(e.target.value)
+                            }
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                   <FormField
                     name="income_dependent"
                     render={({ field }) => (
-                      <FormItem className="w-[328px]">
+                      <FormItem className="w-[308px]">
                         <FormLabel>Renda</FormLabel>
                         <FormControl>
                           <Input
@@ -602,6 +835,71 @@ export function FamilyForm({
                             onChange={e => setIncomeDependent(e.target.value)}
                           />
                         </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+            
+                    name="type_income_dependent"
+                    render={({ field }) => (
+                      <FormItem className="w-[308px]">
+                        <FormLabel>Tipo de Renda</FormLabel>
+                        <FormControl>
+                          <Select
+                            onValueChange={value => {
+                      
+                              setTypeIncomeDependent(value)
+                            }}
+                            defaultValue={typeIncomeDependent}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Selecione" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="FORMAL">Formal</SelectItem>
+                              <SelectItem value="INFORMAL">Informal</SelectItem>
+                              <SelectItem value="APOSENTADORIA">
+                                Aposentadoria
+                              </SelectItem>
+                              <SelectItem value="BPC">BPC</SelectItem>
+                              <SelectItem value="PENSAO">Pensao</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                   
+                    name="nis_dependent"
+                    render={({ field }) => (
+                      <FormItem className="w-[308px]">
+                        <FormLabel>NIS</FormLabel>
+                        <FormControl>
+                          <Select
+                            onValueChange={value => {
+                            
+                              setNisDependent(value)
+                            }}
+                            defaultValue={nisDependent}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Selecione" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="SIM">Sim</SelectItem>
+                              <SelectItem value="NAO">Não</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+
                         <FormMessage />
                       </FormItem>
                     )}
@@ -616,14 +914,20 @@ export function FamilyForm({
                 >
                   Adicionar
                 </Button>
-                <div className="w-[656px]">
+                <div className="">
                   <TabeBase className="bg-white rounded-sm">
                     <TableHeader className="bg-gray-200 rounded-sm">
                       <TableRow>
                         <TableHead>Nome</TableHead>
                         <TableHead>CPF</TableHead>
                         <TableHead>Data de Nascimento</TableHead>
+                        <TableHead>Estado Civil</TableHead>
+                        <TableHead>Profissão</TableHead>
+                        <TableHead>Parentesco</TableHead>
+                        <TableHead>Escolaridade</TableHead>
                         <TableHead>Renda</TableHead>
+                        <TableHead>Tipo de Renda</TableHead>
+                        <TableHead>NIS</TableHead>
                         <TableHead>Ação</TableHead>
                       </TableRow>
                     </TableHeader>
@@ -641,7 +945,15 @@ export function FamilyForm({
                                   )
                                 : 'Data inválida'}
                             </TableCell>
+                            <TableCell>
+                              {item.maritial_status_dependent}
+                            </TableCell>
+                            <TableCell>{item.profession_dependent}</TableCell>
+                            <TableCell>{item.kinship_dependent}</TableCell>
+                            <TableCell>{item.schooling_dependent}</TableCell>
                             <TableCell>{item.income_dependent}</TableCell>
+                            <TableCell>{item.type_income_dependent}</TableCell>
+                            <TableCell>{item.nis_dependent}</TableCell>
                             <TableCell>
                               <Button
                                 variant={'outline'}
@@ -815,16 +1127,269 @@ export function FamilyForm({
                 </div>
               </div>
             </div>
+            <div className="border-b mb-5 pb-5 flex gap-8 w-full">
+              <p className="text-sm font-medium w-[324px] ">Residência</p>
+              <div className="w-[956px] flex gap-4 flex-wrap">
+                <FormField
+                  control={form.control}
+                  name="type_residence"
+                  render={({ field }) => (
+                    <FormItem className="w-[308px]">
+                      <FormLabel>Tipo</FormLabel>
+                      <FormControl>
+                        <Select
+                          onValueChange={value => {
+                            field.onChange(value)
+                          }}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Selecione" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="PROPRIA">Própria</SelectItem>
+                            <SelectItem value="ALUGADA">Alugada</SelectItem>
+                            <SelectItem value="CEDIDA">Cedida</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
 
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="is_bathroom"
+                  render={({ field }) => (
+                    <FormItem className="w-[308px]">
+                      <FormLabel>Possuí Banheiro</FormLabel>
+                      <FormControl>
+                        <Select
+                          onValueChange={value => {
+                            field.onChange(value)
+                          }}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Selecione" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="SIM">Sim</SelectItem>
+                            <SelectItem value="NAO">Não</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="type_house"
+                  render={({ field }) => (
+                    <FormItem className="w-[308px]">
+                      <FormLabel>Casa de</FormLabel>
+                      <FormControl>
+                        <Select
+                          onValueChange={value => {
+                            field.onChange(value)
+                      
+                          }}
+                      
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Selecione" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="MADEIRA">Madeira</SelectItem>
+                            <SelectItem value="ALVENARIA">Alvenaria</SelectItem>
+                            <SelectItem value="MISTA">Mista</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="length_of_residence"
+                  render={({ field }) => (
+                    <FormItem className="w-[308px]">
+                      <FormLabel>Tempo de Moradia</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Tempo de Moradia" {...field} />
+                      </FormControl>
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+            <div className="border-b mb-5 pb-5 flex gap-8 w-full">
+              <p className="text-sm font-medium w-[324px] ">Benefícios</p>
+              <div className="w-[956px] flex gap-4 flex-wrap">
+                <FormField
+                  control={form.control}
+                  name="is_bolsa_familia"
+                  render={({ field }) => (
+                    <FormItem className="w-[308px]">
+                      <FormLabel>Possuí Bolsa Família?</FormLabel>
+                      <FormControl>
+                        <Select
+                          onValueChange={value => {
+                            field.onChange(value)
+                    
+                          }}
+                        
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Selecione" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="SIM">Sim</SelectItem>
+                            <SelectItem value="NAO">Não</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="value_bolsa_familia"
+                  render={({ field }) => (
+                    <FormItem className="w-[308px]">
+                      <FormLabel>Valor Bolsa Família</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Valor Bolsa Família" {...field} />
+                      </FormControl>
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+
+                <FormField
+                  control={form.control}
+                  name="BPC"
+                  render={({ field }) => (
+                    <FormItem className="w-[308px]">
+                      <FormLabel>
+                        BPC-Beneficio de Prestação Continuada
+                      </FormLabel>
+                      <FormControl>
+                        <Select
+                          onValueChange={value => {
+                            field.onChange(value)
+                        
+                          }}
+                        
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Selecione" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="SIM">Sim</SelectItem>
+                            <SelectItem value="NAO">Não</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="social_assistance_program"
+                  render={({ field }) => (
+                    <FormItem className="w-[308px]">
+                      <FormLabel className="text-xs">
+                        Inserido em algum Programa da Assistência Social
+                      </FormLabel>
+                      <FormControl>
+                        <Select
+                          onValueChange={value => {
+                            field.onChange(value)
+                     
+                          }}
+                       
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Selecione" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="SIM">Sim</SelectItem>
+                            <SelectItem value="NAO">Não</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="is_single_cadastre"
+                  render={({ field }) => (
+                    <FormItem className="w-[308px]">
+                      <FormLabel>Possui Cadastro Único</FormLabel>
+                      <FormControl>
+                        <Select
+                          onValueChange={value => {
+                            field.onChange(value)
+                         
+                          }}
+               
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Selecione" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="SIM">Sim</SelectItem>
+                            <SelectItem value="NAO">Não</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
             <div className="border-b mb-5 pb-5 flex gap-8 w-full">
               <p className="text-sm font-medium w-[324px]">Endereço</p>
 
-              <div className=" flex gap-4  w-[656px] flex-wrap ">
+              <div className=" flex gap-4  w-[956px] flex-wrap ">
                 <FormField
                   control={form.control}
                   name="zip_code"
                   render={({ field }) => (
-                    <FormItem className="w-[208px]">
+                    <FormItem className="w-[232px]">
                       <FormLabel>CEP</FormLabel>
                       <FormControl>
                         <Input placeholder="CEP" {...field} />
@@ -838,7 +1403,7 @@ export function FamilyForm({
                   control={form.control}
                   name="street"
                   render={({ field }) => (
-                    <FormItem className="w-[308px]">
+                    <FormItem className="w-[320px]">
                       <FormLabel>Logradouro</FormLabel>
                       <FormControl>
                         <Input placeholder="Logradouro" {...field} />
@@ -866,7 +1431,7 @@ export function FamilyForm({
                   control={form.control}
                   name="neighborhood"
                   render={({ field }) => (
-                    <FormItem className="w-[208px]">
+                    <FormItem className="w-[250px]">
                       <FormLabel>Bairro</FormLabel>
                       <FormControl>
                         <Input placeholder="Bairro" {...field} />
@@ -879,7 +1444,7 @@ export function FamilyForm({
                 <FormField
                   name="complement"
                   render={({ field }) => (
-                    <FormItem className="w-[432px]">
+                    <FormItem className="w-[232px]">
                       <FormLabel>Complemento</FormLabel>
                       <FormControl>
                         <Input placeholder="Complemento" {...field} />
@@ -927,7 +1492,7 @@ export function FamilyForm({
                   control={form.control}
                   name="city"
                   render={({ field }) => (
-                    <FormItem className="w-[320px]">
+                    <FormItem className="w-[370px]">
                       <FormLabel>Cidade</FormLabel>
                       <FormControl>
                         <Select
@@ -961,7 +1526,7 @@ export function FamilyForm({
                 <FormField
                   name="notes"
                   render={({ field }) => (
-                    <FormItem className="w-[656px]">
+                    <FormItem className="w-[956px]">
                       <FormLabel>Anotações</FormLabel>
                       <FormControl>
                         <Textarea
@@ -970,6 +1535,53 @@ export function FamilyForm({
                           {...field}
                         />
                       </FormControl>
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+
+            <div className="border-b mb-5 pb-5 flex gap-8 w-full">
+              <p className="text-sm font-medium w-[324px]">Data da Visita</p>
+              <div className="w-[356px]">
+                <FormField
+                  name="date_visited"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col w-[308px]">
+                      <FormLabel className="mb-2.5">Data da Visita</FormLabel>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant={'outline'}
+                              className={cn(
+                                'text-left font-normal',
+                                !field.value && 'text-muted-foreground'
+                              )}
+                              {...field}
+                            >
+                              {field.value ? (
+                                format(Number(field.value), 'dd/MM/yyyy')
+                              ) : (
+                                <span>Selecione</span>
+                              )}
+                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={field.value}
+                            onSelect={date => {
+                              field.onChange(date)
+                            }}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
 
                       <FormMessage />
                     </FormItem>

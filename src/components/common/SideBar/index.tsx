@@ -104,36 +104,34 @@ export function SideBar() {
                   })}
                 </li>
               </ul>
-              <div className="absolute bottom-0 left-0 flex gap-20  items-center p-4">
-                <div className="flex gap-2 ">
-                  <div>
-                    <Avatar>
-                      <Image
-                        src={ImageAvatar}
-                        className="w-10 h-10"
-                        alt="Avatar"
-                      />
-                    </Avatar>
-                  </div>
+              <div className="absolute bottom-0 left-0 w-full p-4">
+  <div className="flex justify-between items-center">
+    <div className="flex gap-2">
+      <Avatar>
+        <Image
+          src={ImageAvatar}
+          className="w-10 h-10"
+          alt="Avatar"
+        />
+      </Avatar>
+      <p className="text-base whitespace-nowrap mt-2 text-gray-500 overflow-ellipsis max-w-[140px]">
+      {session?.user?.name?.split(" ")[0]}
+      </p>
+    </div>
 
-                  <p className="text-base  whitespace-nowrap mt-2 text-gray-500">
-                    {session?.user?.name}
-                  </p>
-                </div>
+    <div
+      className="cursor-pointer"
+      data-tooltip-id="tooltip-signout"
+      data-tooltip-content={'Sair'}
+      data-tooltip-place="top"
+      onClick={handleSignOut}
+    >
+      <Tooltip id="tooltip-signout" />
+      <ArrowRightOnRectangleIcon className="w-7 h-7 text-gray-500 hover:text-gray-400" />
+    </div>
+  </div>
+</div>
 
-                <div
-                  className="cursor-pointer"
-                  onClick={() => {}}
-                  data-tooltip-id="tooltip-signout"
-                  data-tooltip-content={'Sair'}
-                  data-tooltip-place="top"
-                >
-                  <Tooltip id="tooltip-signout" />
-                  <div className="cursor-pointer" onClick={handleSignOut}>
-                    <ArrowRightOnRectangleIcon className="w-7 h-7 text-gray-500 hover:text-gray-400" />
-                  </div>
-                </div>
-              </div>
             </>
           )}
         </div>

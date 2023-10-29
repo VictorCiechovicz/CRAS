@@ -114,7 +114,7 @@ export const columns = (
       }
     },
     {
-      label: 'Renda',
+      label: 'Renda Percapta',
       field: 'income_dependent',
       renderCell(_, rowData: FamilyList) {
         const totalIncome = rowData.dependents

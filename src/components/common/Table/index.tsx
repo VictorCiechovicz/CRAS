@@ -21,6 +21,13 @@ import {
 import { Dependent, PeriodBenefit } from '@prisma/client'
 import { format } from 'date-fns'
 import { Tooltip } from 'react-tooltip'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '..'
 
 const statusMap = {
   ACTIVE: 'Ativo',
@@ -38,10 +45,12 @@ export function Table<T>({
   onPageChange,
   onPageSizeChange,
   emptyMessage = 'Não há itens na tabela.',
-  onRowClick
+  onRowClick,
+  isFilterStatus = false
 }: TableProps<T> & PaginationProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [filteredData, setFilteredData] = useState(data)
+  const [statusFilter, setStatusFilter] = useState('')
 
   const paginatedData = filteredData.slice(
     (currentPage - 1) * pageSize,
@@ -92,8 +101,6 @@ export function Table<T>({
       }
     })
 
-  
-
     const csv = Papa.unparse(organizedData, {
       delimiter: ';'
     })
@@ -105,8 +112,8 @@ export function Table<T>({
   useEffect(() => {
     if (searchQuery) {
       setFilteredData(
-        data.filter((row: any) =>
-          columns.some(
+        data?.filter((row: any) =>
+          columns?.some(
             (col: any) =>
               row[col.field] !== null &&
               row[col.field] !== undefined &&
@@ -122,11 +129,47 @@ export function Table<T>({
     }
   }, [searchQuery, data, columns])
 
+  useEffect(() => {
+    let filtered = data
+
+    if (searchQuery) {
+      filtered = filtered?.filter(row =>
+        columns.some(col =>
+          row[col.field]
+            ?.toString()
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase())
+        )
+      )
+    }
+
+    if (statusFilter) {
+      filtered = filtered.filter(row => row.status === statusFilter)
+    }
+
+    setFilteredData(filtered)
+  }, [searchQuery, statusFilter, data, columns])
+
   return (
     <div className="bg-white rounded-3xl shadow-md">
       <div className="pb-12 pt-11 w-full flex justify-between items-center px-7 ">
         <p className="text-2xl font-semibold">{title}</p>
         <div className="flex items-end gap-4">
+          {isFilterStatus && (
+            <div>
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger aria-label="Filtrar por status">
+                  <SelectValue placeholder="Filtrar por status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="ACTIVE">Ativo</SelectItem>
+                  <SelectItem value="INACTIVE">Inativo</SelectItem>
+                  <SelectItem value="">Todos</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+
           <div>
             <Search onSearchChange={setSearchQuery} />
           </div>
@@ -150,7 +193,7 @@ export function Table<T>({
         <>
           <TabeBase>
             {caption && <TableCaption>{caption}</TableCaption>}
-            <TableHeader>
+            <TableHeader className='whitespace-nowrap'>
               <TableRow>
                 {columns.map((col, index) => (
                   <TableHead key={index} className={col.className}>

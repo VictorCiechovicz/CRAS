@@ -17,36 +17,55 @@ enum FamilyStatus {
 }
 
 model Familys {
-  id                String          @id @default(auto()) @map("_id") @db.ObjectId
-  name              String
-  CPF               String
-  RG                String
-  email             String
-  phone             String
-  city              String
-  neighborhood      String
-  number            String
-  state             String
-  street            String
-  zip_code          String
-  notes             String?
-  createdAt         DateTime        @default(now())
-  updatedAt         DateTime        @default(now())
-  status            FamilyStatus    @default(PENDING)
-  createdByUserId   String
-  createdByUserName String
-  dependents        Dependent[]
-  periodBenefit     PeriodBenefit[]
+  id                        String          @id @default(auto()) @map("_id") @db.ObjectId
+  name                      String
+  CPF                       String
+  RG                        String
+  phone                     String
+  city                      String
+  neighborhood              String
+  number                    String
+  state                     String
+  street                    String
+  zip_code                  String
+  notes                     String?
+  date_birth_responsible    DateTime
+  profession_responsible    String
+  nis_responsible           String
+  type_residence            String
+  is_bathroom               String
+  type_house                String
+  length_of_residence       String
+  is_bolsa_familia          String
+  value_bolsa_familia       String?
+  BPC                       String
+  social_assistance_program String
+  is_single_cadastre        String
+  notes_reprove             String?
+  date_visited              DateTime
+  createdAt                 DateTime        @default(now())
+  updatedAt                 DateTime        @default(now())
+  status                    FamilyStatus    @default(PENDING)
+  createdByUserId           String
+  createdByUserName         String
+  dependents                Dependent[]
+  periodBenefit             PeriodBenefit[]
 }
 
 model Dependent {
-  id                   String   @id @default(auto()) @map("_id") @db.ObjectId
-  name_dependent       String
-  CPF_dependent        String
-  date_birth_dependent DateTime
-  income_dependent     String
-  familyId             String   @db.ObjectId
-  family               Familys  @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  id                        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name_dependent            String
+  CPF_dependent             String
+  date_birth_dependent      DateTime
+  maritial_status_dependent String
+  profession_dependent      String
+  kinship_dependent         String
+  schooling_dependent       String
+  income_dependent          String
+  type_income_dependent     String
+  nis_dependent             String
+  familyId                  String   @db.ObjectId
+  family                    Familys  @relation(fields: [familyId], references: [id], onDelete: Cascade)
 }
 
 model PeriodBenefit {
