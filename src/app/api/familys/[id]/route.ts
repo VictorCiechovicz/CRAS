@@ -72,12 +72,12 @@ export const PUT = async (request: Request, { params }: { params: IParams }) => 
       dependents,
       periodBenefit,
       notes,
-
+      status
     } = body;
 
     if (!name || !CPF || !RG || !phone ||
       !city || !neighborhood || !number || !state ||
-      !street || !zip_code || !createdByUserId || !createdByUserName) {
+      !street || !zip_code || !createdByUserId || !createdByUserName || !status) {
       return new NextResponse('Bad Request', { status: 400 });
     }
 
@@ -118,6 +118,7 @@ export const PUT = async (request: Request, { params }: { params: IParams }) => 
         createdByUserId,
         createdByUserName,
         notes,
+        status,
         updatedAt: new Date(),
         dependents: {
           update: existingDependents.map((dep: Dependent) => ({
