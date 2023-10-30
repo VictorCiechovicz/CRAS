@@ -1,42 +1,102 @@
-"use client"
+'use client';
 
-import * as React from "react"
-import { format } from "date-fns"
-import { Calendar as CalendarIcon } from "lucide-react"
+import { ReactElement, ReactNode, useState } from 'react';
+import ReactDatePicker, {
+  ReactDatePickerProps,
+  registerLocale,
+} from 'react-datepicker';
+import ptBR from 'date-fns/locale/pt-BR';
 
-import { cn } from "@/src/lib/utils"
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
-import { Button } from "../ui/button"
-import { Calendar } from "../ui/calendar"
+registerLocale('ptBR', ptBR);
 
+import { DatePickerHeader } from './DatePickerHeader';
 
+import 'react-datepicker/dist/react-datepicker.css';
+import './date-picker.css';
 
+export interface DatePickerProps extends ReactDatePickerProps {
+  label?: string;
+  required?: boolean;
+  placeholder?: string;
+  handleChangeDate?: (value: Date) => void;
+  disabled?: boolean;
+  showTimeSelect?: boolean;
+  showTimeSelectOnly?: boolean;
+  icon?: ReactElement;
+}
 
-export function DatePicker() {
-  const [date, setDate] = React.useState<Date>()
+export function DatePicker({
+  selected,
+  dateFormat = 'dd/MM/yyyy',
+  customInput,
+  label,
+  placeholder,
+  handleChangeDate,
+  required = true,
+  disabled = false,
+  showTimeSelect,
+  showTimeSelectOnly,
+  icon,
+}: DatePickerProps) {
+  const [getSelected, setSelected] = useState(selected);
+
+  const handleSelect = (date: Date) => {
+    setSelected(date);
+    handleChangeDate && handleChangeDate(date);
+  };
 
   return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button
-          variant={"outline"}
-          className={cn(
-            "w-[280px] justify-start text-left font-normal",
-            !date && "text-muted-foreground"
-          )}
-        >
-          <CalendarIcon className="mr-2 h-4 w-4" />
-          {date ? format(date, "PPP") : <span>Pick a date</span>}
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-auto p-0">
-        <Calendar
-          mode="single"
-          selected={date}
-          onSelect={setDate}
-          initialFocus
-        />
-      </PopoverContent>
-    </Popover>
-  )
+    <>
+      {label && (
+        <label className="label">
+          {label}
+          {required && '*'}
+        </label>
+      )}
+
+      <div className="mt-2">
+        <div className="relative">
+          <ReactDatePicker
+            locale="ptBR"
+            portalId="root-portal"
+            selected={getSelected}
+            className={`${icon ? 'input-icon' : 'datepicker-input'} `}
+            withPortal={showTimeSelectOnly !== true}
+            showTimeSelect={showTimeSelect}
+            showTimeSelectOnly={showTimeSelectOnly}
+            timeIntervals={15}
+            timeCaption="Time"
+            dateFormat={dateFormat}
+            customInput={customInput}
+            required={required}
+            disabled={disabled}
+            readOnly={disabled}
+            placeholderText={placeholder}
+            onChange={handleSelect}
+            renderCustomHeader={({
+              date,
+              changeMonth,
+              decreaseMonth,
+              changeYear,
+              increaseMonth,
+              prevMonthButtonDisabled,
+              nextMonthButtonDisabled,
+            }) => (
+              <DatePickerHeader
+                date={date}
+                changeMonth={changeMonth}
+                changeYear={changeYear}
+                decreaseMonth={decreaseMonth}
+                increaseMonth={increaseMonth}
+                prevMonthButtonDisabled={prevMonthButtonDisabled}
+                nextMonthButtonDisabled={nextMonthButtonDisabled}
+              />
+            )}
+          />
+
+          {icon && <div className="input-icon-container">{icon}</div>}
+        </div>
+      </div>
+    </>
+  );
 }

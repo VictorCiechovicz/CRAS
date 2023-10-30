@@ -46,6 +46,7 @@ import useLoading from '@/src/hook/useLoading'
 import Loading from '../../common/Loading'
 import { useSession } from 'next-auth/react'
 import { validateCPF } from '@/src/utils/validateCPF'
+import { DatePicker } from '../../common/DatePicker'
 
 export type FormValues = z.infer<typeof FormSchema>
 
@@ -551,45 +552,27 @@ export function FamilyForm({
 
                 <FormField
                   name="date_birth_responsible"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col w-[308px]">
-                      <FormLabel className="mb-2.5">
-                        Data de Nascimento
-                      </FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant={'outline'}
-                              className={cn(
-                                'text-left font-normal',
-                                !field.value && 'text-muted-foreground'
-                              )}
-                              {...field}
-                            >
-                              {isValid(new Date(field.value))
-                                ? format(new Date(field.value), 'dd/MM/yyyy')
-                                : 'Data inválida'}
+                  render={({ field }) => {
+                    const validDate = isValid(new Date(field.value))
+                      ? new Date(field.value)
+                      : null
 
-                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={date => {
-                              field.onChange(date)
-                            }}
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
-
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                    return (
+                      <FormItem className="flex flex-col w-[308px]">
+                        <FormLabel className="mb-2.5">
+                          Data de Nascimento
+                        </FormLabel>
+                        <DatePicker
+                          selected={validDate}
+                          handleChangeDate={date => field.onChange(date)}
+                          onChange={date => field.onChange(date)}
+                          dateFormat="dd/MM/yyyy"
+                          placeholder="Selecione uma data"
+                        />
+                        <FormMessage />
+                      </FormItem>
+                    )
+                  }}
                 />
 
                 <FormField
@@ -697,50 +680,36 @@ export function FamilyForm({
 
                   <FormField
                     name="date_birth_dependent"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-col w-[308px]">
-                        <FormLabel className="mb-2.5">
-                          Data de Nascimento
-                        </FormLabel>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <FormControl>
-                              <Button
-                                variant={'outline'}
-                                className={cn(
-                                  'text-left font-normal',
-                                  !dateBirthDependent && 'text-muted-foreground'
-                                )}
-                              >
-                                {dateBirthDependent ? (
-                                  format(
-                                    Number(dateBirthDependent),
-                                    'dd/MM/yyyy'
-                                  )
-                                ) : (
-                                  <span>Selecione</span>
-                                )}
-                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                              </Button>
-                            </FormControl>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar
-                              mode="single"
-                              selected={dateBirthDependent}
-                              onSelect={setDateBirthDependent}
-                              disabled={date =>
-                                date > new Date() ||
-                                date < new Date('1900-01-01')
-                              }
-                              initialFocus
-                            />
-                          </PopoverContent>
-                        </Popover>
+                    render={({ field }) => {
+                      const validDate =
+                        dateBirthDependent &&
+                        isValid(new Date(dateBirthDependent))
+                          ? new Date(dateBirthDependent)
+                          : null
 
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                      return (
+                        <FormItem className="flex flex-col w-[308px]">
+                          <FormLabel className="mb-2.5">
+                            Data de Nascimento
+                          </FormLabel>
+                          <DatePicker
+                            selected={validDate}
+                            handleChangeDate={date => {
+                              setDateBirthDependent(date ?? undefined)
+                              field.onChange(date ?? undefined)
+                            }}
+                            onChange={date => {
+                              setDateBirthDependent(date ?? undefined)
+                              field.onChange(date ?? undefined)
+                            }}
+                            dateFormat="dd/MM/yyyy"
+                            placeholder="Selecione uma data"
+                          />
+
+                          <FormMessage />
+                        </FormItem>
+                      )
+                    }}
                   />
 
                   <FormField
@@ -1465,43 +1434,25 @@ export function FamilyForm({
               <div className="w-[356px]">
                 <FormField
                   name="date_visited"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col w-[308px]">
-                      <FormLabel className="mb-2.5">Data da Visita</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant={'outline'}
-                              className={cn(
-                                'text-left font-normal',
-                                !field.value && 'text-muted-foreground'
-                              )}
-                              {...field}
-                            >
-                              {isValid(new Date(field.value))
-                                ? format(new Date(field.value), 'dd/MM/yyyy')
-                                : 'Data inválida'}
+                  render={({ field }) => {
+                    const validDate = isValid(new Date(field.value))
+                      ? new Date(field.value)
+                      : null
 
-                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={date => {
-                              field.onChange(date)
-                            }}
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
-
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                    return (
+                      <FormItem className="flex flex-col w-[308px]">
+                        <FormLabel className="mb-2.5">Data da Visita</FormLabel>
+                        <DatePicker
+                          selected={validDate}
+                          handleChangeDate={date => field.onChange(date)}
+                          onChange={date => field.onChange(date)}
+                          dateFormat="dd/MM/yyyy"
+                          placeholder="Selecione uma data"
+                        />
+                        <FormMessage />
+                      </FormItem>
+                    )
+                  }}
                 />
               </div>
             </div>
