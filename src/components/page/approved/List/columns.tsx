@@ -10,7 +10,7 @@ import {
   CheckCircleIcon,
   CalendarIcon
 } from '@heroicons/react/24/outline'
-import { format } from 'date-fns'
+import { format, isValid } from 'date-fns'
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
 import { Tooltip } from 'react-tooltip'
 import {
@@ -24,6 +24,7 @@ import {
 } from '@/src/components/common'
 import { useState } from 'react'
 import { cn } from '@/src/lib/utils'
+import { DatePicker } from '@/src/components/common/DatePicker'
 
 interface ActionButtonsProps {
   router: AppRouterInstance
@@ -71,7 +72,6 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
         description: 'Família atualizada com sucesso!',
         variant: 'default'
       })
-     
     } catch (error) {
       toast({
         title: 'Erro',
@@ -117,65 +117,44 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
           ) : (
             <div>
               <p className="text-lg font-medium ">Períodos de Benefício</p>
-
               <div className="flex gap-4 mb-10 justify-center">
                 <div>
                   <p className="text-sm font-medium ">Data de Entrada</p>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant={'outline'}
-                        className={cn(
-                          'text-left font-normal',
-                          !dateStartBenefit && 'text-muted-foreground'
-                        )}
-                      >
-                        {dateStartBenefit ? (
-                          format(Number(dateStartBenefit), 'dd/MM/yyyy')
-                        ) : (
-                          <span>Selecione</span>
-                        )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={dateStartBenefit}
-                        onSelect={setDateStartBenefit}
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
+
+                  <DatePicker
+                    selected={
+                      dateStartBenefit && isValid(new Date(dateStartBenefit))
+                        ? new Date(dateStartBenefit)
+                        : null
+                    }
+                    handleChangeDate={date => {
+                      setDateStartBenefit(date ?? undefined)
+                    }}
+                    onChange={date => {
+                      setDateStartBenefit(date ?? undefined)
+                    }}
+                    dateFormat="dd/MM/yyyy"
+                    placeholder="Selecione uma data"
+                  />
                 </div>
                 <div>
                   <p className="text-sm font-medium ">Data de Saída</p>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant={'outline'}
-                        className={cn(
-                          'text-left font-normal',
-                          !dateEndBenefit && 'text-muted-foreground'
-                        )}
-                      >
-                        {dateEndBenefit ? (
-                          format(Number(dateEndBenefit), 'dd/MM/yyyy')
-                        ) : (
-                          <span>Selecione</span>
-                        )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={dateEndBenefit}
-                        onSelect={setDateEndBenefit}
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
+
+                  <DatePicker
+                    selected={
+                      dateEndBenefit && isValid(new Date(dateEndBenefit))
+                        ? new Date(dateEndBenefit)
+                        : null
+                    }
+                    handleChangeDate={date => {
+                      setDateEndBenefit(date ?? undefined)
+                    }}
+                    onChange={date => {
+                      setDateEndBenefit(date ?? undefined)
+                    }}
+                    dateFormat="dd/MM/yyyy"
+                    placeholder="Selecione uma data"
+                  />
                 </div>
               </div>
             </div>
