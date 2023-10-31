@@ -159,7 +159,7 @@ export function FamilyForm({
   const [CPFDependent, setCPFDependent] = useState('')
   const [dateBirthDependent, setDateBirthDependent] = useState<
     Date | undefined
-  >(undefined)
+  >(new Date())
   const [maritialStatusDependent, setMaritialStatusDependent] = useState('')
   const [professionDependent, setProfessionDependent] = useState('')
   const [kinshipDependent, setKinshipDependent] = useState('')
@@ -193,7 +193,7 @@ export function FamilyForm({
     number: familie?.number,
     CPF: familie?.CPF,
     RG: familie?.RG,
-    date_birth_responsible: familie?.date_birth_responsible,
+    date_birth_responsible: familie?.date_birth_responsible ? new Date(familie?.date_birth_responsible) : undefined,
     profession_responsible: familie?.profession_responsible,
     nis_responsible: familie?.nis_responsible,
     phone: familie?.phone,
@@ -215,7 +215,7 @@ export function FamilyForm({
     social_assistance_program: familie?.social_assistance_program,
     is_single_cadastre: familie?.is_single_cadastre,
     notes_reprove: familie?.notes_reprove,
-    date_visited: familie?.date_visited
+    date_visited: familie?.date_visited ? new Date(familie?.date_visited) : undefined,
   }
 
   const session = useSession()
@@ -693,14 +693,15 @@ export function FamilyForm({
                             Data de Nascimento
                           </FormLabel>
                           <DatePicker
+                          
                             selected={validDate}
                             handleChangeDate={date => {
                               setDateBirthDependent(date ?? undefined)
-                              field.onChange(date ?? undefined)
+                        
                             }}
                             onChange={date => {
                               setDateBirthDependent(date ?? undefined)
-                              field.onChange(date ?? undefined)
+                            
                             }}
                             dateFormat="dd/MM/yyyy"
                             placeholder="Selecione uma data"

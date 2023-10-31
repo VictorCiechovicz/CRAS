@@ -46,7 +46,7 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
 
   if (!family) return null
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose} >
       <div>
         <div className="flex justify-between items-center pb-10">
           <div className="flex gap-3">
@@ -72,7 +72,7 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
             <div className="bg-gray-100 p-2">
               <p>Dados Responsável</p>
             </div>
-            <div className="p-2 flex gap-2  flex-wrap">
+            <div className="p-2 gap-2  flex-wrap">
               <div className="pb-1 flex gap-1">
                 <p className="font-semibold">Nome:</p> {family?.name}
               </div>
