@@ -67,12 +67,7 @@ export const PUT = async (request: Request, { params }: { params: IParams }) => 
       state,
       street,
       zip_code,
-      createdByUserId,
-      createdByUserName,
-      dependents,
-      periodBenefit,
       notes,
-      status,
       notes_reprove,
       date_birth_responsible,
       profession_responsible,
@@ -86,7 +81,12 @@ export const PUT = async (request: Request, { params }: { params: IParams }) => 
       BPC,
       social_assistance_program,
       is_single_cadastre,
-      date_visited
+      date_visited,
+      createdByUserId,
+      createdByUserName,
+      dependents,
+      periodBenefit,
+      status,
     } = body;
 
     if (
@@ -100,9 +100,7 @@ export const PUT = async (request: Request, { params }: { params: IParams }) => 
       !state ||
       !street ||
       !zip_code ||
-      !createdByUserId ||
-      !createdByUserName ||
-      !status ||
+      !notes ||
       !notes_reprove ||
       !date_birth_responsible ||
       !profession_responsible ||
@@ -116,9 +114,14 @@ export const PUT = async (request: Request, { params }: { params: IParams }) => 
       !BPC ||
       !social_assistance_program ||
       !is_single_cadastre ||
-      !date_visited
+      !date_visited ||
+      !createdByUserId ||
+      !createdByUserName ||
+      !dependents ||
+      !periodBenefit ||
+      !status
     ) {
-      return new NextResponse('Bad Request', { status: 400 });
+      return new NextResponse('Body Malformated', { status: 400 });
     }
 
     if (dependents && !Array.isArray(dependents)) {

@@ -193,7 +193,9 @@ export function FamilyForm({
     number: familie?.number,
     CPF: familie?.CPF,
     RG: familie?.RG,
-    date_birth_responsible: familie?.date_birth_responsible ? new Date(familie?.date_birth_responsible) : undefined,
+    date_birth_responsible: familie?.date_birth_responsible
+      ? new Date(familie?.date_birth_responsible)
+      : undefined,
     profession_responsible: familie?.profession_responsible,
     nis_responsible: familie?.nis_responsible,
     phone: familie?.phone,
@@ -215,7 +217,9 @@ export function FamilyForm({
     social_assistance_program: familie?.social_assistance_program,
     is_single_cadastre: familie?.is_single_cadastre,
     notes_reprove: familie?.notes_reprove,
-    date_visited: familie?.date_visited ? new Date(familie?.date_visited) : undefined,
+    date_visited: familie?.date_visited
+      ? new Date(familie?.date_visited)
+      : undefined
   }
 
   const session = useSession()
@@ -597,22 +601,7 @@ export function FamilyForm({
                     <FormItem className="w-[308px]">
                       <FormLabel>NIS</FormLabel>
                       <FormControl>
-                        <Select
-                          onValueChange={value => {
-                            field.onChange(value)
-                          }}
-                          defaultValue={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Selecione" {...field} />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="SIM">Sim</SelectItem>
-                            <SelectItem value="NAO">Não</SelectItem>
-                          </SelectContent>
-                        </Select>
+                        <Input placeholder="NIS" {...field} />
                       </FormControl>
 
                       <FormMessage />
@@ -693,15 +682,12 @@ export function FamilyForm({
                             Data de Nascimento
                           </FormLabel>
                           <DatePicker
-                          
                             selected={validDate}
                             handleChangeDate={date => {
                               setDateBirthDependent(date ?? undefined)
-                        
                             }}
                             onChange={date => {
                               setDateBirthDependent(date ?? undefined)
-                            
                             }}
                             dateFormat="dd/MM/yyyy"
                             placeholder="Selecione uma data"
@@ -785,24 +771,48 @@ export function FamilyForm({
                       </FormItem>
                     )}
                   />
+
                   <FormField
                     name="schooling_dependent"
                     render={({ field }) => (
                       <FormItem className="w-[308px]">
                         <FormLabel>Escolaridade</FormLabel>
                         <FormControl>
-                          <Input
-                            placeholder="Escolaridade"
-                            value={schoolingDependent}
-                            onChange={e =>
-                              setSchoolingDependent(e.target.value)
-                            }
-                          />
+                          <Select
+                            onValueChange={value => {
+                              setSchoolingDependent(value)
+                            }}
+                            defaultValue={schoolingDependent}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Selecione" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="FUNDAMENTAL-INCOMPLETO">
+                                Fundamental-Incompleto
+                              </SelectItem>
+                              <SelectItem value="FUNDAMENTAL-COMPLETO">
+                                Fundamental-Completo
+                              </SelectItem>
+                              <SelectItem value="MEDIO-INCOMPLETO">
+                                Médio-Incompleto
+                              </SelectItem>
+                              <SelectItem value="MEDIO-COMPLETO">
+                                Médio-Completo
+                              </SelectItem>
+                              <SelectItem value="SUPERIOR">Superior</SelectItem>
+                              <SelectItem value="NENHUMA">Nenhuma</SelectItem>
+                            </SelectContent>
+                          </Select>
                         </FormControl>
+
                         <FormMessage />
                       </FormItem>
                     )}
                   />
+
                   <FormField
                     name="income_dependent"
                     render={({ field }) => (
@@ -856,26 +866,14 @@ export function FamilyForm({
                     name="nis_dependent"
                     render={({ field }) => (
                       <FormItem className="w-[308px]">
-                        <FormLabel>NIS</FormLabel>
+                        <FormLabel>Renda</FormLabel>
                         <FormControl>
-                          <Select
-                            onValueChange={value => {
-                              setNisDependent(value)
-                            }}
-                            defaultValue={nisDependent}
-                          >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Selecione" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="SIM">Sim</SelectItem>
-                              <SelectItem value="NAO">Não</SelectItem>
-                            </SelectContent>
-                          </Select>
+                          <Input
+                            placeholder="Renda"
+                            value={nisDependent}
+                            onChange={e => setNisDependent(e.target.value)}
+                          />
                         </FormControl>
-
                         <FormMessage />
                       </FormItem>
                     )}
