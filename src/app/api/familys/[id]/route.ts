@@ -100,9 +100,7 @@ export const PUT = async (request: Request, { params }: { params: IParams }) => 
       !state ||
       !street ||
       !zip_code ||
-      !notes ||
-      !notes_reprove ||
-      !date_birth_responsible ||
+       !date_birth_responsible ||
       !profession_responsible ||
       !nis_responsible ||
       !type_residence ||
@@ -110,8 +108,7 @@ export const PUT = async (request: Request, { params }: { params: IParams }) => 
       !type_house ||
       !length_of_residence ||
       !is_bolsa_familia ||
-      !value_bolsa_familia ||
-      !BPC ||
+       !BPC ||
       !social_assistance_program ||
       !is_single_cadastre ||
       !date_visited ||

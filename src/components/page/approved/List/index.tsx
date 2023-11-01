@@ -33,8 +33,8 @@ export function ApprovedList({ items }: ApprovedListProps) {
         new Date(a.createdAt || '1970-01-01').getTime()
     )
 
-     const pendingItems = sortedItems.filter(item => item.status === 'PENDING')
-    setFilteredItems(pendingItems) 
+    const pendingItems = sortedItems.filter(item => item.status === 'PENDING')
+    setFilteredItems(pendingItems)
   }, [items])
 
   return (

@@ -25,6 +25,7 @@ import {
 import { useState } from 'react'
 import { cn } from '@/src/lib/utils'
 import { DatePicker } from '@/src/components/common/DatePicker'
+import ApprovedModal from '@/src/components/common/Modal/ModalApproved'
 
 interface ActionButtonsProps {
   router: AppRouterInstance
@@ -89,99 +90,19 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
 
   return (
     <div className="flex space-x-4">
-      <Modal
-        isOpen={isModalConfirmOpen}
-        onClose={() => setIsModalConfirmOpen(false)}
-        isCloseButton={false}
-      >
-        <div>
-          <div className="flex justify-center pb-10">
-            <p className="text-xl font-bold">
-              Deseja{' '}
-              {typeUpdate === 'ACTIVE'
-                ? 'Aprovar o cadastro desta Família?'
-                : 'Reprovar o cadastro desta Família?'}{' '}
-            </p>
-          </div>
+      <ApprovedModal
+        isModalConfirmOpen={isModalConfirmOpen}
+        setIsModalConfirmOpen={setIsModalConfirmOpen}
+        typeUpdate={typeUpdate}
+        handleUpdateStatus={handleUpdateStatus}
+        dateStartBenefit={dateStartBenefit}
+        setDateStartBenefit={setDateStartBenefit}
+        dateEndBenefit={dateEndBenefit}
+        setDateEndBenefit={setDateEndBenefit}
+        notesReprove={notesReprove}
+        setNotesReprove={setNotesReprove}
+      />
 
-          {typeUpdate !== 'ACTIVE' ? (
-            <div>
-              <Textarea
-                className="mb-3"
-                placeholder="Informe motivo da Reprovação"
-                maxLength={1000}
-                value={notesReprove}
-                onChange={e => setNotesReprove(e.target.value)}
-              />
-            </div>
-          ) : (
-            <div>
-              <p className="text-lg font-medium ">Períodos de Benefício</p>
-              <div className="flex gap-4 mb-10 justify-center">
-                <div>
-                  <p className="text-sm font-medium ">Data de Entrada</p>
-
-                  <DatePicker
-                    selected={
-                      dateStartBenefit && isValid(new Date(dateStartBenefit))
-                        ? new Date(dateStartBenefit)
-                        : null
-                    }
-                    handleChangeDate={date => {
-                      setDateStartBenefit(date ?? undefined)
-                    }}
-                    onChange={date => {
-                      setDateStartBenefit(date ?? undefined)
-                    }}
-                    dateFormat="dd/MM/yyyy"
-                    placeholder="Selecione uma data"
-                  />
-                </div>
-                <div>
-                  <p className="text-sm font-medium ">Data de Saída</p>
-
-                  <DatePicker
-                    selected={
-                      dateEndBenefit && isValid(new Date(dateEndBenefit))
-                        ? new Date(dateEndBenefit)
-                        : null
-                    }
-                    handleChangeDate={date => {
-                      setDateEndBenefit(date ?? undefined)
-                    }}
-                    onChange={date => {
-                      setDateEndBenefit(date ?? undefined)
-                    }}
-                    dateFormat="dd/MM/yyyy"
-                    placeholder="Selecione uma data"
-                  />
-                </div>
-              </div>
-            </div>
-          )}
-
-          <div className="flex justify-center gap-2  ">
-            <Button
-              className="w-40"
-              variant={'outline'}
-              onClick={event => {
-                event.stopPropagation(), setIsModalConfirmOpen(false)
-              }}
-            >
-              Cancelar
-            </Button>
-            <Button
-              disabled={typeUpdate === 'INACTIVE' && !notesReprove}
-              className="bg-blue-800 w-40"
-              onClick={event => {
-                event.stopPropagation(), handleUpdateStatus(typeUpdate)
-              }}
-            >
-              Sim
-            </Button>
-          </div>
-        </div>
-      </Modal>
       <div
         data-tooltip-id="tooltip-active"
         data-tooltip-content={'Aprovar'}

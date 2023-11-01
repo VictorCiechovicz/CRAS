@@ -47,7 +47,7 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
   if (!family) return null
   return (
     <Modal isOpen={isOpen} onClose={onClose} >
-      <div>
+      <div >
         <div className="flex justify-between items-center pb-10">
           <div className="flex gap-3">
             <div>{formatStatus(family?.status)}</div>
