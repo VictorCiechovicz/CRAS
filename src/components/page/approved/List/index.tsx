@@ -6,6 +6,10 @@ import { columns } from './columns'
 import { FamilyList } from '@/src/schemas'
 import { useRouter } from 'next/navigation'
 import FamilyDetailsModal from '@/src/components/common/Modal/ModalDetails'
+import ApprovedModal from '@/src/components/common/Modal/ModalApproved'
+import axios from 'axios'
+import useLoading from '@/src/hook/useLoading'
+import Loading from '@/src/components/common/Loading'
 
 interface ApprovedListProps {
   items: FamilyList[]
@@ -17,14 +21,63 @@ export function ApprovedList({ items }: ApprovedListProps) {
   const [filteredItems, setFilteredItems] = useState<FamilyList[]>([])
   const [isModalDetailsOpen, setIsModalDetailsOpen] = useState(false)
   const [selectedItem, setSelectedItem] = useState<FamilyList | null>(null)
+  const [isModalConfirmOpen, setIsModalConfirmOpen] = useState(false)
+  const [typeUpdate, setTypeUpdate] = useState('')
+  const [familyId, setFamilyId] = useState('')
+
+  const [dateStartBenefit, setDateStartBenefit] = useState<Date | undefined>(
+    undefined
+  )
+  const [dateEndBenefit, setDateEndBenefit] = useState<Date | undefined>(
+    undefined
+  )
+  const [notesReprove, setNotesReprove] = useState('')
+
+  const { toast } = useToast()
+  const router = useRouter()
+  const { isLoading, showLoading, stopLoading } = useLoading()
 
   const openModalDetails = (item: FamilyList) => {
     setSelectedItem(item)
     setIsModalDetailsOpen(true)
   }
 
-  const { toast } = useToast()
-  const router = useRouter()
+  const handleUpdateStatus = async (status: string) => {
+    showLoading()
+    try {
+      const data = {
+        status,
+        periodBenefit:
+          typeUpdate !== 'INACTIVE'
+            ? {
+                startDate: dateStartBenefit,
+                endDate: dateEndBenefit
+              }
+            : [],
+        notes_reprove: typeUpdate === 'INACTIVE' ? notesReprove : ''
+      }
+      setIsModalConfirmOpen(false)
+      await axios.put(`/api/approved/${familyId}`, data)
+      toast({
+        title: 'Sucesso',
+        description: 'Família atualizada com sucesso!',
+        variant: 'default'
+      })
+    } catch (error) {
+      toast({
+        title: 'Erro',
+        description: 'Não foi possível atualizar a família!',
+        variant: 'destructive'
+      })
+    } finally {
+      setNotesReprove('')
+      setDateStartBenefit(undefined)
+      setDateEndBenefit(undefined)
+
+      stopLoading()
+      router.refresh()
+    }
+  }
 
   useEffect(() => {
     const sortedItems = items.sort(
@@ -39,12 +92,26 @@ export function ApprovedList({ items }: ApprovedListProps) {
 
   return (
     <>
+      {isLoading && <Loading status={isLoading} />}
       <PageHeading
         title="Gestão de Aprovações"
         paths={[
           { href: '/home', name: 'Início' },
           { href: '#', name: 'Gestão de Aprovações' }
         ]}
+      />
+
+      <ApprovedModal
+        isModalConfirmOpen={isModalConfirmOpen}
+        setIsModalConfirmOpen={setIsModalConfirmOpen}
+        typeUpdate={typeUpdate}
+        handleUpdateStatus={handleUpdateStatus}
+        dateStartBenefit={dateStartBenefit}
+        setDateStartBenefit={setDateStartBenefit}
+        dateEndBenefit={dateEndBenefit}
+        setDateEndBenefit={setDateEndBenefit}
+        notesReprove={notesReprove}
+        setNotesReprove={setNotesReprove}
       />
 
       <FamilyDetailsModal
@@ -55,7 +122,13 @@ export function ApprovedList({ items }: ApprovedListProps) {
 
       <Table
         title="Famílias Pendentes"
-        columns={columns(router, toast)}
+        columns={columns(
+          router,
+          toast,
+          setIsModalConfirmOpen,
+          setTypeUpdate,
+          setFamilyId
+        )}
         data={filteredItems}
         currentPage={currentPage}
         pageSize={pageSize}

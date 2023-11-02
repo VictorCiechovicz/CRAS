@@ -43,10 +43,11 @@ import { Dependent, Familys, PeriodBenefit } from '@prisma/client'
 import { FormData, TableBenefitPeriod, TableCompositionsFamily } from './types'
 import { z } from 'zod'
 import useLoading from '@/src/hook/useLoading'
-import Loading from '../../common/Loading'
+
 import { useSession } from 'next-auth/react'
 import { validateCPF } from '@/src/utils/validateCPF'
 import { DatePicker } from '../../common/DatePicker'
+import Loading from '../../common/Loading'
 
 export type FormValues = z.infer<typeof FormSchema>
 

@@ -1,31 +1,13 @@
 'use client'
 
-import axios from 'axios'
 import { Column } from '@/src/components/common/Table/types'
 import { FamilyList } from '@/src/schemas'
 import { formatPhoneNumber } from '@/src/utils/format/formatPhone'
 import { formatStatus } from '@/src/utils/format/status'
-import {
-  XCircleIcon,
-  CheckCircleIcon,
-  CalendarIcon
-} from '@heroicons/react/24/outline'
-import { format, isValid } from 'date-fns'
+import { XCircleIcon, CheckCircleIcon } from '@heroicons/react/24/outline'
+import { format } from 'date-fns'
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
 import { Tooltip } from 'react-tooltip'
-import {
-  Button,
-  Calendar,
-  Modal,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-  Textarea
-} from '@/src/components/common'
-import { useState } from 'react'
-import { cn } from '@/src/lib/utils'
-import { DatePicker } from '@/src/components/common/DatePicker'
-import ApprovedModal from '@/src/components/common/Modal/ModalApproved'
 
 interface ActionButtonsProps {
   router: AppRouterInstance
@@ -35,74 +17,19 @@ interface ActionButtonsProps {
     description: string
     variant: 'destructive' | 'default'
   }) => void
+  setIsModalConfirmOpen: (value: boolean) => void
+  setTypeUpdate: (value: string) => void
+  setFamilyId: (value: string) => void
 }
 
 const ActionButtons: React.FC<ActionButtonsProps> = ({
-  router,
   rowData,
-  toast
+  setIsModalConfirmOpen,
+  setTypeUpdate,
+  setFamilyId
 }) => {
-  const [isModalConfirmOpen, setIsModalConfirmOpen] = useState(false)
-  const [typeUpdate, setTypeUpdate] = useState('')
-  const [dateStartBenefit, setDateStartBenefit] = useState<Date | undefined>(
-    undefined
-  )
-  const [dateEndBenefit, setDateEndBenefit] = useState<Date | undefined>(
-    undefined
-  )
-
-  const [notesReprove, setNotesReprove] = useState('')
-
-  const handleUpdateStatus = async (status: string) => {
-    try {
-      const data = {
-        status,
-        periodBenefit:
-          typeUpdate !== 'INACTIVE'
-            ? {
-                startDate: dateStartBenefit,
-                endDate: dateEndBenefit
-              }
-            : [],
-        notes_reprove: typeUpdate === 'INACTIVE' ? notesReprove : ''
-      }
-
-      await axios.put(`/api/approved/${rowData.id}`, data)
-      toast({
-        title: 'Sucesso',
-        description: 'Família atualizada com sucesso!',
-        variant: 'default'
-      })
-    } catch (error) {
-      toast({
-        title: 'Erro',
-        description: 'Não foi possível atualizar a família!',
-        variant: 'destructive'
-      })
-    } finally {
-      setNotesReprove('')
-      setDateStartBenefit(undefined)
-      setDateEndBenefit(undefined)
-      setIsModalConfirmOpen(false)
-      router.refresh()
-    }
-  }
-
   return (
     <div className="flex space-x-4">
-      <ApprovedModal
-        isModalConfirmOpen={isModalConfirmOpen}
-        setIsModalConfirmOpen={setIsModalConfirmOpen}
-        typeUpdate={typeUpdate}
-        handleUpdateStatus={handleUpdateStatus}
-        dateStartBenefit={dateStartBenefit}
-        setDateStartBenefit={setDateStartBenefit}
-        dateEndBenefit={dateEndBenefit}
-        setDateEndBenefit={setDateEndBenefit}
-        notesReprove={notesReprove}
-        setNotesReprove={setNotesReprove}
-      />
-
       <div
         data-tooltip-id="tooltip-active"
         data-tooltip-content={'Aprovar'}
@@ -113,6 +40,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
             event.stopPropagation()
             setIsModalConfirmOpen(true)
             setTypeUpdate('ACTIVE')
+            setFamilyId(rowData.id)
           }}
         >
           <Tooltip id="tooltip-active" />
@@ -129,6 +57,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
             event.stopPropagation()
             setIsModalConfirmOpen(true)
             setTypeUpdate('INACTIVE')
+            setFamilyId(rowData.id)
           }}
         >
           <Tooltip id="tooltip-inactive" />
@@ -145,7 +74,10 @@ export const columns = (
     title: string
     description: string
     variant: 'destructive' | 'default'
-  }) => void
+  }) => void,
+  setIsModalConfirmOpen: (value: boolean) => void,
+  setTypeUpdate: (value: string) => void,
+  setFamilyId: (value: string) => void
 ) =>
   [
     {
@@ -225,7 +157,16 @@ export const columns = (
       label: 'Ações',
       field: 'actions',
       renderCell(_, rowData: FamilyList) {
-        return <ActionButtons router={router} rowData={rowData} toast={toast} />
+        return (
+          <ActionButtons
+            router={router}
+            rowData={rowData}
+            toast={toast}
+            setIsModalConfirmOpen={setIsModalConfirmOpen}
+            setTypeUpdate={setTypeUpdate}
+            setFamilyId={setFamilyId}
+          />
+        )
       }
     }
   ] as Column<FamilyList>[]
