@@ -46,8 +46,8 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
 
   if (!family) return null
   return (
-    <Modal isOpen={isOpen} onClose={onClose} >
-      <div >
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <div>
         <div className="flex justify-between items-center pb-10">
           <div className="flex gap-3">
             <div>{formatStatus(family?.status)}</div>
@@ -163,22 +163,23 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
             </div>
           </div>
 
-          <div className="border rounded-sm mb-4">
+          <div className="border rounded-sm mb-4 ">
             <div className="bg-gray-100 p-2">
               <p>Períodos de Benefício</p>
             </div>
-            <div className="p-2">
-              <TabeBase className="bg-white rounded-sm">
-                <TableHeader className="bg-gray-200 rounded-sm">
+
+            <div className="p-2 ">
+              <TabeBase className="bg-white border ">
+                <TableHeader className="bg-gray-200 rounded-sm ">
                   <TableRow>
-                    <TableHead>Data de Entrada</TableHead>
+                  <TableHead>Data de Entrada</TableHead>
                     <TableHead>Data de Saída</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {family && family.periodBenefit.length > 0 ? (
+                {family && family.periodBenefit.length > 0 ? (
                     family.periodBenefit.map((item, index) => (
-                      <TableRow key={index}>
+                      <TableRow key={index} >
                         <TableCell>
                           {isValid(new Date(item.startDate))
                             ? format(new Date(item.startDate), 'dd/MM/yyyy')
@@ -190,7 +191,9 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
                             ? format(new Date(item.endDate), 'dd/MM/yyyy')
                             : 'Data inválida'}
                         </TableCell>
+                        
                       </TableRow>
+                      
                     ))
                   ) : (
                     <TableRow>
@@ -200,6 +203,7 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
                 </TableBody>
               </TabeBase>
             </div>
+      
           </div>
 
           <div className="border rounded-sm mb-4">
