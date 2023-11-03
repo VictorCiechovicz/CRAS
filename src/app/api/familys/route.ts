@@ -35,7 +35,10 @@ export const POST = async (request: Request) => {
       BPC,
       social_assistance_program,
       is_single_cadastre,
-      date_visited
+      date_visited,
+      schooling_responsible,
+      income_responsible,
+      type_income_responsible,
     } = body;
 
     if (
@@ -63,7 +66,10 @@ export const POST = async (request: Request) => {
       !BPC ||
       !social_assistance_program ||
       !is_single_cadastre ||
-      !date_visited
+      !date_visited ||
+      !schooling_responsible ||
+      !income_responsible ||
+      !type_income_responsible
     ) {
       return new NextResponse('Bad Request', { status: 400 });
     }
@@ -104,6 +110,9 @@ export const POST = async (request: Request) => {
         social_assistance_program,
         is_single_cadastre,
         date_visited,
+        schooling_responsible,
+        income_responsible,
+        type_income_responsible,
         createdByUserId: createdByUserId,
         createdByUserName: createdByUserName,
         dependents: {

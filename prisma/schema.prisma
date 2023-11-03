@@ -17,21 +17,24 @@ enum FamilyStatus {
 }
 
 model Familys {
-  id                        String          @id @default(auto()) @map("_id") @db.ObjectId
-  name                      String
-  CPF                       String
-  RG                        String
-  phone                     String
-  city                      String
-  neighborhood              String
-  number                    String
-  state                     String
-  street                    String
-  zip_code                  String
-  notes                     String?
-  date_birth_responsible    DateTime
-  profession_responsible    String
-  nis_responsible           String
+  id                     String   @id @default(auto()) @map("_id") @db.ObjectId
+  name                   String
+  CPF                    String
+  RG                     String
+  phone                  String
+  city                   String
+  neighborhood           String
+  number                 String
+  state                  String
+  street                 String
+  zip_code               String
+  notes                  String?
+  date_birth_responsible DateTime
+  profession_responsible String
+  nis_responsible       String
+  schooling_responsible String
+  income_responsible    String
+  type_income_responsible   String
   type_residence            String
   is_bathroom               String
   type_house                String

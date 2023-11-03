@@ -82,6 +82,9 @@ export const PUT = async (request: Request, { params }: { params: IParams }) => 
       social_assistance_program,
       is_single_cadastre,
       date_visited,
+      schooling_responsible,
+      income_responsible,
+      type_income_responsible,
       createdByUserId,
       createdByUserName,
       dependents,
@@ -100,7 +103,7 @@ export const PUT = async (request: Request, { params }: { params: IParams }) => 
       !state ||
       !street ||
       !zip_code ||
-       !date_birth_responsible ||
+      !date_birth_responsible ||
       !profession_responsible ||
       !nis_responsible ||
       !type_residence ||
@@ -108,10 +111,13 @@ export const PUT = async (request: Request, { params }: { params: IParams }) => 
       !type_house ||
       !length_of_residence ||
       !is_bolsa_familia ||
-       !BPC ||
+      !BPC ||
       !social_assistance_program ||
       !is_single_cadastre ||
       !date_visited ||
+      !schooling_responsible ||
+      !income_responsible ||
+      !type_income_responsible ||
       !createdByUserId ||
       !createdByUserName ||
       !dependents ||
@@ -173,6 +179,9 @@ export const PUT = async (request: Request, { params }: { params: IParams }) => 
         social_assistance_program,
         is_single_cadastre,
         date_visited,
+        schooling_responsible,
+        income_responsible,
+        type_income_responsible,
         updatedAt: new Date(),
         dependents: {
           update: existingDependents.map((dep: Dependent) => ({
