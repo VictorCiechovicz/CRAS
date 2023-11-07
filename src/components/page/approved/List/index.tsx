@@ -51,8 +51,7 @@ export function ApprovedList({ items }: ApprovedListProps) {
           typeUpdate !== 'INACTIVE'
             ? {
                 startDate: dateStartBenefit,
-                endDate: dateEndBenefit,
-                withdrawalBenefit: ''
+                endDate: dateEndBenefit
               }
             : [],
         notes_reprove: typeUpdate === 'INACTIVE' ? notesReprove : ''
