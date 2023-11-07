@@ -62,7 +62,6 @@ export const POST = async (request: Request) => {
       !type_house ||
       !length_of_residence ||
       !is_bolsa_familia ||
-      !value_bolsa_familia ||
       !BPC ||
       !social_assistance_program ||
       !is_single_cadastre ||

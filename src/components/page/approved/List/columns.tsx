@@ -105,9 +105,12 @@ export const columns = (
     {
       label: 'Renda Percapta',
       field: 'income_dependent',
-      renderCell(_, rowData: FamilyList) {
+      renderCell(_, rowData) {
         const totalIncome = rowData.dependents
-          .map(dep => parseFloat(dep.income_dependent))
+          .map(dep => {
+            const income = dep.income_dependent.trim()
+            return income && !isNaN(income) ? parseFloat(income) : 0
+          })
           .reduce((acc, curr) => acc + curr, 0)
 
         const perCapitaIncome = totalIncome / (rowData.dependents.length || 1)
