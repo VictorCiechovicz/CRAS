@@ -18,7 +18,7 @@ export interface TableBenefitPeriod {
   id: string
   startDate: Date
   endDate: Date
-  withdrawalBenefit?: Date
+  withdrawalBenefit: Date | null;
 
 }
 export interface Dependents {
