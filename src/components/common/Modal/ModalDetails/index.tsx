@@ -344,7 +344,9 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
                               </div>
                             </div>
                           </Modal>
-                          {isValid(new Date(item.withdrawalBenefit))
+
+                          {item.withdrawalBenefit &&
+                          isValid(new Date(item.withdrawalBenefit))
                             ? format(
                                 new Date(item.withdrawalBenefit),
                                 'dd/MM/yyyy'
