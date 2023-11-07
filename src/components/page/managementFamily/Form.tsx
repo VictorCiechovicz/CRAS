@@ -1133,8 +1133,12 @@ export function FamilyForm({
                               </TableCell>
 
                               <TableCell>
-                                {isValid(new Date(item.withdrawalBenefit))
-                                  ? format(new Date(item.withdrawalBenefit), 'dd/MM/yyyy')
+                                {item.withdrawalBenefit &&
+                                isValid(new Date(item.withdrawalBenefit))
+                                  ? format(
+                                      new Date(item.withdrawalBenefit),
+                                      'dd/MM/yyyy'
+                                    )
                                   : 'Data inválida'}
                               </TableCell>
 
