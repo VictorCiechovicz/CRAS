@@ -49,35 +49,38 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
   const router = useRouter()
 
   const handleUpdateDateWithdrawalBenefit = async () => {
-    if(infosPeridBenefit)
-    try {
-      const data = {
-        withdrawalBenefit: dateWithdrawalBenefit
-      }
-      setIsVisibleDateWithdrawalBenefit(false)
+    if (infosPeridBenefit)
+      try {
+        const data = {
+          withdrawalBenefit: dateWithdrawalBenefit
+        }
+        setIsVisibleDateWithdrawalBenefit(false)
 
-      await axios.put(`/api/periodBenefit/${infosPeridBenefit.id}`, data)
-      toast({
-        title: 'Período de Benefício',
-        description: 'Adicionado Data de Retirada do Benefício com sucesso!',
-        variant: 'default'
-      })
-    } catch (error) {
-      toast({
-        title: 'Período de Benefício',
-        description:
-          'Não foi possivel adicionar Data de Retirada do Benefício!',
-        variant: 'destructive'
-      })
-    } finally {
-      router.refresh()
-    }
+        await axios.put(`/api/periodBenefit/${infosPeridBenefit.id}`, data)
+        toast({
+          title: 'Período de Benefício',
+          description: 'Adicionado Data de Retirada do Benefício com sucesso!',
+          variant: 'default'
+        })
+      } catch (error) {
+        toast({
+          title: 'Período de Benefício',
+          description:
+            'Não foi possivel adicionar Data de Retirada do Benefício!',
+          variant: 'destructive'
+        })
+      } finally {
+        router.refresh()
+      }
   }
 
   useEffect(() => {
     if (family) {
       const totalIncome = family.dependents
-        .map(dep => parseFloat(dep.income_dependent))
+        .map(dep => {
+          const income = dep.income_dependent.trim()
+          return income && !isNaN(income) ? parseFloat(income) : 0
+        })
         .reduce((acc, curr) => acc + curr, 0)
 
       const perCapitaIncome = totalIncome / (family.dependents.length || 1)
@@ -347,7 +350,6 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
                                 'dd/MM/yyyy'
                               )
                             : ''}
-                          
                         </TableCell>
                         {(session?.user as any)?.role === 'master' &&
                           !item.withdrawalBenefit && (
@@ -355,12 +357,12 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
                               <Button
                                 variant={'outline'}
                                 type="button"
-                              onClick={() =>
-                               { setInfosPeridBenefit(item),
-                                  setIsVisibleDateWithdrawalBenefit(
-                                    prev => !prev
-                                  )}
-                                }
+                                onClick={() => {
+                                  setInfosPeridBenefit(item),
+                                    setIsVisibleDateWithdrawalBenefit(
+                                      prev => !prev
+                                    )
+                                }}
                                 className="bg-blue-800 text-white"
                               >
                                 Adicionar Retirada

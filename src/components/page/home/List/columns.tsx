@@ -33,19 +33,21 @@ export const columns =
     {
       label: 'Renda Percapta',
       field: 'income_dependent',
-      renderCell(_, rowData: FamilyList) {
+      renderCell(_, rowData) {
         const totalIncome = rowData.dependents
-          .map(dep => parseFloat(dep.income_dependent))
-          .reduce((acc, curr) => acc + curr, 0);
-      
-        const perCapitaIncome = totalIncome / (rowData.dependents.length || 1); 
-           
+          .map(dep => {
+            const income = dep.income_dependent.trim()
+            return income && !isNaN(income) ? parseFloat(income) : 0
+          })
+          .reduce((acc, curr) => acc + curr, 0)
+
+        const perCapitaIncome = totalIncome / (rowData.dependents.length || 1)
+
         return perCapitaIncome.toLocaleString('pt-BR', {
           style: 'currency',
           currency: 'BRL'
-        });
+        })
       }
-      
     },
      {
       label: 'Data Entrada',
