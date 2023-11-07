@@ -72,10 +72,11 @@ model Dependent {
 }
 
 model PeriodBenefit {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  startDate DateTime
-  endDate   DateTime
-  createdAt DateTime @default(now())
-  familyId  String   @db.ObjectId
-  family    Familys  @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  startDate         DateTime
+  endDate           DateTime
+  withdrawalBenefit DateTime
+  createdAt         DateTime @default(now())
+  familyId          String   @db.ObjectId
+  family            Familys  @relation(fields: [familyId], references: [id], onDelete: Cascade)
 }

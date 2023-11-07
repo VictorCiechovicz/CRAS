@@ -254,7 +254,6 @@ export function FamilyForm({
       !professionDependent ||
       !kinshipDependent ||
       !schoolingDependent ||
-      !incomeDependent ||
       !typeIncomeDependent ||
       !nisDependent
     ) {
@@ -264,7 +263,6 @@ export function FamilyForm({
         description: 'Informe as Informações do Componente Familiar'
       })
     }
-
     setTableCompositionsFamily((prevItems: any) => [
       ...prevItems,
       {
@@ -671,11 +669,10 @@ export function FamilyForm({
                             field.onChange(value)
                           }}
                           defaultValue={field.value}
-                          
                         >
                           <FormControl>
                             <SelectTrigger>
-                              <SelectValue placeholder="Selecione"  />
+                              <SelectValue placeholder="Selecione" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
@@ -1112,6 +1109,7 @@ export function FamilyForm({
                         <TableRow>
                           <TableHead>Data de Entrada</TableHead>
                           <TableHead>Data de Saída</TableHead>
+                          <TableHead>Data de Retirada</TableHead>
                           <TableHead>Ação</TableHead>
                         </TableRow>
                       </TableHeader>
@@ -1131,6 +1129,12 @@ export function FamilyForm({
                               <TableCell>
                                 {isValid(new Date(item.endDate))
                                   ? format(new Date(item.endDate), 'dd/MM/yyyy')
+                                  : 'Data inválida'}
+                              </TableCell>
+
+                              <TableCell>
+                                {isValid(new Date(item.withdrawalBenefit))
+                                  ? format(new Date(item.withdrawalBenefit), 'dd/MM/yyyy')
                                   : 'Data inválida'}
                               </TableCell>
 
