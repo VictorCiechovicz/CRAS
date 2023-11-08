@@ -13,12 +13,10 @@ import {
 } from '@/src/components/common'
 import { FamilyList } from '@/src/schemas'
 import { formatStatus } from '@/src/utils/format/status'
-import { Item } from '@radix-ui/react-select'
 import { format, isValid } from 'date-fns'
 import React, { useEffect, useRef, useState } from 'react'
 import { DatePicker } from '../../DatePicker'
 import { useSession } from 'next-auth/react'
-import useLoading from '@/src/hook/useLoading'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import { PeriodBenefit } from '@prisma/client'
@@ -76,14 +74,19 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
 
   useEffect(() => {
     if (family) {
+      const incomeResp = family.income_responsible.trim() // Ajuste aqui se necessário
+      const incomeRespValue =
+        incomeResp && !isNaN(Number(incomeResp)) ? parseFloat(incomeResp) : 0
+
       const totalIncome = family.dependents
         .map(dep => {
           const income = dep.income_dependent.trim()
           return income && !isNaN(income) ? parseFloat(income) : 0
         })
-        .reduce((acc, curr) => acc + curr, 0)
+        .reduce((acc, curr) => acc + curr, incomeRespValue)
 
-      const perCapitaIncome = totalIncome / (family.dependents.length || 1)
+      const familySize = family.dependents.length + 1
+      const perCapitaIncome = totalIncome / (familySize || 1)
 
       const formattedIncome = perCapitaIncome.toLocaleString('pt-BR', {
         style: 'currency',
@@ -165,7 +168,10 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
               </div>
               <div className="pb-1 flex gap-1">
                 <p className="font-semibold">Renda:</p>
-                {family?.income_responsible}
+                {Number(family?.income_responsible).toLocaleString('pt-BR', {
+                  style: 'currency',
+                  currency: 'BRL'
+                })}
               </div>
               <div className="pb-1 flex gap-1">
                 <p className="font-semibold">Tipo de Renda:</p>
@@ -220,7 +226,15 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
                         <TableCell>{item.profession_dependent}</TableCell>
                         <TableCell>{item.kinship_dependent}</TableCell>
                         <TableCell>{item.schooling_dependent}</TableCell>
-                        <TableCell>{item.income_dependent}</TableCell>
+                        <TableCell>
+                          {Number(item.income_dependent).toLocaleString(
+                            'pt-BR',
+                            {
+                              style: 'currency',
+                              currency: 'BRL'
+                            }
+                          )}
+                        </TableCell>
                         <TableCell>{item.type_income_dependent}</TableCell>
                         <TableCell>{item.nis_dependent}</TableCell>
                       </TableRow>
@@ -256,7 +270,9 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
                     <TableHead>Data de Entrada</TableHead>
                     <TableHead>Data de Saída</TableHead>
                     <TableHead>Data de Retirada</TableHead>
-                    <TableHead>Ações</TableHead>
+                    {(session?.user as any)?.role === 'master' && (
+                      <TableHead>Ações</TableHead>
+                    )}
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -264,15 +280,19 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
                     family.periodBenefit.map((item, index) => (
                       <TableRow key={index}>
                         <TableCell>
-                          {isValid(new Date(item.startDate))
-                            ? format(new Date(item.startDate), 'dd/MM/yyyy')
-                            : 'Data inválida'}
+                          <div className="flex">
+                            {isValid(new Date(item.startDate))
+                              ? format(new Date(item.startDate), 'dd/MM/yyyy')
+                              : 'Data inválida'}
+                          </div>
                         </TableCell>
 
                         <TableCell>
-                          {isValid(new Date(item.endDate))
-                            ? format(new Date(item.endDate), 'dd/MM/yyyy')
-                            : 'Data inválida'}
+                          <div className="flex">
+                            {isValid(new Date(item.endDate))
+                              ? format(new Date(item.endDate), 'dd/MM/yyyy')
+                              : 'Data inválida'}
+                          </div>
                         </TableCell>
 
                         <TableCell>
@@ -344,14 +364,15 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
                               </div>
                             </div>
                           </Modal>
-
-                          {item.withdrawalBenefit &&
-                          isValid(new Date(item.withdrawalBenefit))
-                            ? format(
-                                new Date(item.withdrawalBenefit),
-                                'dd/MM/yyyy'
-                              )
-                            : ''}
+                          <div className="flex">
+                            {item.withdrawalBenefit &&
+                            isValid(new Date(item.withdrawalBenefit))
+                              ? format(
+                                  new Date(item.withdrawalBenefit),
+                                  'dd/MM/yyyy'
+                                )
+                              : ''}
+                          </div>
                         </TableCell>
                         {(session?.user as any)?.role === 'master' &&
                           !item.withdrawalBenefit && (
@@ -415,12 +436,16 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
                 <p className="font-semibold">Possui Bolsa Família:</p>{' '}
                 {family?.is_bolsa_familia}
               </div>
-              {family?.value_bolsa_familia && (
+              {family?.value_bolsa_familia &&
+              Number(family?.value_bolsa_familia) > 0 ? (
                 <div className="pb-1 flex gap-1">
                   <p className="font-semibold">Valor Bolsa Família:</p>
-                  {family?.value_bolsa_familia}
+                  {Number(family?.value_bolsa_familia).toLocaleString('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL'
+                  })}
                 </div>
-              )}
+              ) : null}
 
               <div className="pb-1 flex gap-1">
                 <p className="font-semibold">BPC:</p>
@@ -443,10 +468,11 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
             <div className="bg-gray-100 p-2 flex">
               <p>Endereço</p>
             </div>
-            <div className="p-2">
+            <div className="p-2 flex">
               <p>
                 {family?.street}, {family?.number} - {family?.neighborhood},
-                CEP: {family?.zip_code}, {family?.city}-{family?.state}
+                CEP: {family?.zip_code}, {family?.city}-
+                {family?.state.toLocaleUpperCase()}
               </p>
             </div>
           </div>
@@ -455,7 +481,7 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
               <div className="bg-gray-100 p-2 flex">
                 <p>Anotações</p>
               </div>
-              <div className="p-2">{family?.notes}</div>
+              <div className="p-2 flex">{family?.notes}</div>
             </div>
           )}
           {family?.notes_reprove && (
