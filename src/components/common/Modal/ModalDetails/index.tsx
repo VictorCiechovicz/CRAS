@@ -20,7 +20,10 @@ import { useSession } from 'next-auth/react'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import { PeriodBenefit } from '@prisma/client'
-
+import html2canvas from 'html2canvas'
+import { jsPDF } from 'jspdf'
+import { Tooltip } from 'react-tooltip'
+import { ArrowDownTrayIcon } from '@heroicons/react/24/outline'
 interface FamilyDetailsModalProps {
   isOpen: boolean
   onClose: () => void
@@ -42,9 +45,19 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
 
   const { data: session } = useSession()
   const datePickerRef = useRef<HTMLInputElement>(null)
-
+  const pdfRef = useRef<HTMLInputElement>(null)
   const { toast } = useToast()
   const router = useRouter()
+
+  const CustomInput = React.forwardRef((props: any, ref: any) => (
+    <input
+      className="border"
+      onClick={props.onClick}
+      value={props.value}
+      ref={ref}
+      readOnly
+    />
+  ))
 
   const handleUpdateDateWithdrawalBenefit = async () => {
     if (infosPeridBenefit)
@@ -72,6 +85,31 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
       }
   }
 
+  const downloadFileDocument = () => {
+    const input = pdfRef.current
+    if (input)
+      html2canvas(input).then(canvas => {
+        const imgData = canvas.toDataURL('image/png')
+        const pdf = new jsPDF('p', 'mm', 'a4', true)
+        const pdfWidth = pdf.internal.pageSize.getWidth()
+        const pdfHeight = pdf.internal.pageSize.getHeight()
+        const imgWidth = canvas.width
+        const imgHeight = canvas.height
+        const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight)
+        const imgX = (pdfWidth - imgWidth * ratio) / 2
+        const imgY = 30
+        pdf.addImage(
+          imgData,
+          'PNG',
+          imgX,
+          imgY,
+          imgWidth * ratio,
+          imgHeight * ratio
+        )
+        pdf.save(`Detalhes da Família - ${family?.id}`)
+      })
+  }
+
   useEffect(() => {
     if (family) {
       const incomeResp = family.income_responsible.trim()
@@ -97,20 +135,10 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
     }
   }, [family])
 
-  const CustomInput = React.forwardRef((props: any, ref: any) => (
-    <input
-      className="border"
-      onClick={props.onClick}
-      value={props.value}
-      ref={ref}
-      readOnly
-    />
-  ))
-
   if (!family) return null
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <div className="p-6 bg-white border border-gray-300">
+      <div className="p-6 bg-white border border-gray-300" ref={pdfRef}>
         <div className="flex justify-between items-center pb-10">
           <div className="flex  flex-col items-start">
             <div className="flex gap-3">
@@ -128,14 +156,22 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
               </p>
             </div>
           </div>
-          <p className="text-xs font-normal whitespace-nowrap">
-            Criada em{' '}
-            {family?.createdAt
-              ? new Date(family.createdAt).toLocaleDateString('pt-BR') +
-                ' às ' +
-                new Date(family.createdAt).toLocaleTimeString('pt-BR')
-              : ''}
-          </p>
+          <div className="flex gap-2">
+            <p className="text-xs font-normal whitespace-nowrap">
+              Criada em{' '}
+              {family?.createdAt
+                ? new Date(family.createdAt).toLocaleDateString('pt-BR') +
+                  ' às ' +
+                  new Date(family.createdAt).toLocaleTimeString('pt-BR')
+                : ''}
+            </p>
+            <div className="cursor-pointer">
+              <ArrowDownTrayIcon
+                onClick={downloadFileDocument}
+                className="btn btn-primary w-4 h-4"
+              />
+            </div>
+          </div>
         </div>
 
         <div>

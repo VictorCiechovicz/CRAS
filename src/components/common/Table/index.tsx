@@ -177,11 +177,12 @@ export function Table<T>({
             data-tooltip-id="tooltip-exportcsv"
             data-tooltip-content={'Download CSV'}
             data-tooltip-place="top"
+            className="cursor-pointer"
           >
             <Tooltip id="tooltip-exportcsv" />
             <ArrowDownTrayIcon
               onClick={exportToCSV}
-              className="btn btn-primary w-6 he-6"
+              className="btn btn-primary w-6 h-6"
             />
           </div>
         </div>
@@ -193,7 +194,7 @@ export function Table<T>({
         <>
           <TabeBase>
             {caption && <TableCaption>{caption}</TableCaption>}
-            <TableHeader className='whitespace-nowrap'>
+            <TableHeader className="whitespace-nowrap">
               <TableRow>
                 {columns.map((col, index) => (
                   <TableHead key={index} className={col.className}>
