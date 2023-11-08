@@ -74,7 +74,7 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
 
   useEffect(() => {
     if (family) {
-      const incomeResp = family.income_responsible.trim() // Ajuste aqui se necessário
+      const incomeResp = family.income_responsible.trim()
       const incomeRespValue =
         incomeResp && !isNaN(Number(incomeResp)) ? parseFloat(incomeResp) : 0
 
@@ -110,7 +110,7 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
   if (!family) return null
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <div>
+      <div className="p-6 bg-white border border-gray-300">
         <div className="flex justify-between items-center pb-10">
           <div className="flex  flex-col items-start">
             <div className="flex gap-3">
@@ -139,82 +139,102 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
         </div>
 
         <div>
-          <div className="border rounded-sm mb-4">
-            <div className="bg-gray-100 p-2 flex">
-              <p>Dados Responsável</p>
-            </div>
-            <div className="p-2 gap-2  flex-wrap">
-              <div className="pb-1 flex gap-1">
-                <p className="font-semibold">Nome:</p> {family?.name}
-              </div>
-              <div className="pb-1 flex gap-1">
-                <p className="font-semibold">CPF:</p> {family?.CPF}
-              </div>
-              <div className="pb-1 flex gap-1">
-                <p className="font-semibold">RG:</p> {family?.RG}
-              </div>
-              <div className="pb-1 flex gap-1">
-                <p className="font-semibold">Data Nascimento:</p>
-                {format(new Date(family?.date_birth_responsible), 'dd/MM/yyyy')}
-              </div>
-              <div className="pb-1 flex gap-1">
-                <p className="font-semibold">Profissão:</p>
-                {family?.profession_responsible}
-              </div>
-
-              <div className="pb-1 flex gap-1">
-                <p className="font-semibold">Escolaridade:</p>
-                {family?.schooling_responsible}
-              </div>
-              <div className="pb-1 flex gap-1">
-                <p className="font-semibold">Renda:</p>
-                {Number(family?.income_responsible).toLocaleString('pt-BR', {
-                  style: 'currency',
-                  currency: 'BRL'
-                })}
-              </div>
-              <div className="pb-1 flex gap-1">
-                <p className="font-semibold">Tipo de Renda:</p>
-                {family?.type_income_responsible}
-              </div>
-              <div className="pb-1 flex gap-1">
-                <p className="font-semibold">NIS:</p>
-                {family?.nis_responsible}
-              </div>
-
-              <div className="pb-1 flex gap-1">
-                <p className="font-semibold">Celular:</p> {family?.phone}
+          <div className="border-t border-gray-300 pt-4">
+            <h3 className="text-lg font-semibold text-gray-900">
+              Dados Responsável
+            </h3>
+            <div className="p-4 bg-white">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="flex items-center">
+                  <p className="font-semibold mr-2">Nome:</p>
+                  <span>{family?.name}</span>
+                </div>
+                <div className="flex items-center">
+                  <p className="font-semibold mr-2">CPF:</p>
+                  <span>{family?.CPF}</span>
+                </div>
+                <div className="flex items-center">
+                  <p className="font-semibold mr-2">RG:</p>
+                  <span>{family?.RG}</span>
+                </div>
+                <div className="flex items-center">
+                  <p className="font-semibold mr-2">Data Nascimento:</p>
+                  <span>
+                    {format(
+                      new Date(family?.date_birth_responsible),
+                      'dd/MM/yyyy'
+                    )}
+                  </span>
+                </div>
+                <div className="flex items-center">
+                  <p className="font-semibold mr-2">Profissão:</p>
+                  <span>{family?.profession_responsible}</span>
+                </div>
+                <div className="flex items-center">
+                  <p className="font-semibold mr-2">Escolaridade:</p>
+                  <span>{family?.schooling_responsible}</span>
+                </div>
+                <div className="flex items-center">
+                  <p className="font-semibold mr-2">Renda:</p>
+                  <span>
+                    {Number(family?.income_responsible).toLocaleString(
+                      'pt-BR',
+                      {
+                        style: 'currency',
+                        currency: 'BRL'
+                      }
+                    )}
+                  </span>
+                </div>
+                <div className="flex items-center">
+                  <p className="font-semibold mr-2">Tipo de Renda:</p>
+                  <span>{family?.type_income_responsible}</span>
+                </div>
+                <div className="flex items-center">
+                  <p className="font-semibold mr-2">NIS:</p>
+                  <span>{family?.nis_responsible}</span>
+                </div>
+                <div className="flex items-center">
+                  <p className="font-semibold mr-2">Celular:</p>
+                  <span>{family?.phone}</span>
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="border rounded-sm mb-4">
-            <div className="bg-gray-100 p-2 flex">
-              <p>Composição Familiar</p>
-            </div>
-            <div className="p-2 ">
-              <TabeBase className="bg-white border ">
-                <TableHeader className="bg-gray-200 rounded-sm ">
+          <div className="border-t border-gray-300 pt-4">
+            <h3 className="text-lg font-semibold text-gray-900">
+              Composição Familiar
+            </h3>
+            <div className="p-4">
+              <TabeBase className="w-full bg-white  ">
+                <TableHeader className="bg-gray-200">
                   <TableRow>
-                    <TableHead>Nome</TableHead>
-                    <TableHead>CPF</TableHead>
-                    <TableHead>Data de Nascimento</TableHead>
-                    <TableHead>Estado Civil</TableHead>
-                    <TableHead>Profissão</TableHead>
-                    <TableHead>Parentesco</TableHead>
-                    <TableHead>Escolaridade</TableHead>
-                    <TableHead>Renda</TableHead>
-                    <TableHead>Tipo de Renda</TableHead>
-                    <TableHead>NIS</TableHead>
+                    <TableHead className="px-4 py-2">Nome</TableHead>
+                    <TableHead className="px-4 py-2">CPF</TableHead>
+                    <TableHead className="px-4 py-2">
+                      Data de Nascimento
+                    </TableHead>
+                    <TableHead className="px-4 py-2">Estado Civil</TableHead>
+                    <TableHead className="px-4 py-2">Profissão</TableHead>
+                    <TableHead className="px-4 py-2">Parentesco</TableHead>
+                    <TableHead className="px-4 py-2">Escolaridade</TableHead>
+                    <TableHead className="px-4 py-2">Renda</TableHead>
+                    <TableHead className="px-4 py-2">Tipo de Renda</TableHead>
+                    <TableHead className="px-4 py-2">NIS</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {family && family.dependents.length > 0 ? (
                     family.dependents.map((item, index) => (
-                      <TableRow key={index}>
-                        <TableCell>{item.name_dependent}</TableCell>
-                        <TableCell>{item.CPF_dependent}</TableCell>
-                        <TableCell>
+                      <TableRow key={index} className="hover:bg-gray-50">
+                        <TableCell className="px-4 py-2">
+                          {item.name_dependent}
+                        </TableCell>
+                        <TableCell className="px-4 py-2">
+                          {item.CPF_dependent}
+                        </TableCell>
+                        <TableCell className="px-4 py-2">
                           {isValid(new Date(item.date_birth_dependent))
                             ? format(
                                 new Date(item.date_birth_dependent),
@@ -222,11 +242,19 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
                               )
                             : 'Data inválida'}
                         </TableCell>
-                        <TableCell>{item.maritial_status_dependent}</TableCell>
-                        <TableCell>{item.profession_dependent}</TableCell>
-                        <TableCell>{item.kinship_dependent}</TableCell>
-                        <TableCell>{item.schooling_dependent}</TableCell>
-                        <TableCell>
+                        <TableCell className="px-4 py-2">
+                          {item.maritial_status_dependent}
+                        </TableCell>
+                        <TableCell className="px-4 py-2">
+                          {item.profession_dependent}
+                        </TableCell>
+                        <TableCell className="px-4 py-2">
+                          {item.kinship_dependent}
+                        </TableCell>
+                        <TableCell className="px-4 py-2">
+                          {item.schooling_dependent}
+                        </TableCell>
+                        <TableCell className="px-4 py-2">
                           {Number(item.income_dependent).toLocaleString(
                             'pt-BR',
                             {
@@ -235,37 +263,42 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
                             }
                           )}
                         </TableCell>
-                        <TableCell>{item.type_income_dependent}</TableCell>
-                        <TableCell>{item.nis_dependent}</TableCell>
+                        <TableCell className="px-4 py-2">
+                          {item.type_income_dependent}
+                        </TableCell>
+                        <TableCell className="px-4 py-2">
+                          {item.nis_dependent}
+                        </TableCell>
                       </TableRow>
                     ))
                   ) : (
                     <TableRow>
-                      <TableCell colSpan={5}>Não há itens na tabela.</TableCell>
+                      <TableCell colSpan={10} className="px-4 py-2 text-center">
+                        Não há itens na tabela.
+                      </TableCell>
                     </TableRow>
                   )}
                 </TableBody>
               </TabeBase>
             </div>
-            <div className="p-2">
-              <p className="pb-2">Renda Familiar</p>
+          </div>
 
-              <div className=" bg-green-200 rounded-lg flex justify-center items-center p-2">
-                <p className="font-normal text-xl whitespace-nowrap">
-                  {totalIncome}
-                </p>
-              </div>
+          <div className="p-4">
+            <h3 className="text-lg font-semibold text-gray-800 mb-2">
+              Renda Familiar
+            </h3>
+            <div className="bg-green-200 flex justify-center items-center py-3">
+              <p className="text-xl font-medium text-gray-800">{totalIncome}</p>
             </div>
           </div>
 
-          <div className="border rounded-sm mb-4 ">
-            <div className="bg-gray-100 p-2 flex">
-              <p>Períodos de Benefício</p>
-            </div>
-
-            <div className="p-2 ">
-              <TabeBase className="bg-white border ">
-                <TableHeader className="bg-gray-200 rounded-sm ">
+          <div className="border-t border-gray-300 pt-4">
+            <h3 className="text-lg font-semibold text-gray-900">
+              Períodos de Benefício
+            </h3>
+            <div className="p-4">
+              <TabeBase className="w-full bg-white">
+                <TableHeader className="bg-gray-200">
                   <TableRow>
                     <TableHead>Data de Entrada</TableHead>
                     <TableHead>Data de Saída</TableHead>
@@ -396,7 +429,9 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
                     ))
                   ) : (
                     <TableRow>
-                      <TableCell colSpan={5}>Não há itens na tabela.</TableCell>
+                      <TableCell colSpan={4} className="px-4 py-2 text-center">
+                        Não há itens na tabela.
+                      </TableCell>
                     </TableRow>
                   )}
                 </TableBody>
@@ -404,92 +439,113 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
             </div>
           </div>
 
-          <div className="border rounded-sm mb-4">
-            <div className="bg-gray-100 p-2 flex">
-              <p>Residência</p>
-            </div>
-            <div className="p-2">
-              <div className="pb-1 flex gap-1">
-                <p className="font-semibold">Tipo:</p> {family?.type_residence}
-              </div>
-              <div className="pb-1 flex gap-1">
-                <p className="font-semibold">Possui Banheiro:</p>
-                {family?.is_bathroom}
-              </div>
-              <div className="pb-1 flex gap-1">
-                <p className="font-semibold">Casa de:</p>
-                {family?.type_house}
-              </div>
-              <div className="pb-1 flex gap-1">
-                <p className="font-semibold">Tempo de Moradia:</p>
-                {family?.length_of_residence}
-              </div>
-            </div>
-          </div>
-
-          <div className="border rounded-sm mb-4">
-            <div className="bg-gray-100 p-2 flex">
-              <p>Benefícios</p>
-            </div>
-            <div className="p-2">
-              <div className="pb-1 flex gap-1">
-                <p className="font-semibold">Possui Bolsa Família:</p>{' '}
-                {family?.is_bolsa_familia}
-              </div>
-              {family?.value_bolsa_familia &&
-              Number(family?.value_bolsa_familia) > 0 ? (
-                <div className="pb-1 flex gap-1">
-                  <p className="font-semibold">Valor Bolsa Família:</p>
-                  {Number(family?.value_bolsa_familia).toLocaleString('pt-BR', {
-                    style: 'currency',
-                    currency: 'BRL'
-                  })}
+          <div className="border-t border-gray-300 pt-4">
+            <h3 className="text-lg font-semibold text-gray-900">Residência</h3>
+            <div className="p-4 bg-white">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="flex items-center">
+                  <p className="font-semibold mr-2">Tipo de Residência:</p>
+                  <span>{family?.type_residence}</span>
                 </div>
-              ) : null}
-
-              <div className="pb-1 flex gap-1">
-                <p className="font-semibold">BPC:</p>
-                {family?.BPC}
-              </div>
-              <div className="pb-1 flex gap-1">
-                <p className="font-semibold">
-                  Inserido em algum Programa da Assistência Social:
-                </p>
-                {family?.social_assistance_program}
-              </div>
-              <div className="pb-1 flex gap-1">
-                <p className="font-semibold">Possui Cadastro Único:</p>
-                {family?.is_single_cadastre}
+                <div className="flex items-center">
+                  <p className="font-semibold mr-2">Possui Banheiro:</p>
+                  <span> {family?.is_bathroom}</span>
+                </div>
+                <div className="flex items-center">
+                  <p className="font-semibold mr-2">Casa de:</p>
+                  <span>{family?.type_house}</span>
+                </div>
+                <div className="flex items-center">
+                  <p className="font-semibold mr-2">Tempo de Moradia:</p>
+                  <span>{family?.length_of_residence}</span>
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="border rounded-sm mb-4">
-            <div className="bg-gray-100 p-2 flex">
-              <p>Endereço</p>
-            </div>
-            <div className="p-2 flex">
-              <p>
-                {family?.street}, {family?.number} - {family?.neighborhood},
-                CEP: {family?.zip_code}, {family?.city}-
-                {family?.state.toLocaleUpperCase()}
-              </p>
+          <div className="border-t border-gray-300 pt-4">
+            <h3 className="text-lg font-semibold text-gray-900">Benefícios</h3>
+            <div className="p-4 bg-white">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="flex items-center">
+                  <p className="font-semibold mr-2">Possui Bolsa Família:</p>
+                  <span> {family?.is_bolsa_familia}</span>
+                </div>
+                <div className="flex items-center">
+                  <p className="font-semibold mr-2">Possui Banheiro:</p>
+                  <span> {family?.is_bathroom}</span>
+                </div>
+
+                {family?.value_bolsa_familia &&
+                Number(family?.value_bolsa_familia) > 0 ? (
+                  <div className="flex items-center">
+                    <p className="font-semibold mr-2">Valor Bolsa Família:</p>
+                    <span>
+                      {Number(family?.value_bolsa_familia).toLocaleString(
+                        'pt-BR',
+                        {
+                          style: 'currency',
+                          currency: 'BRL'
+                        }
+                      )}
+                    </span>
+                  </div>
+                ) : null}
+
+                <div className="flex items-center">
+                  <p className="font-semibold mr-2">BPC:</p>
+                  <span>{family?.BPC}</span>
+                </div>
+
+                <div className="flex items-center">
+                  <p className="font-semibold mr-2">
+                    Inserido em algum Programa da Assistência Social:
+                  </p>
+                  <span>{family?.social_assistance_program}</span>
+                </div>
+
+                <div className="flex items-center">
+                  <p className="font-semibold mr-2">Possui Cadastro Único:</p>
+                  <span>{family?.is_single_cadastre}</span>
+                </div>
+              </div>
             </div>
           </div>
+
+          <div className="border-t border-gray-300 pt-4">
+            <h3 className="text-lg font-semibold text-gray-900">Endereço</h3>
+            <div className="p-4 bg-white">
+              <div className="flex items-center">
+                <p className="font-semibold mr-2">Endereço:</p>
+                <span>
+                  {family?.street}, {family?.number} - {family?.neighborhood},
+                  CEP: {family?.zip_code}, {family?.city}-
+                  {family?.state.toLocaleUpperCase()}
+                </span>
+              </div>
+            </div>
+          </div>
+
           {family?.notes && (
-            <div className="border rounded-sm">
-              <div className="bg-gray-100 p-2 flex">
-                <p>Anotações</p>
+            <div className="border-t border-gray-300 pt-4">
+              <h3 className="text-lg font-semibold text-gray-900">Anotações</h3>
+              <div className="p-4 bg-white">
+                <div className="flex items-center">
+                  <span> {family?.notes}</span>
+                </div>
               </div>
-              <div className="p-2 flex">{family?.notes}</div>
             </div>
           )}
           {family?.notes_reprove && (
-            <div className="border rounded-sm">
-              <div className="bg-gray-100 p-2 flex">
-                <p>Motivo de Reprovação</p>
+            <div className="border-t border-gray-300 pt-4">
+              <h3 className="text-lg font-semibold text-gray-900">
+                Motivo de Reprovação
+              </h3>
+              <div className="p-4 bg-red-200">
+                <div className="flex items-center">
+                  <span> {family?.notes_reprove}</span>
+                </div>
               </div>
-              <div className="p-2">{family?.notes_reprove}</div>
             </div>
           )}
         </div>
