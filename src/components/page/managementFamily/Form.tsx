@@ -5,13 +5,11 @@ import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
 
-import { cn } from '@/src/lib/utils'
 import { format, isValid } from 'date-fns'
-import { CalendarIcon } from '@heroicons/react/24/outline'
+
 import { useForm } from 'react-hook-form'
 import {
   Button,
-  Calendar,
   Form,
   FormControl,
   FormField,
@@ -20,9 +18,6 @@ import {
   FormMessage,
   Input,
   PageHeading,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
   Select,
   SelectContent,
   SelectItem,
@@ -48,6 +43,7 @@ import { useSession } from 'next-auth/react'
 import { validateCPF } from '@/src/utils/validateCPF'
 import { DatePicker } from '../../common/DatePicker'
 import Loading from '../../common/Loading'
+import MultiSelect from '../../common/ui/multiSelect'
 
 export type FormValues = z.infer<typeof FormSchema>
 
@@ -147,9 +143,9 @@ export const FormSchema = z.object({
   income_responsible: z.string({
     required_error: 'Informe a Renda.'
   }),
-  type_income_responsible: z.string({
+  type_income_responsible: z.array(z.string({
     required_error: 'Informe Tipo de Renda.'
-  })
+  })).min(1, 'Selecione pelo menos uma opção de renda.')
 })
 
 interface FamilyFormProps {
@@ -175,7 +171,7 @@ export function FamilyForm({
   const [kinshipDependent, setKinshipDependent] = useState('')
   const [schoolingDependent, setSchoolingDependent] = useState('')
   const [incomeDependent, setIncomeDependent] = useState('')
-  const [typeIncomeDependent, setTypeIncomeDependent] = useState('')
+  const [typeIncomeDependent, setTypeIncomeDependent] = useState<string[]>([])
   const [nisDependent, setNisDependent] = useState('')
 
   const [dateStartBenefit, setDateStartBenefit] = useState<Date | undefined>(
@@ -232,7 +228,11 @@ export function FamilyForm({
       : undefined,
     schooling_responsible: familie?.schooling_responsible,
     income_responsible: familie?.income_responsible,
-    type_income_responsible: familie?.type_income_responsible
+    type_income_responsible: Array.isArray(familie?.type_income_responsible)
+    ? familie?.type_income_responsible
+    : familie?.type_income_responsible
+    ? [familie?.type_income_responsible]
+    : [],
   }
 
   const session = useSession()
@@ -287,7 +287,7 @@ export function FamilyForm({
     setKinshipDependent('')
     setSchoolingDependent('')
     setIncomeDependent('')
-    setTypeIncomeDependent('')
+    setTypeIncomeDependent([])
     setNisDependent('')
   }
 
@@ -664,32 +664,22 @@ export function FamilyForm({
                     <FormItem className="w-[308px]">
                       <FormLabel>Tipo de Renda</FormLabel>
                       <FormControl>
-                        <Select
-                          onValueChange={value => {
-                            field.onChange(value)
-                          }}
-                          defaultValue={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Selecione" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="Formal">Formal</SelectItem>
-                            <SelectItem value="Informal">Informal</SelectItem>
-                            <SelectItem value="Aposentadoria">
-                              Aposentadoria
-                            </SelectItem>
-                            <SelectItem value="BPC">BPC</SelectItem>
-                            <SelectItem value="Pensão">Pensão</SelectItem>
-                            <SelectItem value="Não Possui Renda">
-                              Não Possui Renda
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
+                        <MultiSelect
+                          options={[
+                            { value: 'Formal', label: 'Formal' },
+                            { value: 'Informal', label: 'Informal' },
+                            { value: 'Aposentadoria', label: 'Aposentadoria' },
+                            { value: 'BPC', label: 'BPC' },
+                            { value: 'Pensão', label: 'Pensão' },
+                            {
+                              value: 'Não Possui Renda',
+                              label: 'Não Possui Renda'
+                            }
+                          ]}
+                          selectedValues={field.value || []}
+                          onChange={newValues => field.onChange(newValues)}
+                        />
                       </FormControl>
-
                       <FormMessage />
                     </FormItem>
                   )}
@@ -969,42 +959,36 @@ export function FamilyForm({
                       </FormItem>
                     )}
                   />
-                  <FormField
-                    name="type_income_dependent"
-                    render={({ field }) => (
-                      <FormItem className="w-[308px]">
-                        <FormLabel>Tipo de Renda</FormLabel>
-                        <FormControl>
-                          <Select
-                            onValueChange={value => {
-                              setTypeIncomeDependent(value)
-                            }}
-                            defaultValue={typeIncomeDependent}
-                          >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Selecione" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="Formal">Formal</SelectItem>
-                              <SelectItem value="Informal">Informal</SelectItem>
-                              <SelectItem value="Aposentadoria">
-                                Aposentadoria
-                              </SelectItem>
-                              <SelectItem value="BPC">BPC</SelectItem>
-                              <SelectItem value="Pensão">Pensão</SelectItem>
-                              <SelectItem value="Não Possui Renda">
-                                Não Possui Renda
-                              </SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </FormControl>
 
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+<FormField
+                  name="type_income_dependent"
+                  render={({ field }) => (
+                    <FormItem className="w-[308px]">
+                      <FormLabel>Tipo de Renda</FormLabel>
+                      <FormControl>
+                        <MultiSelect
+                          options={[
+                            { value: 'Formal', label: 'Formal' },
+                            { value: 'Informal', label: 'Informal' },
+                            { value: 'Aposentadoria', label: 'Aposentadoria' },
+                            { value: 'BPC', label: 'BPC' },
+                            { value: 'Pensão', label: 'Pensão' },
+                            {
+                              value: 'Não Possui Renda',
+                              label: 'Não Possui Renda'
+                            }
+                          ]}
+                          selectedValues={typeIncomeDependent || []}
+                          onChange={newValues => setTypeIncomeDependent(newValues)}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                  
+              
                   <FormField
                     name="nis_dependent"
                     render={({ field }) => (
@@ -1069,7 +1053,7 @@ export function FamilyForm({
                             <TableCell>{item.kinship_dependent}</TableCell>
                             <TableCell>{item.schooling_dependent}</TableCell>
                             <TableCell>{item.income_dependent}</TableCell>
-                            <TableCell>{item.type_income_dependent}</TableCell>
+                            <TableCell>{item.type_income_dependent.join(', ')}</TableCell>
                             <TableCell>{item.nis_dependent}</TableCell>
                             <TableCell>
                               <Button

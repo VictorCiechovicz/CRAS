@@ -34,7 +34,7 @@ model Familys {
   nis_responsible           String
   schooling_responsible     String
   income_responsible        String
-  type_income_responsible   String
+  type_income_responsible   String[]
   type_residence            String
   is_bathroom               String
   type_house                String
@@ -65,7 +65,7 @@ model Dependent {
   kinship_dependent         String
   schooling_dependent       String
   income_dependent          String
-  type_income_dependent     String
+  type_income_dependent     String[]
   nis_dependent             String
   familyId                  String   @db.ObjectId
   family                    Familys  @relation(fields: [familyId], references: [id], onDelete: Cascade)

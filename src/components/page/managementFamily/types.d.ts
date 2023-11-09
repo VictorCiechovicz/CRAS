@@ -10,7 +10,7 @@ export interface TableCompositionsFamily {
   profession_dependent: string
   kinship_dependent: string
   schooling_dependent: string
-  type_income_dependent: string
+  type_income_dependent: string[]
   nis_dependent: string
 }
 

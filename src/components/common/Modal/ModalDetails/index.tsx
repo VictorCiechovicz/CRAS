@@ -224,8 +224,9 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
                 </div>
                 <div className="flex items-center">
                   <p className="font-semibold mr-2">Tipo de Renda:</p>
-                  <span>{family?.type_income_responsible}</span>
+                  <span>{family?.type_income_responsible.join(', ')}</span>
                 </div>
+
                 <div className="flex items-center">
                   <p className="font-semibold mr-2">NIS:</p>
                   <span>{family?.nis_responsible}</span>
