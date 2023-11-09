@@ -143,9 +143,13 @@ export const FormSchema = z.object({
   income_responsible: z.string({
     required_error: 'Informe a Renda.'
   }),
-  type_income_responsible: z.array(z.string({
-    required_error: 'Informe Tipo de Renda.'
-  })).min(1, 'Selecione pelo menos uma opção de renda.')
+  type_income_responsible: z
+    .array(
+      z.string({
+        required_error: 'Informe Tipo de Renda.'
+      })
+    )
+    .min(1, 'Selecione pelo menos uma opção de renda.')
 })
 
 interface FamilyFormProps {
@@ -229,10 +233,10 @@ export function FamilyForm({
     schooling_responsible: familie?.schooling_responsible,
     income_responsible: familie?.income_responsible,
     type_income_responsible: Array.isArray(familie?.type_income_responsible)
-    ? familie?.type_income_responsible
-    : familie?.type_income_responsible
-    ? [familie?.type_income_responsible]
-    : [],
+      ? familie?.type_income_responsible
+      : familie?.type_income_responsible
+      ? [familie?.type_income_responsible]
+      : []
   }
 
   const session = useSession()
@@ -407,21 +411,37 @@ export function FamilyForm({
         dataUpdate
       )
 
-      toast({
-        title: 'Família Atualizada',
-        description: 'Família atualizada com sucesso!',
-        variant: 'default'
-      })
+      {
+        isRevision
+          ? toast({
+              title: 'Revisão de Família',
+              description: 'Família enviada para revisão com sucesso!',
+              variant: 'default'
+            })
+          : toast({
+              title: 'Atualização de Família',
+              description: 'Família atualizada com sucesso!',
+              variant: 'default'
+            })
+      }
 
       return response.data
     } catch (error) {
       console.error('Erro ao atualizar a família:', error)
 
-      toast({
-        title: 'Família não Atualizada',
-        description: 'Não foi possível atualizar a Família!',
-        variant: 'destructive'
-      })
+      {
+        isRevision
+          ? toast({
+              title: 'Revisão de Família',
+              description: 'Não foi possível enviar para revisão a Família!',
+              variant: 'destructive'
+            })
+          : toast({
+              title: 'Atualização de Família',
+              description: 'Não foi possível atualizar a Família!',
+              variant: 'destructive'
+            })
+      }
     } finally {
       router.push(`/managementFamily/${userId}`)
       setTimeout(() => {
@@ -468,11 +488,11 @@ export function FamilyForm({
         router.refresh()
       }
     } catch (error) {
-      console.error('Erro ao salvar a família:', error)
+      console.error('Erro ao cadastrada a família:', error)
 
       toast({
         title: 'Cadastro de Família',
-        description: 'Não foi possível salvar a família!',
+        description: 'Não foi possível cadastrada a Família!',
         variant: 'destructive'
       })
     } finally {
@@ -960,35 +980,38 @@ export function FamilyForm({
                     )}
                   />
 
-<FormField
-                  name="type_income_dependent"
-                  render={({ field }) => (
-                    <FormItem className="w-[308px]">
-                      <FormLabel>Tipo de Renda</FormLabel>
-                      <FormControl>
-                        <MultiSelect
-                          options={[
-                            { value: 'Formal', label: 'Formal' },
-                            { value: 'Informal', label: 'Informal' },
-                            { value: 'Aposentadoria', label: 'Aposentadoria' },
-                            { value: 'BPC', label: 'BPC' },
-                            { value: 'Pensão', label: 'Pensão' },
-                            {
-                              value: 'Não Possui Renda',
-                              label: 'Não Possui Renda'
+                  <FormField
+                    name="type_income_dependent"
+                    render={({ field }) => (
+                      <FormItem className="w-[308px]">
+                        <FormLabel>Tipo de Renda</FormLabel>
+                        <FormControl>
+                          <MultiSelect
+                            options={[
+                              { value: 'Formal', label: 'Formal' },
+                              { value: 'Informal', label: 'Informal' },
+                              {
+                                value: 'Aposentadoria',
+                                label: 'Aposentadoria'
+                              },
+                              { value: 'BPC', label: 'BPC' },
+                              { value: 'Pensão', label: 'Pensão' },
+                              {
+                                value: 'Não Possui Renda',
+                                label: 'Não Possui Renda'
+                              }
+                            ]}
+                            selectedValues={typeIncomeDependent || []}
+                            onChange={newValues =>
+                              setTypeIncomeDependent(newValues)
                             }
-                          ]}
-                          selectedValues={typeIncomeDependent || []}
-                          onChange={newValues => setTypeIncomeDependent(newValues)}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                  
-              
                   <FormField
                     name="nis_dependent"
                     render={({ field }) => (
@@ -1053,7 +1076,9 @@ export function FamilyForm({
                             <TableCell>{item.kinship_dependent}</TableCell>
                             <TableCell>{item.schooling_dependent}</TableCell>
                             <TableCell>{item.income_dependent}</TableCell>
-                            <TableCell>{item.type_income_dependent.join(', ')}</TableCell>
+                            <TableCell>
+                              {item.type_income_dependent.join(', ')}
+                            </TableCell>
                             <TableCell>{item.nis_dependent}</TableCell>
                             <TableCell>
                               <Button

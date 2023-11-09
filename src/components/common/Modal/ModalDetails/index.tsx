@@ -301,7 +301,7 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
                           )}
                         </TableCell>
                         <TableCell className="px-4 py-2">
-                          {item.type_income_dependent}
+                          {item.type_income_dependent.join(', ')}
                         </TableCell>
                         <TableCell className="px-4 py-2">
                           {item.nis_dependent}
