@@ -40,4 +40,4 @@ export {
 } from './ui/select'
 
 export { Modal } from './Modal'
-export{Tab} from './Tab'
+export { Tab } from './Tab'

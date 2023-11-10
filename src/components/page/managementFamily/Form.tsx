@@ -169,7 +169,7 @@ export function FamilyForm({
   const [CPFDependent, setCPFDependent] = useState('')
   const [dateBirthDependent, setDateBirthDependent] = useState<
     Date | undefined
-  >(new Date())
+  >(undefined)
   const [maritialStatusDependent, setMaritialStatusDependent] = useState('')
   const [professionDependent, setProfessionDependent] = useState('')
   const [kinshipDependent, setKinshipDependent] = useState('')
@@ -299,15 +299,15 @@ export function FamilyForm({
     try {
       await axios.delete(`/api/dependent/${value.id}`)
       toast({
-        title: 'Dependente familiar removido',
-        description: 'Dependente familiar removido com sucesso!',
+        title: 'Dependente Familiar removido',
+        description: 'Dependente Familiar Removido com Sucesso!',
         variant: 'default'
       })
     } catch (error) {
       console.error('Erro ao deletar o dependente familiar:', error)
       toast({
         title: 'Dependente Familiar não removido',
-        description: 'Não foi possível deletar o dependente familiar!',
+        description: 'Não foi Possível deletar o Dependente Familiar!',
         variant: 'destructive'
       })
     }
@@ -367,15 +367,15 @@ export function FamilyForm({
     try {
       await axios.delete(`/api/periodBenefit/${value.id}`)
       toast({
-        title: 'Período de benefício removido',
-        description: 'Período de benefício removido com sucesso!',
+        title: 'Período de Benefício removido',
+        description: 'Período de Benefício removido com Sucesso!',
         variant: 'default'
       })
     } catch (error) {
       console.error('Erro ao deletar o Período de benefício:', error)
       toast({
-        title: 'Período de benefício não removido',
-        description: 'Não foi possível deletar o Período de benefício!',
+        title: 'Período de Benefício não removido',
+        description: 'Não foi Possível Deletar o Período de Benefício!',
         variant: 'destructive'
       })
     } finally {
@@ -411,37 +411,25 @@ export function FamilyForm({
         dataUpdate
       )
 
-      {
-        isRevision
-          ? toast({
-              title: 'Revisão de Família',
-              description: 'Família enviada para revisão com sucesso!',
-              variant: 'default'
-            })
-          : toast({
-              title: 'Atualização de Família',
-              description: 'Família atualizada com sucesso!',
-              variant: 'default'
-            })
-      }
+      toast({
+        title: 'Revisão de Família',
+        description: isRevision
+          ? 'Família Enviada para Revisão com Sucesso!'
+          : 'Família Atualizada com Sucesso!',
+        variant: 'default'
+      })
 
       return response.data
     } catch (error) {
       console.error('Erro ao atualizar a família:', error)
 
-      {
-        isRevision
-          ? toast({
-              title: 'Revisão de Família',
-              description: 'Não foi possível enviar para revisão a Família!',
-              variant: 'destructive'
-            })
-          : toast({
-              title: 'Atualização de Família',
-              description: 'Não foi possível atualizar a Família!',
-              variant: 'destructive'
-            })
-      }
+      toast({
+        title: 'Revisão de Família',
+        description: isRevision
+          ? 'Não foi Possível enviar para Revisão a Família!'
+          : 'Não foi Possível Atualizar a Família!',
+        variant: 'destructive'
+      })
     } finally {
       router.push(`/managementFamily/${userId}`)
       setTimeout(() => {
@@ -477,10 +465,9 @@ export function FamilyForm({
         })
       } else {
         await axios.post('/api/familys', info)
-
         toast({
           title: 'Cadastro de Família',
-          description: 'Família cadastrada com sucesso!',
+          description: 'Família Cadastrada com Sucesso!',
           variant: 'default'
         })
 
@@ -488,11 +475,11 @@ export function FamilyForm({
         router.refresh()
       }
     } catch (error) {
-      console.error('Erro ao cadastrada a família:', error)
+      console.error('Erro ao Cadastrada a Família:', error)
 
       toast({
         title: 'Cadastro de Família',
-        description: 'Não foi possível cadastrada a Família!',
+        description: 'Não foi Possível Cadastrada a Família!',
         variant: 'destructive'
       })
     } finally {
@@ -526,223 +513,231 @@ export function FamilyForm({
         ]}
       />
 
-      <div className="border-b mb-5 pb-5 ">
-        <p className="text-lg font-medium">Nova Família</p>
-      </div>
+      <div className=" mb-5 pb-5 "></div>
       {isLoading && <Loading status={isLoading} />}
 
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit as any)}
-          className="space-y-8"
+          className="space-y-8 flex flex-col items-center w-full"
         >
-          <div className="flex flex-col items-start w-full">
-            <div className="border-b mb-5 pb-5 flex gap-8 w-full">
-              <p className="text-sm font-medium w-[324px]">Dados Responsável</p>
+          <div className="w-full">
+            <div className="border-t border-gray-300 pt-4 flex flex-col w-full">
+              <h3 className="text-lg font-semibold text-gray-900 pb-4">
+                Dados Responsável
+              </h3>
 
-              <div className=" flex gap-4  w-[956px] flex-wrap ">
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem className="w-[308px]">
-                      <FormLabel>Nome Completo</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Nome Completo" {...field} />
-                      </FormControl>
+              <div className="flex justify-center">
+                <div className="flex gap-4 flex-wrap justify-start max-w-[956px]">
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem className="w-[308px]">
+                        <FormLabel>Nome Completo</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Nome Completo" {...field} />
+                        </FormControl>
 
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="CPF"
-                  render={({ field }) => (
-                    <FormItem className="w-[308px]">
-                      <FormLabel>CPF</FormLabel>
-                      <FormControl>
-                        <Input placeholder="CPF" {...field} />
-                      </FormControl>
-
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="RG"
-                  render={({ field }) => (
-                    <FormItem className="w-[308px]">
-                      <FormLabel>RG</FormLabel>
-                      <FormControl>
-                        <Input placeholder="RG" {...field} />
-                      </FormControl>
-
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  name="date_birth_responsible"
-                  render={({ field }) => {
-                    const validDate = isValid(new Date(field.value))
-                      ? new Date(field.value)
-                      : null
-
-                    return (
-                      <FormItem className="flex flex-col w-[308px]">
-                        <FormLabel className="mb-2.5">
-                          Data de Nascimento
-                        </FormLabel>
-                        <DatePicker
-                          selected={validDate}
-                          handleChangeDate={date => field.onChange(date)}
-                          onChange={date => field.onChange(date)}
-                          dateFormat="dd/MM/yyyy"
-                          placeholder="Selecione uma data"
-                        />
                         <FormMessage />
                       </FormItem>
-                    )
-                  }}
-                />
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="CPF"
+                    render={({ field }) => (
+                      <FormItem className="w-[308px]">
+                        <FormLabel>CPF</FormLabel>
+                        <FormControl>
+                          <Input placeholder="CPF" {...field} />
+                        </FormControl>
 
-                <FormField
-                  control={form.control}
-                  name="profession_responsible"
-                  render={({ field }) => (
-                    <FormItem className="w-[308px]">
-                      <FormLabel>Profissão</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Profissão" {...field} />
-                      </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                  <FormField
+                    control={form.control}
+                    name="RG"
+                    render={({ field }) => (
+                      <FormItem className="w-[308px]">
+                        <FormLabel>RG</FormLabel>
+                        <FormControl>
+                          <Input placeholder="RG" {...field} />
+                        </FormControl>
 
-                <FormField
-                  name="schooling_responsible"
-                  render={({ field }) => (
-                    <FormItem className="w-[308px]">
-                      <FormLabel>Escolaridade</FormLabel>
-                      <FormControl>
-                        <Select
-                          onValueChange={value => {
-                            field.onChange(value)
-                          }}
-                          defaultValue={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Selecione" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="Fundamental-Incompleto">
-                              Fundamental-Incompleto
-                            </SelectItem>
-                            <SelectItem value="Fundamental-Completo">
-                              Fundamental-Completo
-                            </SelectItem>
-                            <SelectItem value="Médio-Incompleto">
-                              Médio-Incompleto
-                            </SelectItem>
-                            <SelectItem value="Médio-Completo">
-                              Médio-Completo
-                            </SelectItem>
-                            <SelectItem value="Superior">Superior</SelectItem>
-                            <SelectItem value="Nenhuma">Nenhuma</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                  <FormField
+                    name="date_birth_responsible"
+                    render={({ field }) => {
+                      const validDate = isValid(new Date(field.value))
+                        ? new Date(field.value)
+                        : null
 
-                <FormField
-                  name="income_responsible"
-                  render={({ field }) => (
-                    <FormItem className="w-[308px]">
-                      <FormLabel>Renda</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Renda" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  name="type_income_responsible"
-                  render={({ field }) => (
-                    <FormItem className="w-[308px]">
-                      <FormLabel>Tipo de Renda</FormLabel>
-                      <FormControl>
-                        <MultiSelect
-                          options={[
-                            { value: 'Formal', label: 'Formal' },
-                            { value: 'Informal', label: 'Informal' },
-                            { value: 'Aposentadoria', label: 'Aposentadoria' },
-                            { value: 'BPC', label: 'BPC' },
-                            { value: 'Pensão', label: 'Pensão' },
-                            {
-                              value: 'Não Possui Renda',
-                              label: 'Não Possui Renda'
-                            }
-                          ]}
-                          selectedValues={field.value || []}
-                          onChange={newValues => field.onChange(newValues)}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                      return (
+                        <FormItem className="flex flex-col w-[308px]">
+                          <FormLabel className="mb-2.5">
+                            Data de Nascimento
+                          </FormLabel>
+                          <DatePicker
+                            selected={validDate}
+                            handleChangeDate={date => field.onChange(date)}
+                            onChange={date => field.onChange(date)}
+                            dateFormat="dd/MM/yyyy"
+                            placeholder="Selecione uma data"
+                          />
+                          <FormMessage />
+                        </FormItem>
+                      )
+                    }}
+                  />
 
-                <FormField
-                  control={form.control}
-                  name="nis_responsible"
-                  render={({ field }) => (
-                    <FormItem className="w-[308px]">
-                      <FormLabel>NIS</FormLabel>
-                      <FormControl>
-                        <Input placeholder="NIS" {...field} />
-                      </FormControl>
+                  <FormField
+                    control={form.control}
+                    name="profession_responsible"
+                    render={({ field }) => (
+                      <FormItem className="w-[308px]">
+                        <FormLabel>Profissão</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Profissão" {...field} />
+                        </FormControl>
 
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                <FormField
-                  control={form.control}
-                  name="phone"
-                  render={({ field }) => (
-                    <FormItem className="w-[308px]">
-                      <FormLabel>Celular</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Celular" {...field} />
-                      </FormControl>
+                  <FormField
+                    name="schooling_responsible"
+                    render={({ field }) => (
+                      <FormItem className="w-[308px]">
+                        <FormLabel>Escolaridade</FormLabel>
+                        <FormControl>
+                          <Select
+                            onValueChange={value => {
+                              field.onChange(value)
+                            }}
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Selecione" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="Fundamental-Incompleto">
+                                Fundamental-Incompleto
+                              </SelectItem>
+                              <SelectItem value="Fundamental-Completo">
+                                Fundamental-Completo
+                              </SelectItem>
+                              <SelectItem value="Médio-Incompleto">
+                                Médio-Incompleto
+                              </SelectItem>
+                              <SelectItem value="Médio-Completo">
+                                Médio-Completo
+                              </SelectItem>
+                              <SelectItem value="Superior">Superior</SelectItem>
+                              <SelectItem value="Nenhuma">Nenhuma</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
 
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    name="income_responsible"
+                    render={({ field }) => (
+                      <FormItem className="w-[308px]">
+                        <FormLabel>Renda</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Renda" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    name="type_income_responsible"
+                    render={({ field }) => (
+                      <FormItem className="w-[308px]">
+                        <FormLabel>Tipo de Renda</FormLabel>
+                        <FormControl>
+                          <MultiSelect
+                            options={[
+                              { value: 'Formal', label: 'Formal' },
+                              { value: 'Informal', label: 'Informal' },
+                              {
+                                value: 'Aposentadoria',
+                                label: 'Aposentadoria'
+                              },
+                              { value: 'BPC', label: 'BPC' },
+                              { value: 'Pensão', label: 'Pensão' },
+                              {
+                                value: 'Não Possui Renda',
+                                label: 'Não Possui Renda'
+                              }
+                            ]}
+                            selectedValues={field.value || []}
+                            onChange={newValues => field.onChange(newValues)}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="nis_responsible"
+                    render={({ field }) => (
+                      <FormItem className="w-[308px]">
+                        <FormLabel>NIS</FormLabel>
+                        <FormControl>
+                          <Input placeholder="NIS" {...field} />
+                        </FormControl>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem className="w-[308px]">
+                        <FormLabel>Celular</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Celular" {...field} />
+                        </FormControl>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
               </div>
             </div>
+          </div>
 
-            <div className="border-b mb-5 pb-5 flex gap-8 w-full">
-              <p className="text-sm font-medium w-[324px] ">
+          <div className="w-full">
+            <div className="border-t border-gray-300 pt-4 flex   flex-col">
+              <h3 className="text-lg font-semibold text-gray-900 pb-4">
                 Composição Familiar
-              </p>
-              <div>
-                <div className="flex w-[956px] gap-4 mb-10 flex-wrap">
+              </h3>
+
+              <div className="flex justify-center">
+                <div className="flex gap-4 flex-wrap justify-start max-w-[956px]">
                   <FormField
                     name="name_dependent"
                     render={({ field }) => (
@@ -802,6 +797,7 @@ export function FamilyForm({
                             }}
                             dateFormat="dd/MM/yyyy"
                             placeholder="Selecione uma data"
+                            required={false}
                           />
 
                           <FormMessage />
@@ -1029,63 +1025,145 @@ export function FamilyForm({
                     )}
                   />
                 </div>
+              </div>
+            </div>
+            <div className="flex justify-end max-w-[1230px] ">
+              <Button
+                variant={'outline'}
+                type="button"
+                className="mt-10 mb-10 bg-blue-800 text-white "
+                onClick={addToTableCompositionsFamily}
+                disabled={
+                  !nameDependent ||
+                  !CPFDependent ||
+                  !dateBirthDependent ||
+                  !maritialStatusDependent ||
+                  !professionDependent ||
+                  !kinshipDependent ||
+                  !schoolingDependent ||
+                  !typeIncomeDependent ||
+                  !nisDependent
+                }
+              >
+                Adicionar
+              </Button>
+            </div>
+          </div>
 
-                <Button
-                  variant={'outline'}
-                  type="button"
-                  className="mb-10 bg-blue-800 text-white"
-                  onClick={addToTableCompositionsFamily}
-                >
-                  Adicionar
-                </Button>
-                <div className="">
+          {tableCompositionsFamily?.length > 0 && (
+            <div>
+              <TabeBase className="bg-white rounded-sm">
+                <TableHeader className="bg-gray-200 rounded-sm">
+                  <TableRow>
+                    <TableHead>Nome</TableHead>
+                    <TableHead>CPF</TableHead>
+                    <TableHead>Data de Nascimento</TableHead>
+                    <TableHead>Estado Civil</TableHead>
+                    <TableHead>Profissão</TableHead>
+                    <TableHead>Parentesco</TableHead>
+                    <TableHead>Escolaridade</TableHead>
+                    <TableHead>Renda</TableHead>
+                    <TableHead>Tipo de Renda</TableHead>
+                    <TableHead>NIS</TableHead>
+                    <TableHead>Ação</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {tableCompositionsFamily?.length > 0 ? (
+                    tableCompositionsFamily?.map((item, index) => (
+                      <TableRow key={index}>
+                        <TableCell>{item.name_dependent}</TableCell>
+                        <TableCell>{item.CPF_dependent}</TableCell>
+                        <TableCell>
+                          {isValid(new Date(item.date_birth_dependent))
+                            ? format(
+                                new Date(item.date_birth_dependent),
+                                'dd/MM/yyyy'
+                              )
+                            : 'Data inválida'}
+                        </TableCell>
+                        <TableCell>{item.maritial_status_dependent}</TableCell>
+                        <TableCell>{item.profession_dependent}</TableCell>
+                        <TableCell>{item.kinship_dependent}</TableCell>
+                        <TableCell>{item.schooling_dependent}</TableCell>
+                        <TableCell>{item.income_dependent}</TableCell>
+                        <TableCell>
+                          {item.type_income_dependent.join(', ')}
+                        </TableCell>
+                        <TableCell>{item.nis_dependent}</TableCell>
+                        <TableCell>
+                          <Button
+                            variant={'outline'}
+                            type="button"
+                            onClick={() =>
+                              removeFromTableCompositionsFamily(item, index)
+                            }
+                            className="bg-red-600 text-white"
+                          >
+                            Remover
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={5}>Não há itens na tabela.</TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </TabeBase>
+            </div>
+          )}
+
+          {familie && (
+            <div className="w-full">
+              <div className="border-t border-gray-300 pt-4 flex   flex-col">
+                <h3 className="text-lg font-semibold text-gray-900 pb-4">
+                  Períodos de Benefício
+                </h3>
+
+                <div>
                   <TabeBase className="bg-white rounded-sm">
                     <TableHeader className="bg-gray-200 rounded-sm">
                       <TableRow>
-                        <TableHead>Nome</TableHead>
-                        <TableHead>CPF</TableHead>
-                        <TableHead>Data de Nascimento</TableHead>
-                        <TableHead>Estado Civil</TableHead>
-                        <TableHead>Profissão</TableHead>
-                        <TableHead>Parentesco</TableHead>
-                        <TableHead>Escolaridade</TableHead>
-                        <TableHead>Renda</TableHead>
-                        <TableHead>Tipo de Renda</TableHead>
-                        <TableHead>NIS</TableHead>
+                        <TableHead>Data de Entrada</TableHead>
+                        <TableHead>Data de Saída</TableHead>
+                        <TableHead>Data de Retirada</TableHead>
                         <TableHead>Ação</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {tableCompositionsFamily?.length > 0 ? (
-                        tableCompositionsFamily?.map((item, index) => (
+                      {tableBenefitPeriod?.length > 0 ? (
+                        tableBenefitPeriod?.map((item, index) => (
                           <TableRow key={index}>
-                            <TableCell>{item.name_dependent}</TableCell>
-                            <TableCell>{item.CPF_dependent}</TableCell>
                             <TableCell>
-                              {isValid(new Date(item.date_birth_dependent))
-                                ? format(
-                                    new Date(item.date_birth_dependent),
-                                    'dd/MM/yyyy'
-                                  )
+                              {isValid(new Date(item.startDate))
+                                ? format(new Date(item.startDate), 'dd/MM/yyyy')
                                 : 'Data inválida'}
                             </TableCell>
+
                             <TableCell>
-                              {item.maritial_status_dependent}
+                              {isValid(new Date(item.endDate))
+                                ? format(new Date(item.endDate), 'dd/MM/yyyy')
+                                : 'Data inválida'}
                             </TableCell>
-                            <TableCell>{item.profession_dependent}</TableCell>
-                            <TableCell>{item.kinship_dependent}</TableCell>
-                            <TableCell>{item.schooling_dependent}</TableCell>
-                            <TableCell>{item.income_dependent}</TableCell>
+
                             <TableCell>
-                              {item.type_income_dependent.join(', ')}
+                              {item.withdrawalBenefit &&
+                              isValid(new Date(item.withdrawalBenefit))
+                                ? format(
+                                    new Date(item.withdrawalBenefit),
+                                    'dd/MM/yyyy'
+                                  )
+                                : ''}
                             </TableCell>
-                            <TableCell>{item.nis_dependent}</TableCell>
+
                             <TableCell>
                               <Button
                                 variant={'outline'}
                                 type="button"
                                 onClick={() =>
-                                  removeFromTableCompositionsFamily(item, index)
+                                  removeFromTablePeridBenefit(item, index)
                                 }
                                 className="bg-red-600 text-white"
                               >
@@ -1106,548 +1184,513 @@ export function FamilyForm({
                 </div>
               </div>
             </div>
-            {familie && (
-              <div className="border-b mb-5 pb-5 flex gap-8 w-full">
-                <p className="text-sm font-medium w-[324px] ">
-                  Períodos de Benefício
-                </p>
-                <div>
-                  <div className="w-[656px]">
-                    <TabeBase className="bg-white rounded-sm">
-                      <TableHeader className="bg-gray-200 rounded-sm">
-                        <TableRow>
-                          <TableHead>Data de Entrada</TableHead>
-                          <TableHead>Data de Saída</TableHead>
-                          <TableHead>Data de Retirada</TableHead>
-                          <TableHead>Ação</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {tableBenefitPeriod?.length > 0 ? (
-                          tableBenefitPeriod?.map((item, index) => (
-                            <TableRow key={index}>
-                              <TableCell>
-                                {isValid(new Date(item.startDate))
-                                  ? format(
-                                      new Date(item.startDate),
-                                      'dd/MM/yyyy'
-                                    )
-                                  : 'Data inválida'}
-                              </TableCell>
+          )}
 
-                              <TableCell>
-                                {isValid(new Date(item.endDate))
-                                  ? format(new Date(item.endDate), 'dd/MM/yyyy')
-                                  : 'Data inválida'}
-                              </TableCell>
+          <div className="w-full">
+            <div className="border-t border-gray-300 pt-4 flex   flex-col">
+              <h3 className="text-lg font-semibold text-gray-900 pb-4">
+                Residência
+              </h3>
 
-                              <TableCell>
-                                {item.withdrawalBenefit &&
-                                isValid(new Date(item.withdrawalBenefit))
-                                  ? format(
-                                      new Date(item.withdrawalBenefit),
-                                      'dd/MM/yyyy'
-                                    )
-                                  : 'Data inválida'}
-                              </TableCell>
+              <div className="flex justify-center">
+                <div className="flex gap-4 flex-wrap justify-start max-w-[956px]">
+                  <FormField
+                    control={form.control}
+                    name="type_residence"
+                    render={({ field }) => (
+                      <FormItem className="w-[308px]">
+                        <FormLabel>Tipo</FormLabel>
+                        <FormControl>
+                          <Select
+                            onValueChange={value => {
+                              field.onChange(value)
+                            }}
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Selecione" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="Própria">Própria</SelectItem>
+                              <SelectItem value="Alugada">Alugada</SelectItem>
+                              <SelectItem value="Cedida">Cedida</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
 
-                              <TableCell>
-                                <Button
-                                  variant={'outline'}
-                                  type="button"
-                                  onClick={() =>
-                                    removeFromTablePeridBenefit(item, index)
-                                  }
-                                  className="bg-red-600 text-white"
-                                >
-                                  Remover
-                                </Button>
-                              </TableCell>
-                            </TableRow>
-                          ))
-                        ) : (
-                          <TableRow>
-                            <TableCell colSpan={5}>
-                              Não há itens na tabela.
-                            </TableCell>
-                          </TableRow>
-                        )}
-                      </TableBody>
-                    </TabeBase>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            <div className="border-b mb-5 pb-5 flex gap-8 w-full">
-              <p className="text-sm font-medium w-[324px] ">Residência</p>
-              <div className="w-[956px] flex gap-4 flex-wrap">
-                <FormField
-                  control={form.control}
-                  name="type_residence"
-                  render={({ field }) => (
-                    <FormItem className="w-[308px]">
-                      <FormLabel>Tipo</FormLabel>
-                      <FormControl>
-                        <Select
-                          onValueChange={value => {
-                            field.onChange(value)
-                          }}
-                          defaultValue={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Selecione" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="Própria">Própria</SelectItem>
-                            <SelectItem value="Alugada">Alugada</SelectItem>
-                            <SelectItem value="Cedida">Cedida</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="is_bathroom"
-                  render={({ field }) => (
-                    <FormItem className="w-[308px]">
-                      <FormLabel>Possui Banheiro</FormLabel>
-                      <FormControl>
-                        <Select
-                          onValueChange={value => {
-                            field.onChange(value)
-                          }}
-                          defaultValue={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Selecione" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="Sim">Sim</SelectItem>
-                            <SelectItem value="Não">Não</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="type_house"
-                  render={({ field }) => (
-                    <FormItem className="w-[308px]">
-                      <FormLabel>Casa de</FormLabel>
-                      <FormControl>
-                        <Select
-                          onValueChange={value => {
-                            field.onChange(value)
-                          }}
-                          defaultValue={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Selecione" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="Madeira">Madeira</SelectItem>
-                            <SelectItem value="Alvenaria">Alvenaria</SelectItem>
-                            <SelectItem value="Mista">Mista</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="length_of_residence"
-                  render={({ field }) => (
-                    <FormItem className="w-[308px]">
-                      <FormLabel>Tempo de Moradia</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Tempo de Moradia" {...field} />
-                      </FormControl>
-
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
-            <div className="border-b mb-5 pb-5 flex gap-8 w-full">
-              <p className="text-sm font-medium w-[324px] ">Benefícios</p>
-              <div className="w-[956px] flex gap-4 flex-wrap">
-                <FormField
-                  control={form.control}
-                  name="is_bolsa_familia"
-                  render={({ field }) => (
-                    <FormItem className="w-[308px]">
-                      <FormLabel>Possui Bolsa Família?</FormLabel>
-                      <FormControl>
-                        <Select
-                          onValueChange={value => {
-                            field.onChange(value)
-                          }}
-                          defaultValue={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Selecione" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="Sim">Sim</SelectItem>
-                            <SelectItem value="Não">Não</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="value_bolsa_familia"
-                  render={({ field }) => (
-                    <FormItem className="w-[308px]">
-                      <FormLabel>Valor Bolsa Família</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Valor Bolsa Família" {...field} />
-                      </FormControl>
-
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="BPC"
-                  render={({ field }) => (
-                    <FormItem className="w-[308px]">
-                      <FormLabel>
-                        BPC-Beneficio de Prestação Continuada
-                      </FormLabel>
-                      <FormControl>
-                        <Select
-                          onValueChange={value => {
-                            field.onChange(value)
-                          }}
-                          defaultValue={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Selecione" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="Sim">Sim</SelectItem>
-                            <SelectItem value="Não">Não</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="social_assistance_program"
-                  render={({ field }) => (
-                    <FormItem className="w-[308px]">
-                      <FormLabel className="text-xs">
-                        Inserido em algum Programa da Assistência Social
-                      </FormLabel>
-                      <FormControl>
-                        <Select
-                          onValueChange={value => {
-                            field.onChange(value)
-                          }}
-                          defaultValue={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Selecione" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="Sim">Sim</SelectItem>
-                            <SelectItem value="Não">Não</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="is_single_cadastre"
-                  render={({ field }) => (
-                    <FormItem className="w-[308px]">
-                      <FormLabel>Possui Cadastro Único</FormLabel>
-                      <FormControl>
-                        <Select
-                          onValueChange={value => {
-                            field.onChange(value)
-                          }}
-                          defaultValue={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Selecione" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="Sim">Sim</SelectItem>
-                            <SelectItem value="Não">Não</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
-            <div className="border-b mb-5 pb-5 flex gap-8 w-full">
-              <p className="text-sm font-medium w-[324px]">Endereço</p>
-
-              <div className=" flex gap-4  w-[956px] flex-wrap ">
-                <FormField
-                  control={form.control}
-                  name="zip_code"
-                  render={({ field }) => (
-                    <FormItem className="w-[232px]">
-                      <FormLabel>CEP</FormLabel>
-                      <FormControl>
-                        <Input placeholder="CEP" {...field} />
-                      </FormControl>
-
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="street"
-                  render={({ field }) => (
-                    <FormItem className="w-[320px]">
-                      <FormLabel>Logradouro</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Logradouro" {...field} />
-                      </FormControl>
-
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="number"
-                  render={({ field }) => (
-                    <FormItem className="w-[104px]">
-                      <FormLabel>Número</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Número" {...field} />
-                      </FormControl>
-
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="neighborhood"
-                  render={({ field }) => (
-                    <FormItem className="w-[250px]">
-                      <FormLabel>Bairro</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Bairro" {...field} />
-                      </FormControl>
-
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  name="complement"
-                  render={({ field }) => (
-                    <FormItem className="w-[232px]">
-                      <FormLabel>Complemento</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Complemento" {...field} />
-                      </FormControl>
-
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="state"
-                  render={({ field }) => (
-                    <FormItem className="w-[320px]">
-                      <FormLabel>Estado</FormLabel>
-                      <FormControl>
-                        <Select
-                          onValueChange={value => {
-                            field.onChange(value)
-                            setSelectedState(value)
-                          }}
-                          defaultValue={selectedState}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Selecione" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {states.map(state => (
-                              <SelectItem value={state.value}>
-                                {state.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="city"
-                  render={({ field }) => (
-                    <FormItem className="w-[370px]">
-                      <FormLabel>Cidade</FormLabel>
-                      <FormControl>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Selecione" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {citys.map(city => (
-                              <SelectItem value={city.nome}>
-                                {city.nome}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
-            <div className="border-b mb-5 pb-5 flex gap-8 w-full">
-              <p className="text-sm font-medium w-[324px]">Anotações</p>
-              <div className="w-[356px]">
-                <FormField
-                  name="notes"
-                  render={({ field }) => (
-                    <FormItem className="w-[956px]">
-                      <FormLabel>Anotações</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="Anotações"
-                          maxLength={1000}
-                          {...field}
-                        />
-                      </FormControl>
-
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
-
-            <div className="border-b mb-5 pb-5 flex gap-8 w-full">
-              <p className="text-sm font-medium w-[324px]">Data da Visita</p>
-              <div className="w-[356px]">
-                <FormField
-                  name="date_visited"
-                  render={({ field }) => {
-                    const validDate = isValid(new Date(field.value))
-                      ? new Date(field.value)
-                      : null
-
-                    return (
-                      <FormItem className="flex flex-col w-[308px]">
-                        <FormLabel className="mb-2.5">Data da Visita</FormLabel>
-                        <DatePicker
-                          selected={validDate}
-                          handleChangeDate={date => field.onChange(date)}
-                          onChange={date => field.onChange(date)}
-                          dateFormat="dd/MM/yyyy"
-                          placeholder="Selecione uma data"
-                        />
                         <FormMessage />
                       </FormItem>
-                    )
-                  }}
-                />
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="is_bathroom"
+                    render={({ field }) => (
+                      <FormItem className="w-[308px]">
+                        <FormLabel>Possui Banheiro</FormLabel>
+                        <FormControl>
+                          <Select
+                            onValueChange={value => {
+                              field.onChange(value)
+                            }}
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Selecione" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="Sim">Sim</SelectItem>
+                              <SelectItem value="Não">Não</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="type_house"
+                    render={({ field }) => (
+                      <FormItem className="w-[308px]">
+                        <FormLabel>Casa de</FormLabel>
+                        <FormControl>
+                          <Select
+                            onValueChange={value => {
+                              field.onChange(value)
+                            }}
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Selecione" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="Madeira">Madeira</SelectItem>
+                              <SelectItem value="Alvenaria">
+                                Alvenaria
+                              </SelectItem>
+                              <SelectItem value="Mista">Mista</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="length_of_residence"
+                    render={({ field }) => (
+                      <FormItem className="w-[308px]">
+                        <FormLabel>Tempo de Moradia</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Tempo de Moradia" {...field} />
+                        </FormControl>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
               </div>
             </div>
+          </div>
 
-            <div className="flex justify-end gap-3 w-full">
-              <Button
-                variant={'outline'}
-                type="button"
-                onClick={() => router.back()}
-              >
-                Cancelar
-              </Button>
-              {familie && (
-                <Button
-                  variant={'outline'}
-                  type="submit"
-                  onClick={() => {
-                    setIsRevision(true)
-                  }}
-                  className="bg-yellow-300 text-black"
-                >
-                  Enviar para Revisão
-                </Button>
-              )}
+          <div className="w-full">
+            <div className="border-t border-gray-300 pt-4 flex   flex-col">
+              <h3 className="text-lg font-semibold text-gray-900 pb-4">
+                Benefícios
+              </h3>
+              <div className="flex justify-center">
+                <div className="flex gap-4 flex-wrap justify-start max-w-[956px]">
+                  <FormField
+                    control={form.control}
+                    name="is_bolsa_familia"
+                    render={({ field }) => (
+                      <FormItem className="w-[308px]">
+                        <FormLabel>Possui Bolsa Família?</FormLabel>
+                        <FormControl>
+                          <Select
+                            onValueChange={value => {
+                              field.onChange(value)
+                            }}
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Selecione" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="Sim">Sim</SelectItem>
+                              <SelectItem value="Não">Não</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
 
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="value_bolsa_familia"
+                    render={({ field }) => (
+                      <FormItem className="w-[308px]">
+                        <FormLabel>Valor Bolsa Família</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Valor Bolsa Família" {...field} />
+                        </FormControl>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="BPC"
+                    render={({ field }) => (
+                      <FormItem className="w-[308px]">
+                        <FormLabel>
+                          BPC-Beneficio de Prestação Continuada
+                        </FormLabel>
+                        <FormControl>
+                          <Select
+                            onValueChange={value => {
+                              field.onChange(value)
+                            }}
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Selecione" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="Sim">Sim</SelectItem>
+                              <SelectItem value="Não">Não</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="social_assistance_program"
+                    render={({ field }) => (
+                      <FormItem className="w-[308px]">
+                        <FormLabel className="text-xs">
+                          Inserido em algum Programa da Assistência Social
+                        </FormLabel>
+                        <FormControl>
+                          <Select
+                            onValueChange={value => {
+                              field.onChange(value)
+                            }}
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Selecione" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="Sim">Sim</SelectItem>
+                              <SelectItem value="Não">Não</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="is_single_cadastre"
+                    render={({ field }) => (
+                      <FormItem className="w-[308px]">
+                        <FormLabel>Possui Cadastro Único</FormLabel>
+                        <FormControl>
+                          <Select
+                            onValueChange={value => {
+                              field.onChange(value)
+                            }}
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Selecione" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="Sim">Sim</SelectItem>
+                              <SelectItem value="Não">Não</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="w-full">
+            <div className="border-t border-gray-300 pt-4 flex   flex-col">
+              <h3 className="text-lg font-semibold text-gray-900 pb-4">
+                Endereço
+              </h3>
+              <div className="flex justify-center">
+                <div className="flex gap-4 flex-wrap justify-start max-w-[956px]">
+                  <FormField
+                    control={form.control}
+                    name="zip_code"
+                    render={({ field }) => (
+                      <FormItem className="w-[232px]">
+                        <FormLabel>CEP</FormLabel>
+                        <FormControl>
+                          <Input placeholder="CEP" {...field} />
+                        </FormControl>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="street"
+                    render={({ field }) => (
+                      <FormItem className="w-[320px]">
+                        <FormLabel>Logradouro</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Logradouro" {...field} />
+                        </FormControl>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="number"
+                    render={({ field }) => (
+                      <FormItem className="w-[104px]">
+                        <FormLabel>Número</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Número" {...field} />
+                        </FormControl>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="neighborhood"
+                    render={({ field }) => (
+                      <FormItem className="w-[250px]">
+                        <FormLabel>Bairro</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Bairro" {...field} />
+                        </FormControl>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    name="complement"
+                    render={({ field }) => (
+                      <FormItem className="w-[232px]">
+                        <FormLabel>Complemento</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Complemento" {...field} />
+                        </FormControl>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="state"
+                    render={({ field }) => (
+                      <FormItem className="w-[320px]">
+                        <FormLabel>Estado</FormLabel>
+                        <FormControl>
+                          <Select
+                            onValueChange={value => {
+                              field.onChange(value)
+                              setSelectedState(value)
+                            }}
+                            defaultValue={selectedState}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Selecione" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {states.map(state => (
+                                <SelectItem value={state.value}>
+                                  {state.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="city"
+                    render={({ field }) => (
+                      <FormItem className="w-[370px]">
+                        <FormLabel>Cidade</FormLabel>
+                        <FormControl>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Selecione" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {citys.map(city => (
+                                <SelectItem value={city.nome}>
+                                  {city.nome}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="w-full">
+            <div className="border-t border-gray-300 pt-4 flex   flex-col">
+              <h3 className="text-lg font-semibold text-gray-900 pb-4">
+                Anotações
+              </h3>
+              <div className="flex justify-center">
+                <div className="flex gap-4 flex-wrap justify-start max-w-[956px]">
+                  <FormField
+                    name="notes"
+                    render={({ field }) => (
+                      <FormItem className="w-[956px]">
+                        <FormLabel>Anotações</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder="Anotações"
+                            maxLength={1000}
+                            {...field}
+                          />
+                        </FormControl>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="w-full">
+            <div className="border-t border-gray-300 pt-4 flex   flex-col">
+              <h3 className="text-lg font-semibold text-gray-900 pb-4">
+                Data da Visita
+              </h3>
+              <div className="flex justify-start pl-[276px]">
+                <div className="flex max-w-[956px]">
+                  <FormField
+                    name="date_visited"
+                    render={({ field }) => {
+                      const validDate = isValid(new Date(field.value))
+                        ? new Date(field.value)
+                        : null
+
+                      return (
+                        <FormItem className=" w-[370px]">
+                          <FormLabel className="mb-2.5">
+                            Data da Visita
+                          </FormLabel>
+                          <DatePicker
+                            selected={validDate}
+                            handleChangeDate={date => field.onChange(date)}
+                            onChange={date => field.onChange(date)}
+                            dateFormat="dd/MM/yyyy"
+                            placeholder="Selecione uma data"
+                          />
+                          <FormMessage />
+                        </FormItem>
+                      )
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-3 w-full">
+            <Button
+              variant={'outline'}
+              type="button"
+              onClick={() => router.back()}
+            >
+              Cancelar
+            </Button>
+            {familie && (
               <Button
                 variant={'outline'}
                 type="submit"
-                className="bg-blue-800 text-white"
+                onClick={() => {
+                  setIsRevision(true)
+                }}
+                className="bg-yellow-300 text-white"
               >
-                Salvar
+                Enviar para Revisão
               </Button>
-            </div>
+            )}
+
+            <Button
+              variant={'outline'}
+              type="submit"
+              className="bg-blue-800 text-white"
+            >
+              Salvar
+            </Button>
           </div>
         </form>
       </Form>

@@ -1,14 +1,17 @@
-"use client";
+'use client'
 
-import { LoginForm } from "@/src/components/page";
-import { useEffect } from "react";
-
-import { signIn } from "next-auth/react";
-import Loading from "./loading";
+import { LoginForm } from '@/src/components/page'
+import { useEffect } from 'react'
+import { signIn, useSession } from 'next-auth/react'
+import Loading from './loading'
 
 export default function Login() {
+  const { data: session } = useSession()
+
   useEffect(() => {
-    signIn("keycloak", { callbackUrl: "/home" });
-  }, []);
-  return <Loading />;
+    if (!session) {
+      signIn('keycloak', { callbackUrl: '/home' })
+    }
+  }, [session])
+  return <Loading />
 }

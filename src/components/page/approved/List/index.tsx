@@ -59,14 +59,22 @@ export function ApprovedList({ items }: ApprovedListProps) {
       setIsModalConfirmOpen(false)
       await axios.put(`/api/approved/${familyId}`, data)
       toast({
-        title: 'Sucesso',
-        description: 'Família atualizada com sucesso!',
+        title:typeUpdate !== 'INACTIVE'
+        ? 'Família Aprovada'
+        : 'Família Reprovada',
+        description:
+          typeUpdate !== 'INACTIVE'
+            ? 'Família Aprovada com Sucesso!'
+            : 'Família Reprovada com Sucesso!',
         variant: 'default'
       })
     } catch (error) {
       toast({
         title: 'Erro',
-        description: 'Não foi possível atualizar a família!',
+        description:
+          typeUpdate === 'INACTIVE'
+            ? 'Não foi Possível Aprovar a Família!'
+            : 'Não foi Possível Reprovar a Família!',
         variant: 'destructive'
       })
     } finally {

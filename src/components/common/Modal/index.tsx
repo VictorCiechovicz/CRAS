@@ -11,14 +11,14 @@ export interface BaseModalProps {
 
 export function Modal({ children, isOpen, onClose }: BaseModalProps) {
   const closeModal = (event: React.MouseEvent) => {
-   
+    event.stopPropagation()
     if (event.target === event.currentTarget) {
       onClose()
     }
   }
 
   return (
-    <Transition appear show={isOpen} as={Fragment} >
+    <Transition appear show={isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-50 " onClose={onClose}>
         <Transition.Child
           as={Fragment}
