@@ -4,7 +4,7 @@ import { cn } from '@/src/lib/utils'
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
-  type?: 'text' | 'cpf' | 'rg' | 'cep' | 'money' | 'email' | 'password'
+  type?: 'text' | 'cpf' | 'rg' | 'cep' | 'money' | 'phone' 
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
@@ -13,6 +13,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const [rgValue, setRgValue] = React.useState('')
     const [moneyValue, setMoneyValue] = React.useState('')
     const [cepValue, setCepValue] = React.useState('')
+    const [phoneValue, setPhoneValue] = React.useState('')
 
     const formatCPF = (cpf: string) => {
       return cpf
@@ -51,6 +52,21 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       return cep.replace(/\D/g, '').replace(/(\d{5})(\d)/, '$1-$2')
     }
 
+    const formatPhone = (phone: string) => {
+      return phone
+        .replace(/\D/g, '')
+        .replace(/(\d{1})(\d)/, '($1$2')
+        .replace(/(\d{2})(\d)/, '$1)$2')
+        .replace(/(\d{2})(\d)/, ' $1$2')
+       .replace(/(\d{5})(\d{1})/, '$1-$2')
+        .replace(/(-\d{4})\d+?$/, '$1')
+    }
+
+    const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const formattedCep = formatPhone(e.target.value)
+      setPhoneValue(formattedCep)
+    }
+
     const handleCepChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const formattedCep = formatCEP(e.target.value)
       setCepValue(formattedCep)
@@ -81,7 +97,10 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       inputTypeProps = { value: moneyValue, onChange: handleMoneyChange }
     } else if (type === 'cep') {
       inputTypeProps = { value: cepValue, onChange: handleCepChange }
+    }else if (type === 'phone') {
+      inputTypeProps = { value: phoneValue, onChange: handlePhoneChange }
     }
+
 
     return (
       <input

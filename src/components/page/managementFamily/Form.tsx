@@ -560,7 +560,7 @@ export function FamilyForm({
                       <FormItem className="w-[308px]">
                         <FormLabel>RG</FormLabel>
                         <FormControl>
-                          <Input placeholder="RG" {...field} type="rg" />
+                          <Input placeholder="RG" {...field}  />
                         </FormControl>
 
                         <FormMessage />
@@ -713,7 +713,7 @@ export function FamilyForm({
                       <FormItem className="w-[308px]">
                         <FormLabel>Celular</FormLabel>
                         <FormControl>
-                          <Input placeholder="Celular" {...field} />
+                          <Input placeholder="Celular" {...field} type='phone' />
                         </FormControl>
 
                         <FormMessage />
