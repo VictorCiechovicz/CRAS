@@ -4,7 +4,7 @@ import { cn } from '@/src/lib/utils'
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
-  type?: 'text' | 'cpf' | 'rg' | 'cep' | 'money' | 'phone' |'email'
+  type?: 'text' | 'cpf' | 'rg' | 'cep' | 'money' | 'phone' |'email'|'password'
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
