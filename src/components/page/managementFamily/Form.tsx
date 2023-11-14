@@ -68,9 +68,6 @@ export const FormSchema = z.object({
     })
     .min(1, {
       message: 'RG muito curto.'
-    })
-    .max(8, {
-      message: 'RG com numero máximo de 8 caracteres.'
     }),
   date_birth_responsible: z.date({
     required_error: 'Informe Data de Nascimento do Responsável da Família.'
@@ -78,9 +75,7 @@ export const FormSchema = z.object({
   profession_responsible: z.string({
     required_error: 'Informe Profissáo.'
   }),
-  nis_responsible: z.string({
-    required_error: 'Informe NIS.'
-  }),
+  nis_responsible: z.string().nullable().default(''),
   type_residence: z.string({
     required_error: 'Informe Tipo de Residência.'
   }),
@@ -550,7 +545,7 @@ export function FamilyForm({
                       <FormItem className="w-[308px]">
                         <FormLabel>CPF</FormLabel>
                         <FormControl>
-                          <Input placeholder="CPF" {...field} />
+                          <Input placeholder="CPF" {...field} type="cpf" />
                         </FormControl>
 
                         <FormMessage />
@@ -565,7 +560,7 @@ export function FamilyForm({
                       <FormItem className="w-[308px]">
                         <FormLabel>RG</FormLabel>
                         <FormControl>
-                          <Input placeholder="RG" {...field} />
+                          <Input placeholder="RG" {...field} type="rg" />
                         </FormControl>
 
                         <FormMessage />
@@ -660,7 +655,7 @@ export function FamilyForm({
                       <FormItem className="w-[308px]">
                         <FormLabel>Renda</FormLabel>
                         <FormControl>
-                          <Input placeholder="Renda" {...field} />
+                          <Input placeholder="Renda" {...field} type="money" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -765,6 +760,7 @@ export function FamilyForm({
                             placeholder="CPF"
                             value={CPFDependent}
                             onChange={e => setCPFDependent(e.target.value)}
+                            type="cpf"
                           />
                         </FormControl>
 
@@ -969,6 +965,7 @@ export function FamilyForm({
                             placeholder="Renda"
                             value={incomeDependent}
                             onChange={e => setIncomeDependent(e.target.value)}
+                            type="money"
                           />
                         </FormControl>
                         <FormMessage />
@@ -1467,7 +1464,7 @@ export function FamilyForm({
                       <FormItem className="w-[232px]">
                         <FormLabel>CEP</FormLabel>
                         <FormControl>
-                          <Input placeholder="CEP" {...field} />
+                          <Input placeholder="CEP" {...field} type="cep" />
                         </FormControl>
 
                         <FormMessage />

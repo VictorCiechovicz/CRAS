@@ -56,7 +56,6 @@ export const POST = async (request: Request) => {
       !createdByUserName ||
       !date_birth_responsible ||
       !profession_responsible ||
-      !nis_responsible ||
       !type_residence ||
       !is_bathroom ||
       !type_house ||

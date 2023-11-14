@@ -31,7 +31,7 @@ model Familys {
   notes                     String?
   date_birth_responsible    DateTime
   profession_responsible    String
-  nis_responsible           String
+  nis_responsible           String?
   schooling_responsible     String
   income_responsible        String
   type_income_responsible   String[]

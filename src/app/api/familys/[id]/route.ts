@@ -105,8 +105,7 @@ export const PUT = async (request: Request, { params }: { params: IParams }) => 
       !zip_code ||
       !date_birth_responsible ||
       !profession_responsible ||
-      !nis_responsible ||
-      !type_residence ||
+       !type_residence ||
       !is_bathroom ||
       !type_house ||
       !length_of_residence ||
