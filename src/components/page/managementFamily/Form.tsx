@@ -75,7 +75,7 @@ export const FormSchema = z.object({
   profession_responsible: z.string({
     required_error: 'Informe Profissáo.'
   }),
-  nis_responsible: z.string().nullable().default(''),
+  nis_responsible: z.string().default(''),
   type_residence: z.string({
     required_error: 'Informe Tipo de Residência.'
   }),
@@ -202,7 +202,7 @@ export function FamilyForm({
       ? new Date(familie?.date_birth_responsible)
       : undefined,
     profession_responsible: familie?.profession_responsible,
-    nis_responsible: familie?.nis_responsible,
+    nis_responsible: familie?.nis_responsible ? familie?.nis_responsible : '',
     phone: familie?.phone,
     city: familie?.city,
     neighborhood: familie?.neighborhood,
