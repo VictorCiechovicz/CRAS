@@ -4,7 +4,15 @@ import { cn } from '@/src/lib/utils'
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
-  type?: 'text' | 'cpf' | 'rg' | 'cep' | 'money' | 'phone' |'email'|'password'
+  type?:
+    | 'text'
+    | 'cpf'
+    | 'rg'
+    | 'cep'
+    | 'money'
+    | 'phone'
+    | 'email'
+    | 'password'
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
@@ -58,7 +66,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         .replace(/(\d{1})(\d)/, '($1$2')
         .replace(/(\d{2})(\d)/, '$1)$2')
         .replace(/(\d{2})(\d)/, ' $1$2')
-       .replace(/(\d{5})(\d{1})/, '$1-$2')
+        .replace(/(\d{5})(\d{1})/, '$1-$2')
         .replace(/(-\d{4})\d+?$/, '$1')
     }
 
@@ -87,20 +95,18 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       setCpfValue(formattedCPF)
     }
 
-    let inputTypeProps = {}
-
     if (type === 'cpf') {
-      inputTypeProps = { value: cpfValue, onChange: handleCPFChange }
+      props = { value: cpfValue, onChange: handleCPFChange }
+      
     } else if (type === 'rg') {
-      inputTypeProps = { value: rgValue, onChange: handleRGChange }
+      props = { value: rgValue, onChange: handleRGChange }
     } else if (type === 'money') {
-      inputTypeProps = { value: moneyValue, onChange: handleMoneyChange }
+      props = { value: moneyValue, onChange: handleMoneyChange }
     } else if (type === 'cep') {
-      inputTypeProps = { value: cepValue, onChange: handleCepChange }
-    }else if (type === 'phone') {
-      inputTypeProps = { value: phoneValue, onChange: handlePhoneChange }
+      props = { value: cepValue, onChange: handleCepChange }
+    } else if (type === 'phone') {
+      props = { value: phoneValue, onChange: handlePhoneChange }
     }
-
 
     return (
       <input
@@ -111,7 +117,6 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         )}
         ref={ref}
         {...props}
-        {...inputTypeProps}
       />
     )
   }

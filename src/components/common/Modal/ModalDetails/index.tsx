@@ -393,20 +393,22 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
                           {(session?.user as any)?.role === 'master' &&
                             !item.withdrawalBenefit && (
                               <TableCell>
-                                <Button
-                                  variant={'outline'}
-                                  type="button"
-                                  onClick={event => {
-                                    event.stopPropagation(),
-                                      setInfosPeridBenefit(item),
-                                      setIsVisibleDateWithdrawalBenefit(
-                                        prev => !prev
-                                      )
-                                  }}
-                                  className="bg-blue-800 text-white"
-                                >
-                                  Adicionar Retirada
-                                </Button>
+                                <div className="flex">
+                                  <Button
+                                    variant={'outline'}
+                                    type="button"
+                                    onClick={event => {
+                                      event.stopPropagation(),
+                                        setInfosPeridBenefit(item),
+                                        setIsVisibleDateWithdrawalBenefit(
+                                          prev => !prev
+                                        )
+                                    }}
+                                    className="bg-blue-800 text-white"
+                                  >
+                                    Adicionar Retirada
+                                  </Button>
+                                </div>
                               </TableCell>
                             )}
                         </TableRow>

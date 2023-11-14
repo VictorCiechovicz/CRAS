@@ -47,6 +47,15 @@ import MultiSelect from '../../common/ui/multiSelect'
 
 export type FormValues = z.infer<typeof FormSchema>
 
+const formatCPF = (cpf: string) => {
+  return cpf
+    .replace(/\D/g, '')
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d{1,2})/, '$1-$2')
+    .replace(/(-\d{2})\d+?$/, '$1')
+}
+
 export const FormSchema = z.object({
   name: z
     .string({
@@ -59,9 +68,13 @@ export const FormSchema = z.object({
     .max(30, {
       message: 'Nome com numero máximo de 30 caracteres.'
     }),
-  CPF: z.string().refine(data => validateCPF(data), {
-    message: 'CPF inválido.'
-  }),
+  CPF: z
+    .string({
+      required_error: 'Informe CPF do Responsável da Família.'
+    })
+    .refine(data => validateCPF(data), {
+      message: 'CPF inválido.'
+    }),
   RG: z
     .string({
       required_error: 'Informe RG do Responsável da Família.'
@@ -188,7 +201,7 @@ export function FamilyForm({
   >(periodBenefit ? periodBenefit : [])
 
   const [selectedState, setSelectedState] = useState(
-    familie?.state ? familie?.state : 'ac'
+    familie?.state ? familie?.state : 'rs'
   )
   const [citys, setCitys] = useState<{ id: number; nome: string }[]>([])
   const [isRevision, setIsRevision] = useState(false)
@@ -545,7 +558,7 @@ export function FamilyForm({
                       <FormItem className="w-[308px]">
                         <FormLabel>CPF</FormLabel>
                         <FormControl>
-                          <Input placeholder="CPF" {...field} type="cpf" />
+                          <Input placeholder="CPF" {...field} />
                         </FormControl>
 
                         <FormMessage />
@@ -560,7 +573,7 @@ export function FamilyForm({
                       <FormItem className="w-[308px]">
                         <FormLabel>RG</FormLabel>
                         <FormControl>
-                          <Input placeholder="RG" {...field}  />
+                          <Input placeholder="RG" {...field} />
                         </FormControl>
 
                         <FormMessage />
@@ -655,7 +668,7 @@ export function FamilyForm({
                       <FormItem className="w-[308px]">
                         <FormLabel>Renda</FormLabel>
                         <FormControl>
-                          <Input placeholder="Renda" {...field} type="money" />
+                          <Input placeholder="Renda" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -713,7 +726,7 @@ export function FamilyForm({
                       <FormItem className="w-[308px]">
                         <FormLabel>Celular</FormLabel>
                         <FormControl>
-                          <Input placeholder="Celular" {...field} type='phone' />
+                          <Input placeholder="Celular" {...field} />
                         </FormControl>
 
                         <FormMessage />
@@ -760,7 +773,6 @@ export function FamilyForm({
                             placeholder="CPF"
                             value={CPFDependent}
                             onChange={e => setCPFDependent(e.target.value)}
-                            type="cpf"
                           />
                         </FormControl>
 
@@ -965,7 +977,6 @@ export function FamilyForm({
                             placeholder="Renda"
                             value={incomeDependent}
                             onChange={e => setIncomeDependent(e.target.value)}
-                            type="money"
                           />
                         </FormControl>
                         <FormMessage />
@@ -1464,7 +1475,7 @@ export function FamilyForm({
                       <FormItem className="w-[232px]">
                         <FormLabel>CEP</FormLabel>
                         <FormControl>
-                          <Input placeholder="CEP" {...field} type="cep" />
+                          <Input placeholder="CEP" {...field} />
                         </FormControl>
 
                         <FormMessage />
