@@ -22,7 +22,6 @@ import { useRouter } from 'next/navigation'
 import { PeriodBenefit } from '@prisma/client'
 import html2canvas from 'html2canvas'
 import { jsPDF } from 'jspdf'
-import { Tooltip } from 'react-tooltip'
 import { ArrowDownTrayIcon } from '@heroicons/react/24/outline'
 import useLoading from '@/src/hook/useLoading'
 import Loading from '../../Loading'
@@ -119,13 +118,19 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
 
   useEffect(() => {
     if (family) {
-      const incomeResp = family.income_responsible.trim()
+      const incomeResp = family.income_responsible
+        .trim()
+        .replace('.', '')
+        .replace(',', '.')
       const incomeRespValue =
         incomeResp && !isNaN(Number(incomeResp)) ? parseFloat(incomeResp) : 0
 
       const totalIncome = family.dependents
         .map(dep => {
-          const income = dep.income_dependent.trim()
+          const income = dep.income_dependent
+            .trim()
+            .replace('.', '')
+            .replace(',', '.')
           return income && !isNaN(income) ? parseFloat(income) : 0
         })
         .reduce((acc, curr) => acc + curr, incomeRespValue)
@@ -143,6 +148,7 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
   }, [family])
 
   if (!family) return null
+
   return (
     <>
       {isLoading && <Loading status={isLoading} />}
@@ -222,13 +228,14 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
                   <div className="flex items-center">
                     <p className="font-semibold mr-2">Renda:</p>
                     <span>
-                      {Number(family?.income_responsible).toLocaleString(
-                        'pt-BR',
-                        {
-                          style: 'currency',
-                          currency: 'BRL'
-                        }
-                      )}
+                      {Number(
+                        family?.income_responsible
+                          .replace('.', '')
+                          .replace(',', '.')
+                      ).toLocaleString('pt-BR', {
+                        style: 'currency',
+                        currency: 'BRL'
+                      })}
                     </span>
                   </div>
                   <div className="flex items-center">
@@ -301,13 +308,14 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
                             {item.schooling_dependent}
                           </TableCell>
                           <TableCell className="px-4 py-2">
-                            {Number(item.income_dependent).toLocaleString(
-                              'pt-BR',
-                              {
-                                style: 'currency',
-                                currency: 'BRL'
-                              }
-                            )}
+                            {Number(
+                              item.income_dependent
+                                .replace('.', '')
+                                .replace(',', '.')
+                            ).toLocaleString('pt-BR', {
+                              style: 'currency',
+                              currency: 'BRL'
+                            })}
                           </TableCell>
                           <TableCell className="px-4 py-2">
                             {item.type_income_dependent.join(', ')}

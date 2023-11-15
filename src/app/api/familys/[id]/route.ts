@@ -105,7 +105,7 @@ export const PUT = async (request: Request, { params }: { params: IParams }) => 
       !zip_code ||
       !date_birth_responsible ||
       !profession_responsible ||
-       !type_residence ||
+      !type_residence ||
       !is_bathroom ||
       !type_house ||
       !length_of_residence ||
@@ -190,6 +190,12 @@ export const PUT = async (request: Request, { params }: { params: IParams }) => 
               CPF_dependent: dep.CPF_dependent,
               date_birth_dependent: dep.date_birth_dependent,
               income_dependent: dep.income_dependent,
+              maritial_status_dependent: dep.maritial_status_dependent,
+              profession_dependent: dep.profession_dependent,
+              kinship_dependent: dep.kinship_dependent,
+              schooling_dependent: dep.schooling_dependent,
+              type_income_dependent: dep.type_income_dependent,
+              nis_dependent: dep.nis_dependent
             },
           })),
           create: newDependents.map((dep: Dependent) => ({
@@ -197,6 +203,12 @@ export const PUT = async (request: Request, { params }: { params: IParams }) => 
             CPF_dependent: dep.CPF_dependent,
             date_birth_dependent: dep.date_birth_dependent,
             income_dependent: dep.income_dependent,
+            maritial_status_dependent: dep.maritial_status_dependent,
+            profession_dependent: dep.profession_dependent,
+            kinship_dependent: dep.kinship_dependent,
+            schooling_dependent: dep.schooling_dependent,
+            type_income_dependent: dep.type_income_dependent,
+            nis_dependent: dep.nis_dependent
           })),
         },
         periodBenefit: {

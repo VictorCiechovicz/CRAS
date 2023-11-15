@@ -59,9 +59,8 @@ export function ApprovedList({ items }: ApprovedListProps) {
       setIsModalConfirmOpen(false)
       await axios.put(`/api/approved/${familyId}`, data)
       toast({
-        title:typeUpdate !== 'INACTIVE'
-        ? 'Família Aprovada'
-        : 'Família Reprovada',
+        title:
+          typeUpdate !== 'INACTIVE' ? 'Família Aprovada' : 'Família Reprovada',
         description:
           typeUpdate !== 'INACTIVE'
             ? 'Família Aprovada com Sucesso!'

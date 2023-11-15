@@ -44,17 +44,14 @@ import { validateCPF } from '@/src/utils/validateCPF'
 import { DatePicker } from '../../common/DatePicker'
 import Loading from '../../common/Loading'
 import MultiSelect from '../../common/ui/multiSelect'
+import {
+  formatCEP,
+  formatCPF,
+  formatMoney,
+  formatPhoneNumber
+} from '@/src/utils/format/masks'
 
 export type FormValues = z.infer<typeof FormSchema>
-
-const formatCPF = (cpf: string) => {
-  return cpf
-    .replace(/\D/g, '')
-    .replace(/(\d{3})(\d)/, '$1.$2')
-    .replace(/(\d{3})(\d)/, '$1.$2')
-    .replace(/(\d{3})(\d{1,2})/, '$1-$2')
-    .replace(/(-\d{2})\d+?$/, '$1')
-}
 
 export const FormSchema = z.object({
   name: z
@@ -201,7 +198,7 @@ export function FamilyForm({
   >(periodBenefit ? periodBenefit : [])
 
   const [selectedState, setSelectedState] = useState(
-    familie?.state ? familie?.state : 'rs'
+    familie?.state && familie?.state
   )
   const [citys, setCitys] = useState<{ id: number; nome: string }[]>([])
   const [isRevision, setIsRevision] = useState(false)
@@ -266,8 +263,7 @@ export function FamilyForm({
       !professionDependent ||
       !kinshipDependent ||
       !schoolingDependent ||
-      !typeIncomeDependent ||
-      !nisDependent
+      !typeIncomeDependent
     ) {
       return toast({
         title: 'Composição Familiar',
@@ -420,7 +416,7 @@ export function FamilyForm({
       )
 
       toast({
-        title: 'Revisão de Família',
+        title: isRevision ? 'Revisão de Família' : 'Atualização de Família',
         description: isRevision
           ? 'Família Enviada para Revisão com Sucesso!'
           : 'Família Atualizada com Sucesso!',
@@ -508,7 +504,41 @@ export function FamilyForm({
     }
 
     fetch()
-  }, [])
+  }, [selectedState])
+
+  const handlePhoneChange = (event: any) => {
+    const formattedPhone = formatPhoneNumber(event.target.value)
+    form.setValue('phone', formattedPhone)
+  }
+
+  const handleCepChange = (event: any) => {
+    const formattedCep = formatCEP(event.target.value)
+    form.setValue('zip_code', formattedCep)
+  }
+
+  const handleMoneyResponsibleChange = (event: any) => {
+    const formattedMoney = formatMoney(event.target.value)
+    form.setValue('income_responsible', formattedMoney)
+  }
+
+  const handleMoneyBolsaFamiliaChange = (event: any) => {
+    const formattedMoney = formatMoney(event.target.value)
+    form.setValue('value_bolsa_familia', formattedMoney)
+  }
+
+  const handleMoneyDependentChange = (event: any) => {
+    const formattedMoney = formatMoney(event.target.value)
+    setIncomeDependent(formattedMoney)
+  }
+
+  const handleCPFChange = (event: any) => {
+    const formattedCPF = formatCPF(event.target.value)
+    form.setValue('CPF', formattedCPF)
+  }
+  const handleCPFDependentChange = (event: any) => {
+    const formattedCPF = formatCPF(event.target.value)
+    setCPFDependent(formattedCPF)
+  }
 
   return (
     <div>
@@ -558,7 +588,11 @@ export function FamilyForm({
                       <FormItem className="w-[308px]">
                         <FormLabel>CPF</FormLabel>
                         <FormControl>
-                          <Input placeholder="CPF" {...field} />
+                          <Input
+                            placeholder="CPF"
+                            {...field}
+                            onChange={handleCPFChange}
+                          />
                         </FormControl>
 
                         <FormMessage />
@@ -668,7 +702,11 @@ export function FamilyForm({
                       <FormItem className="w-[308px]">
                         <FormLabel>Renda</FormLabel>
                         <FormControl>
-                          <Input placeholder="Renda" {...field} />
+                          <Input
+                            placeholder="Renda"
+                            {...field}
+                            onChange={handleMoneyResponsibleChange}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -726,7 +764,11 @@ export function FamilyForm({
                       <FormItem className="w-[308px]">
                         <FormLabel>Celular</FormLabel>
                         <FormControl>
-                          <Input placeholder="Celular" {...field} />
+                          <Input
+                            placeholder="Celular"
+                            {...field}
+                            onChange={handlePhoneChange}
+                          />
                         </FormControl>
 
                         <FormMessage />
@@ -772,7 +814,7 @@ export function FamilyForm({
                           <Input
                             placeholder="CPF"
                             value={CPFDependent}
-                            onChange={e => setCPFDependent(e.target.value)}
+                            onChange={handleCPFDependentChange}
                           />
                         </FormControl>
 
@@ -976,7 +1018,7 @@ export function FamilyForm({
                           <Input
                             placeholder="Renda"
                             value={incomeDependent}
-                            onChange={e => setIncomeDependent(e.target.value)}
+                            onChange={handleMoneyDependentChange}
                           />
                         </FormControl>
                         <FormMessage />
@@ -1049,8 +1091,7 @@ export function FamilyForm({
                   !professionDependent ||
                   !kinshipDependent ||
                   !schoolingDependent ||
-                  !typeIncomeDependent ||
-                  !nisDependent
+                  !typeIncomeDependent
                 }
               >
                 Adicionar
@@ -1357,7 +1398,11 @@ export function FamilyForm({
                       <FormItem className="w-[308px]">
                         <FormLabel>Valor Bolsa Família</FormLabel>
                         <FormControl>
-                          <Input placeholder="Valor Bolsa Família" {...field} />
+                          <Input
+                            placeholder="Valor Bolsa Família"
+                            {...field}
+                            onChange={handleMoneyBolsaFamiliaChange}
+                          />
                         </FormControl>
 
                         <FormMessage />
@@ -1475,7 +1520,11 @@ export function FamilyForm({
                       <FormItem className="w-[232px]">
                         <FormLabel>CEP</FormLabel>
                         <FormControl>
-                          <Input placeholder="CEP" {...field} />
+                          <Input
+                            placeholder="CEP"
+                            {...field}
+                            onChange={handleCepChange}
+                          />
                         </FormControl>
 
                         <FormMessage />

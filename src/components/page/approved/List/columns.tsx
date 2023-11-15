@@ -2,7 +2,7 @@
 
 import { Column } from '@/src/components/common/Table/types'
 import { FamilyList } from '@/src/schemas'
-import { formatPhoneNumber } from '@/src/utils/format/formatPhone'
+import { formatPhoneNumber } from '@/src/utils/format/masks'
 import { formatStatus } from '@/src/utils/format/status'
 import { XCircleIcon, CheckCircleIcon } from '@heroicons/react/24/outline'
 import { format } from 'date-fns'
@@ -106,13 +106,19 @@ export const columns = (
       label: 'Renda Per Capta',
       field: 'income_dependent',
       renderCell(_, rowData) {
-        const incomeResp = rowData.income_responsible.trim()
+        const incomeResp = rowData.income_responsible
+          .trim()
+          .replace('.', '')
+          .replace(',', '.')
         const incomeRespValue =
           incomeResp && !isNaN(Number(incomeResp)) ? parseFloat(incomeResp) : 0
 
         const totalIncome = rowData.dependents
           .map(dep => {
-            const income = dep.income_dependent.trim()
+            const income = dep.income_dependent
+              .trim()
+              .replace('.', '')
+              .replace(',', '.')
             return income && !isNaN(income) ? parseFloat(income) : 0
           })
           .reduce((acc, curr) => acc + curr, incomeRespValue)

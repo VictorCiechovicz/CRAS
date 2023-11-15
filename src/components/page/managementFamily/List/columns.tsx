@@ -2,7 +2,7 @@
 
 import { Column } from '@/src/components/common/Table/types'
 import { FamilyList } from '@/src/schemas'
-import { formatPhoneNumber } from '@/src/utils/format/formatPhone'
+import { formatPhoneNumber } from '@/src/utils/format/masks'
 import { formatStatus } from '@/src/utils/format/status'
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
 import axios from 'axios'
@@ -114,20 +114,26 @@ export const columns = (
       label: 'Renda Per Capta',
       field: 'income_dependent',
       renderCell(_, rowData) {
-        const incomeResp = rowData.income_responsible.trim()
+        const incomeResp = rowData.income_responsible
+          .trim()
+          .replace('.', '')
+          .replace(',', '.')
         const incomeRespValue =
           incomeResp && !isNaN(Number(incomeResp)) ? parseFloat(incomeResp) : 0
-  
+
         const totalIncome = rowData.dependents
           .map(dep => {
-            const income = dep.income_dependent.trim()
+            const income = dep.income_dependent
+              .trim()
+              .replace('.', '')
+              .replace(',', '.')
             return income && !isNaN(income) ? parseFloat(income) : 0
           })
           .reduce((acc, curr) => acc + curr, incomeRespValue)
-  
+
         const familySize = rowData.dependents.length + 1
         const perCapitaIncome = totalIncome / (familySize || 1)
-  
+
         return perCapitaIncome.toLocaleString('pt-BR', {
           style: 'currency',
           currency: 'BRL'
@@ -139,16 +145,17 @@ export const columns = (
       field: 'startDate',
       renderCell(value, rowData: FamilyList) {
         if (rowData.periodBenefit.length > 0) {
-                 const sortedPeriods = rowData.periodBenefit.sort((a, b) => 
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-          );
-          
-          const mostRecentPeriod = sortedPeriods[0];
-    
-          const date = new Date(mostRecentPeriod.startDate);
-          return format(date, 'dd/MM/yyyy');
+          const sortedPeriods = rowData.periodBenefit.sort(
+            (a, b) =>
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          )
+
+          const mostRecentPeriod = sortedPeriods[0]
+
+          const date = new Date(mostRecentPeriod.startDate)
+          return format(date, 'dd/MM/yyyy')
         }
-        return 'N/A';
+        return 'N/A'
       }
     },
     {
@@ -156,16 +163,17 @@ export const columns = (
       field: 'endDate',
       renderCell(value, rowData: FamilyList) {
         if (rowData.periodBenefit.length > 0) {
-              const sortedPeriods = rowData.periodBenefit.sort((a, b) => 
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-          );
-    
-          const mostRecentPeriod = sortedPeriods[0];
-    
-          const date = new Date(mostRecentPeriod.endDate);
-          return format(date, 'dd/MM/yyyy');
+          const sortedPeriods = rowData.periodBenefit.sort(
+            (a, b) =>
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          )
+
+          const mostRecentPeriod = sortedPeriods[0]
+
+          const date = new Date(mostRecentPeriod.endDate)
+          return format(date, 'dd/MM/yyyy')
         }
-        return 'N/A';
+        return 'N/A'
       }
     },
     {
