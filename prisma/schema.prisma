@@ -20,8 +20,8 @@ model Familys {
   id                        String          @id @default(auto()) @map("_id") @db.ObjectId
   name                      String
   CPF                       String
-  RG                        String
-  phone                     String
+  RG                        String?
+  phone                     String?
   city                      String
   neighborhood              String
   number                    String

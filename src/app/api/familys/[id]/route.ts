@@ -96,8 +96,6 @@ export const PUT = async (request: Request, { params }: { params: IParams }) => 
     if (
       !name ||
       !CPF ||
-      !RG ||
-      !phone ||
       !city ||
       !neighborhood ||
       !number ||

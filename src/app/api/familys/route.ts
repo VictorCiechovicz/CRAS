@@ -45,9 +45,7 @@ export const POST = async (request: Request) => {
     if (
       !name ||
       !CPF ||
-      !RG ||
-      !phone ||
-      !city ||
+     !city ||
       !neighborhood ||
       !number ||
       !state ||
