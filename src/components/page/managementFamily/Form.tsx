@@ -72,13 +72,7 @@ export const FormSchema = z.object({
     .refine(data => validateCPF(data), {
       message: 'CPF inválido.'
     }),
-  RG: z
-    .string({
-      required_error: 'Informe RG do Responsável da Família.'
-    })
-    .min(1, {
-      message: 'RG muito curto.'
-    }),
+  RG: z.string().default(''),
   date_birth_responsible: z.date({
     required_error: 'Informe Data de Nascimento do Responsável da Família.'
   }),
@@ -111,9 +105,7 @@ export const FormSchema = z.object({
   is_single_cadastre: z.string({
     required_error: 'Informe se possuí Cadastro Único.'
   }),
-  phone: z.string({
-    required_error: 'Informe Celular.'
-  }),
+  phone: z.string().default(''),
   city: z.string({
     required_error: 'Informe Cidade.'
   }),
@@ -154,7 +146,10 @@ export const FormSchema = z.object({
         required_error: 'Informe Tipo de Renda.'
       })
     )
-    .min(1, 'Selecione pelo menos uma opção de renda.')
+    .min(1, 'Selecione pelo menos uma opção de renda.'),
+  maritial_status_responsible: z.string({
+    required_error: 'Informe Estado Civil.'
+  })
 })
 
 interface FamilyFormProps {
@@ -237,6 +232,7 @@ export function FamilyForm({
       : undefined,
     schooling_responsible: familie?.schooling_responsible,
     income_responsible: familie?.income_responsible,
+    maritial_status_responsible:familie?.maritial_status_responsible,
     type_income_responsible: Array.isArray(familie?.type_income_responsible)
       ? familie?.type_income_responsible
       : familie?.type_income_responsible
@@ -642,6 +638,43 @@ export function FamilyForm({
 
                   <FormField
                     control={form.control}
+                    name="maritial_status_responsible"
+                    render={({ field }) => (
+                      <FormItem className="w-[308px]">
+                        <FormLabel>Estado Civil</FormLabel>
+                        <FormControl>
+                          <Select
+                            onValueChange={value => {
+                              field.onChange(value)
+                            }}
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Selecione" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="Solteiro">Solteiro</SelectItem>
+
+                              <SelectItem value="Casado">Casado</SelectItem>
+                              <SelectItem value="Separado">Separado</SelectItem>
+                              <SelectItem value="Divorciado">
+                                Divorciado
+                              </SelectItem>
+                              <SelectItem value="Viúvo">Viúvo</SelectItem>
+                              <SelectItem value="Outros">Outros</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
                     name="profession_responsible"
                     render={({ field }) => (
                       <FormItem className="w-[308px]">
@@ -656,6 +689,7 @@ export function FamilyForm({
                   />
 
                   <FormField
+                    control={form.control}
                     name="schooling_responsible"
                     render={({ field }) => (
                       <FormItem className="w-[308px]">
@@ -685,7 +719,12 @@ export function FamilyForm({
                               <SelectItem value="Médio-Completo">
                                 Médio-Completo
                               </SelectItem>
-                              <SelectItem value="Superior">Superior</SelectItem>
+                              <SelectItem value="Superior-Incompleto">
+                                Superior-Incompleto
+                              </SelectItem>
+                              <SelectItem value="Superior-Completo">
+                                Superior-Completo
+                              </SelectItem>
                               <SelectItem value="Nenhuma">Nenhuma</SelectItem>
                             </SelectContent>
                           </Select>
@@ -697,6 +736,7 @@ export function FamilyForm({
                   />
 
                   <FormField
+                    control={form.control}
                     name="income_responsible"
                     render={({ field }) => (
                       <FormItem className="w-[308px]">
@@ -713,6 +753,7 @@ export function FamilyForm({
                     )}
                   />
                   <FormField
+                    control={form.control}
                     name="type_income_responsible"
                     render={({ field }) => (
                       <FormItem className="w-[308px]">
@@ -875,15 +916,14 @@ export function FamilyForm({
                             </FormControl>
                             <SelectContent>
                               <SelectItem value="Solteiro">Solteiro</SelectItem>
-                              <SelectItem value="Namorando">
-                                Namorando
-                              </SelectItem>
+
                               <SelectItem value="Casado">Casado</SelectItem>
                               <SelectItem value="Separado">Separado</SelectItem>
                               <SelectItem value="Divorciado">
                                 Divorciado
                               </SelectItem>
                               <SelectItem value="Viúvo">Viúvo</SelectItem>
+                              <SelectItem value="Outros">Outros</SelectItem>
                             </SelectContent>
                           </Select>
                         </FormControl>
@@ -959,6 +999,7 @@ export function FamilyForm({
                               <SelectItem value="Não Parente">
                                 Não Parente
                               </SelectItem>
+                              <SelectItem value="Outros">Outros</SelectItem>
                             </SelectContent>
                           </Select>
                         </FormControl>
@@ -998,7 +1039,12 @@ export function FamilyForm({
                               <SelectItem value="Médio-Completo">
                                 Médio-Completo
                               </SelectItem>
-                              <SelectItem value="Superior">Superior</SelectItem>
+                              <SelectItem value="Superior-Incompleto">
+                                Superior-Incompleto
+                              </SelectItem>
+                              <SelectItem value="Superior-Completo">
+                                Superior-Completo
+                              </SelectItem>
                               <SelectItem value="Nenhuma">Nenhuma</SelectItem>
                             </SelectContent>
                           </Select>

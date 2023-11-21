@@ -39,6 +39,7 @@ export const POST = async (request: Request) => {
       schooling_responsible,
       income_responsible,
       type_income_responsible,
+      maritial_status_responsible
     } = body;
 
     if (
@@ -67,7 +68,8 @@ export const POST = async (request: Request) => {
       !date_visited ||
       !schooling_responsible ||
       !income_responsible ||
-      !type_income_responsible
+      !type_income_responsible ||
+      !maritial_status_responsible
     ) {
       return new NextResponse('Bad Request', { status: 400 });
     }
@@ -111,6 +113,7 @@ export const POST = async (request: Request) => {
         schooling_responsible,
         income_responsible,
         type_income_responsible,
+        maritial_status_responsible,
         createdByUserId: createdByUserId,
         createdByUserName: createdByUserName,
         dependents: {

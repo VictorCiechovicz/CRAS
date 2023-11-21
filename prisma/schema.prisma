@@ -45,6 +45,7 @@ model Familys {
   social_assistance_program String
   is_single_cadastre        String
   notes_reprove             String?
+  maritial_status_responsible String
   date_visited              DateTime
   createdAt                 DateTime        @default(now())
   updatedAt                 DateTime        @default(now())

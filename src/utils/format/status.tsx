@@ -1,7 +1,7 @@
 const StatusProps = {
-  ACTIVE: 'Ativo',
-  INACTIVE: 'Inativo',
-  PENDING: 'Pendente'
+  ACTIVE: 'Recebendo',
+  INACTIVE: 'Não Recebe',
+  PENDING: 'Em Análise'
 }
 
 export const formatStatus = (value?: keyof typeof StatusProps) => {
