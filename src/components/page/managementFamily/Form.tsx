@@ -202,13 +202,13 @@ export function FamilyForm({
     name: familie?.name,
     number: familie?.number,
     CPF: familie?.CPF,
-    RG: familie?.RG,
+    RG: familie?.RG ? familie?.RG : '',
     date_birth_responsible: familie?.date_birth_responsible
       ? new Date(familie?.date_birth_responsible)
       : undefined,
     profession_responsible: familie?.profession_responsible,
     nis_responsible: familie?.nis_responsible ? familie?.nis_responsible : '',
-    phone: familie?.phone,
+    phone: familie?.phone ? familie?.phone : '',
     city: familie?.city,
     neighborhood: familie?.neighborhood,
     state: familie?.state,
@@ -232,7 +232,7 @@ export function FamilyForm({
       : undefined,
     schooling_responsible: familie?.schooling_responsible,
     income_responsible: familie?.income_responsible,
-    maritial_status_responsible:familie?.maritial_status_responsible,
+    maritial_status_responsible: familie?.maritial_status_responsible,
     type_income_responsible: Array.isArray(familie?.type_income_responsible)
       ? familie?.type_income_responsible
       : familie?.type_income_responsible
