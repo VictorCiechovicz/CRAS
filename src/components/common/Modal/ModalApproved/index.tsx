@@ -62,7 +62,7 @@ const ApprovedModal: React.FC<ApprovedModalProps> = ({
         </div>
         {typeUpdate !== 'ACTIVE' ? (
           <Textarea
-            className="mb-5"
+           
             placeholder="Informe Motivo da Reprovação"
             maxLength={1000}
             value={notesReprove}
@@ -118,7 +118,7 @@ const ApprovedModal: React.FC<ApprovedModalProps> = ({
              
           </div>
         )}
-        <div className="flex justify-center gap-2">
+        <div className="flex justify-center gap-2 mt-5">
           <Button
             className=" w-full"
             variant="outline"
