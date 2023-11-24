@@ -243,14 +243,12 @@ export function FamilyForm({
   const router = useRouter()
 
   const form = useForm<FormValues>({
-    
     resolver: zodResolver(FormSchema),
-    defaultValues,
-    
+    defaultValues
   })
 
-  const { watch } = form;
-  const isBolsaFamilia = watch('is_bolsa_familia');
+  const { watch } = form
+  const isBolsaFamilia = watch('is_bolsa_familia')
 
   const { toast } = useToast()
   const { isLoading, showLoading, stopLoading } = useLoading()
@@ -453,6 +451,7 @@ export function FamilyForm({
       ...data,
       createdByUserId: (session?.data?.user as any)?.id,
       createdByUserName: session?.data?.user?.name,
+      updatedByUserName: session?.data?.user?.name,
       dependents: tableCompositionsFamily,
       periodBenefit: tableBenefitPeriod,
       notes: data.notes,
@@ -465,6 +464,7 @@ export function FamilyForm({
           ...info,
           createdByUserId: familie.createdByUserId,
           createdByUserName: familie.createdByUserName,
+          updatedByUserName: session?.data?.user?.name,
           status: isRevision ? 'PENDING' : familie.status,
           createdAt: familie.createdAt
         })
@@ -547,7 +547,7 @@ export function FamilyForm({
         title="Gestão de Famílias"
         paths={[
           { href: '/home', name: 'Início' },
-          { href: `/managementFamily/${userId}`, name: 'Gestão de Famílias' },
+          ...(userId ? [{ href: `/managementFamily/${userId}`, name: 'Gestão de Famílias' }] : []),
           { href: '#', name: 'Cadastro de Família' }
         ]}
       />

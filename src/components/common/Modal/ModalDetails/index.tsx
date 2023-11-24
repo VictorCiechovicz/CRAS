@@ -22,7 +22,7 @@ import { useRouter } from 'next/navigation'
 import { PeriodBenefit } from '@prisma/client'
 import html2canvas from 'html2canvas'
 import { jsPDF } from 'jspdf'
-import { ArrowDownTrayIcon } from '@heroicons/react/24/outline'
+import { ArrowDownTrayIcon, PencilIcon } from '@heroicons/react/24/outline'
 import useLoading from '@/src/hook/useLoading'
 import Loading from '../../Loading'
 interface FamilyDetailsModalProps {
@@ -116,6 +116,11 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
       })
   }
 
+  const handleEditClick = (event: any, familyId: string) => {
+    event.stopPropagation()
+    router.push(`/managementFamily/editFamily/${familyId}`)
+  }
+
   useEffect(() => {
     if (family) {
       const incomeResp = family.income_responsible
@@ -172,19 +177,41 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
               </div>
             </div>
             <div className="flex gap-2">
-              <p className="text-xs font-normal whitespace-nowrap">
-                Criada em{' '}
-                {family?.createdAt
-                  ? new Date(family.createdAt).toLocaleDateString('pt-BR') +
-                    ' às ' +
-                    new Date(family.createdAt).toLocaleTimeString('pt-BR')
-                  : ''}
-              </p>
-              <div className="cursor-pointer">
-                <ArrowDownTrayIcon
-                  onClick={downloadFileDocument}
-                  className="btn btn-primary w-4 h-4"
-                />
+              <div className="flex flex-col items-start">
+                <p className="text-xs font-normal whitespace-nowrap">
+                  Criada em{' '}
+                  {family?.createdAt
+                    ? new Date(family.createdAt).toLocaleDateString('pt-BR') +
+                      ' às ' +
+                      new Date(family.createdAt).toLocaleTimeString('pt-BR')
+                    : ''}
+                </p>
+
+                <p className="text-xs font-normal whitespace-nowrap">
+                  Atualizado por {family.updatedByUserName}
+                </p>
+                <p className="text-xs font-normal whitespace-nowrap">
+                  Ultima Atualização{' '}
+                  {family?.createdAt
+                    ? new Date(family.updatedAt).toLocaleDateString('pt-BR') +
+                      ' às ' +
+                      new Date(family.updatedAt).toLocaleTimeString('pt-BR')
+                    : ''}
+                </p>
+              </div>
+              <div className="flex gap-2">
+                <div className="cursor-pointer">
+                  <ArrowDownTrayIcon
+                    onClick={downloadFileDocument}
+                    className="btn btn-primary w-4 h-4"
+                  />
+                </div>
+                <div className="cursor-pointer">
+                  <PencilIcon
+                    onClick={e => handleEditClick(e, family.id)}
+                    className="btn btn-primary w-4 h-4"
+                  />
+                </div>
               </div>
             </div>
           </div>

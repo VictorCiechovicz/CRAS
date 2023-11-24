@@ -52,6 +52,7 @@ model Familys {
   status                      FamilyStatus    @default(PENDING)
   createdByUserId             String
   createdByUserName           String
+  updatedByUserName           String
   dependents                  Dependent[]
   periodBenefit               PeriodBenefit[]
 }

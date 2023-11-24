@@ -90,7 +90,8 @@ export const PUT = async (request: Request, { params }: { params: IParams }) => 
       dependents,
       periodBenefit,
       status,
-      maritial_status_responsible
+      maritial_status_responsible,
+      updatedByUserName
     } = body;
 
     if (
@@ -119,7 +120,8 @@ export const PUT = async (request: Request, { params }: { params: IParams }) => 
       !dependents ||
       !periodBenefit ||
       !status ||
-      !maritial_status_responsible
+      !maritial_status_responsible ||
+      !updatedByUserName
     ) {
       return new NextResponse('Body Malformated', { status: 400 });
     }
@@ -181,6 +183,7 @@ export const PUT = async (request: Request, { params }: { params: IParams }) => 
         type_income_responsible,
         maritial_status_responsible,
         updatedAt: new Date(),
+        updatedByUserName,
         dependents: {
           update: existingDependents.map((dep: Dependent) => ({
             where: { id: dep.id },
