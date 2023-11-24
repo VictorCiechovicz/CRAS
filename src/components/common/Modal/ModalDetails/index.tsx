@@ -167,49 +167,41 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
                   Detalhes da Família
                 </p>
               </div>
-              <div className="mt-3">
-                <p className="text-base font-normal whitespace-nowrap">
-                  Data da Visita{' '}
-                  {family?.date_visited
-                    ? new Date(family.date_visited).toLocaleDateString('pt-BR')
-                    : ''}
-                </p>
-              </div>
+              {family.date_visited && (
+                <div className="mt-3">
+                  <p className="text-base font-normal whitespace-nowrap">
+                    Data da Visita{' '}
+                    {family?.date_visited
+                      ? new Date(family.date_visited).toLocaleDateString(
+                          'pt-BR'
+                        )
+                      : ''}
+                  </p>
+                </div>
+              )}
             </div>
-            <div className="flex gap-2">
-              <div className="flex flex-col items-start">
-                <p className="text-xs font-normal whitespace-nowrap">
-                  Criada em{' '}
-                  {family?.createdAt
-                    ? new Date(family.createdAt).toLocaleDateString('pt-BR') +
-                      ' às ' +
-                      new Date(family.createdAt).toLocaleTimeString('pt-BR')
-                    : ''}
-                </p>
 
-                <p className="text-xs font-normal whitespace-nowrap">
-                  Atualizado por {family.updatedByUserName}
-                </p>
-                <p className="text-xs font-normal whitespace-nowrap">
-                  Ultima Atualização{' '}
-                  {family?.createdAt
-                    ? new Date(family.updatedAt).toLocaleDateString('pt-BR') +
-                      ' às ' +
-                      new Date(family.updatedAt).toLocaleTimeString('pt-BR')
-                    : ''}
-                </p>
-              </div>
+            <div className="flex gap-2">
+              <p className="text-xs font-normal whitespace-nowrap">
+                Criada em{' '}
+                {family?.createdAt
+                  ? new Date(family.createdAt).toLocaleDateString('pt-BR') +
+                    ' às ' +
+                    new Date(family.createdAt).toLocaleTimeString('pt-BR')
+                  : ''}
+              </p>
+
               <div className="flex gap-2">
                 <div className="cursor-pointer">
                   <ArrowDownTrayIcon
                     onClick={downloadFileDocument}
-                    className="btn btn-primary w-4 h-4"
+                    className="btn btn-primary w-5 h-5"
                   />
                 </div>
                 <div className="cursor-pointer">
                   <PencilIcon
                     onClick={e => handleEditClick(e, family.id)}
-                    className="btn btn-primary w-4 h-4"
+                    className="btn btn-primary w-5 h-5"
                   />
                 </div>
               </div>
@@ -231,10 +223,13 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
                     <p className="font-semibold mr-2">CPF:</p>
                     <span>{family?.CPF}</span>
                   </div>
-                  <div className="flex items-center">
-                    <p className="font-semibold mr-2">RG:</p>
-                    <span>{family?.RG}</span>
-                  </div>
+                  {family?.RG && (
+                    <div className="flex items-center">
+                      <p className="font-semibold mr-2">RG:</p>
+                      <span>{family?.RG}</span>
+                    </div>
+                  )}
+
                   <div className="flex items-center">
                     <p className="font-semibold mr-2">Data Nascimento:</p>
                     <span>
@@ -244,10 +239,13 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
                       )}
                     </span>
                   </div>
-                  <div className="flex items-center">
-                    <p className="font-semibold mr-2">Profissão:</p>
-                    <span>{family?.profession_responsible}</span>
-                  </div>
+                  {family?.profession_responsible && (
+                    <div className="flex items-center">
+                      <p className="font-semibold mr-2">Profissão:</p>
+                      <span>{family?.profession_responsible}</span>
+                    </div>
+                  )}
+
                   <div className="flex items-center">
                     <p className="font-semibold mr-2">Escolaridade:</p>
                     <span>{family?.schooling_responsible}</span>
@@ -269,15 +267,18 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
                     <p className="font-semibold mr-2">Tipo de Renda:</p>
                     <span>{family?.type_income_responsible.join(', ')}</span>
                   </div>
-
-                  <div className="flex items-center">
-                    <p className="font-semibold mr-2">NIS:</p>
-                    <span>{family?.nis_responsible}</span>
-                  </div>
-                  <div className="flex items-center">
-                    <p className="font-semibold mr-2">Celular:</p>
-                    <span>{family?.phone}</span>
-                  </div>
+                  {family?.nis_responsible && (
+                    <div className="flex items-center">
+                      <p className="font-semibold mr-2">NIS:</p>
+                      <span>{family?.nis_responsible}</span>
+                    </div>
+                  )}
+                  {family?.phone && (
+                    <div className="flex items-center">
+                      <p className="font-semibold mr-2">Celular:</p>
+                      <span>{family?.phone}</span>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -639,6 +640,29 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
                 </div>
               </div>
             )}
+
+            <div className="flex flex-col items-start mt-4 border-t gap-2">
+              <div className="flex gap-2 mt-2 ">
+                <p className="text-xs font-normal whitespace-nowrap">
+                  Ultima Atualização
+                </p>
+                <p className="text-xs font-semibold whitespace-nowrap">
+                  {family?.createdAt
+                    ? new Date(family.updatedAt).toLocaleDateString('pt-BR') +
+                      ' às ' +
+                      new Date(family.updatedAt).toLocaleTimeString('pt-BR')
+                    : ''}
+                </p>
+              </div>
+              <div className="flex gap-2 ">
+                <p className="text-xs font-normal whitespace-nowrap ">
+                  Atualizado por
+                </p>
+                <p className="text-xs font-semibold whitespace-nowrap">
+                  {family.updatedByUserName.toLocaleUpperCase()}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </Modal>

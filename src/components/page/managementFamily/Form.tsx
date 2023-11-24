@@ -434,7 +434,11 @@ export function FamilyForm({
         variant: 'destructive'
       })
     } finally {
-      router.push(`/managementFamily/${userId}`)
+      {
+        userId
+          ? router.push(`/managementFamily/${userId}`)
+          : router.push('/home')
+      }
       setTimeout(() => {
         router.refresh()
       }, 2000)
@@ -475,8 +479,12 @@ export function FamilyForm({
           description: 'Família Cadastrada com Sucesso!',
           variant: 'default'
         })
+        {
+          userId
+            ? router.push(`/managementFamily/${userId}`)
+            : router.push('/home')
+        }
 
-        router.push(`/managementFamily/${userId}`)
         router.refresh()
       }
     } catch (error) {
@@ -547,7 +555,14 @@ export function FamilyForm({
         title="Gestão de Famílias"
         paths={[
           { href: '/home', name: 'Início' },
-          ...(userId ? [{ href: `/managementFamily/${userId}`, name: 'Gestão de Famílias' }] : []),
+          ...(userId
+            ? [
+                {
+                  href: `/managementFamily/${userId}`,
+                  name: 'Gestão de Famílias'
+                }
+              ]
+            : []),
           { href: '#', name: 'Cadastro de Família' }
         ]}
       />
