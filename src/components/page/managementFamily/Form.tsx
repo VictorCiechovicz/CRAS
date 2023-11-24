@@ -36,7 +36,7 @@ import {
 import states from '../../../utils/states'
 import { Dependent, Familys, PeriodBenefit } from '@prisma/client'
 import { FormData, TableBenefitPeriod, TableCompositionsFamily } from './types'
-import { z } from 'zod'
+import { nullable, z } from 'zod'
 import useLoading from '@/src/hook/useLoading'
 
 import { useSession } from 'next-auth/react'
@@ -76,9 +76,7 @@ export const FormSchema = z.object({
   date_birth_responsible: z.date({
     required_error: 'Informe Data de Nascimento do Responsável da Família.'
   }),
-  profession_responsible: z.string({
-    required_error: 'Informe Profissáo.'
-  }),
+  profession_responsible: z.string().default(''),
   nis_responsible: z.string().default(''),
   type_residence: z.string({
     required_error: 'Informe Tipo de Residência.'
@@ -131,9 +129,7 @@ export const FormSchema = z.object({
   }),
   notes: z.string().nullable().default(''),
   notes_reprove: z.string().nullable().default(''),
-  date_visited: z.date({
-    required_error: 'Informe Data da Visita.'
-  }),
+  date_visited: z.date().optional(),
   schooling_responsible: z.string({
     required_error: 'Informe Escolaridade.'
   }),
@@ -206,7 +202,9 @@ export function FamilyForm({
     date_birth_responsible: familie?.date_birth_responsible
       ? new Date(familie?.date_birth_responsible)
       : undefined,
-    profession_responsible: familie?.profession_responsible,
+    profession_responsible: familie?.profession_responsible
+      ? familie?.profession_responsible
+      : '',
     nis_responsible: familie?.nis_responsible ? familie?.nis_responsible : '',
     phone: familie?.phone ? familie?.phone : '',
     city: familie?.city,
@@ -243,10 +241,17 @@ export function FamilyForm({
   const session = useSession()
 
   const router = useRouter()
+
   const form = useForm<FormValues>({
+    
     resolver: zodResolver(FormSchema),
-    defaultValues
+    defaultValues,
+    
   })
+
+  const { watch } = form;
+  const isBolsaFamilia = watch('is_bolsa_familia');
+
   const { toast } = useToast()
   const { isLoading, showLoading, stopLoading } = useLoading()
 
@@ -568,7 +573,7 @@ export function FamilyForm({
                     name="name"
                     render={({ field }) => (
                       <FormItem className="w-[308px]">
-                        <FormLabel>Nome Completo</FormLabel>
+                        <FormLabel>Nome Completo*</FormLabel>
                         <FormControl>
                           <Input placeholder="Nome Completo" {...field} />
                         </FormControl>
@@ -582,7 +587,7 @@ export function FamilyForm({
                     name="CPF"
                     render={({ field }) => (
                       <FormItem className="w-[308px]">
-                        <FormLabel>CPF</FormLabel>
+                        <FormLabel>CPF*</FormLabel>
                         <FormControl>
                           <Input
                             placeholder="CPF"
@@ -621,7 +626,7 @@ export function FamilyForm({
                       return (
                         <FormItem className="flex flex-col w-[308px]">
                           <FormLabel className="mb-2.5">
-                            Data de Nascimento
+                            Data de Nascimento*
                           </FormLabel>
                           <DatePicker
                             selected={validDate}
@@ -641,7 +646,7 @@ export function FamilyForm({
                     name="maritial_status_responsible"
                     render={({ field }) => (
                       <FormItem className="w-[308px]">
-                        <FormLabel>Estado Civil</FormLabel>
+                        <FormLabel>Estado Civil*</FormLabel>
                         <FormControl>
                           <Select
                             onValueChange={value => {
@@ -693,7 +698,7 @@ export function FamilyForm({
                     name="schooling_responsible"
                     render={({ field }) => (
                       <FormItem className="w-[308px]">
-                        <FormLabel>Escolaridade</FormLabel>
+                        <FormLabel>Escolaridade*</FormLabel>
                         <FormControl>
                           <Select
                             onValueChange={value => {
@@ -740,7 +745,7 @@ export function FamilyForm({
                     name="income_responsible"
                     render={({ field }) => (
                       <FormItem className="w-[308px]">
-                        <FormLabel>Renda</FormLabel>
+                        <FormLabel>Renda*</FormLabel>
                         <FormControl>
                           <Input
                             placeholder="Renda"
@@ -757,7 +762,7 @@ export function FamilyForm({
                     name="type_income_responsible"
                     render={({ field }) => (
                       <FormItem className="w-[308px]">
-                        <FormLabel>Tipo de Renda</FormLabel>
+                        <FormLabel>Tipo de Renda*</FormLabel>
                         <FormControl>
                           <MultiSelect
                             options={[
@@ -1294,7 +1299,7 @@ export function FamilyForm({
                     name="type_residence"
                     render={({ field }) => (
                       <FormItem className="w-[308px]">
-                        <FormLabel>Tipo</FormLabel>
+                        <FormLabel>Tipo*</FormLabel>
                         <FormControl>
                           <Select
                             onValueChange={value => {
@@ -1325,7 +1330,7 @@ export function FamilyForm({
                     name="is_bathroom"
                     render={({ field }) => (
                       <FormItem className="w-[308px]">
-                        <FormLabel>Possui Banheiro</FormLabel>
+                        <FormLabel>Possui Banheiro*</FormLabel>
                         <FormControl>
                           <Select
                             onValueChange={value => {
@@ -1355,7 +1360,7 @@ export function FamilyForm({
                     name="type_house"
                     render={({ field }) => (
                       <FormItem className="w-[308px]">
-                        <FormLabel>Casa de</FormLabel>
+                        <FormLabel>Casa de*</FormLabel>
                         <FormControl>
                           <Select
                             onValueChange={value => {
@@ -1387,7 +1392,7 @@ export function FamilyForm({
                     name="length_of_residence"
                     render={({ field }) => (
                       <FormItem className="w-[308px]">
-                        <FormLabel>Tempo de Moradia</FormLabel>
+                        <FormLabel>Tempo de Moradia*</FormLabel>
                         <FormControl>
                           <Input placeholder="Tempo de Moradia" {...field} />
                         </FormControl>
@@ -1413,7 +1418,7 @@ export function FamilyForm({
                     name="is_bolsa_familia"
                     render={({ field }) => (
                       <FormItem className="w-[308px]">
-                        <FormLabel>Possui Bolsa Família?</FormLabel>
+                        <FormLabel>Possui Bolsa Família?*</FormLabel>
                         <FormControl>
                           <Select
                             onValueChange={value => {
@@ -1448,6 +1453,7 @@ export function FamilyForm({
                             placeholder="Valor Bolsa Família"
                             {...field}
                             onChange={handleMoneyBolsaFamiliaChange}
+                            disabled={isBolsaFamilia !== 'Sim'}
                           />
                         </FormControl>
 
@@ -1462,7 +1468,7 @@ export function FamilyForm({
                     render={({ field }) => (
                       <FormItem className="w-[308px]">
                         <FormLabel>
-                          BPC-Beneficio de Prestação Continuada
+                          BPC-Beneficio de Prestação Continuada*
                         </FormLabel>
                         <FormControl>
                           <Select
@@ -1493,7 +1499,7 @@ export function FamilyForm({
                     render={({ field }) => (
                       <FormItem className="w-[308px]">
                         <FormLabel className="text-xs">
-                          Inserido em algum Programa da Assistência Social
+                          Inserido em algum Programa da Assistência Social*
                         </FormLabel>
                         <FormControl>
                           <Select
@@ -1523,7 +1529,7 @@ export function FamilyForm({
                     name="is_single_cadastre"
                     render={({ field }) => (
                       <FormItem className="w-[308px]">
-                        <FormLabel>Possui Cadastro Único</FormLabel>
+                        <FormLabel>Possui Cadastro Único*</FormLabel>
                         <FormControl>
                           <Select
                             onValueChange={value => {
@@ -1564,7 +1570,7 @@ export function FamilyForm({
                     name="zip_code"
                     render={({ field }) => (
                       <FormItem className="w-[232px]">
-                        <FormLabel>CEP</FormLabel>
+                        <FormLabel>CEP*</FormLabel>
                         <FormControl>
                           <Input
                             placeholder="CEP"
@@ -1582,7 +1588,7 @@ export function FamilyForm({
                     name="street"
                     render={({ field }) => (
                       <FormItem className="w-[320px]">
-                        <FormLabel>Logradouro</FormLabel>
+                        <FormLabel>Logradouro*</FormLabel>
                         <FormControl>
                           <Input placeholder="Logradouro" {...field} />
                         </FormControl>
@@ -1596,7 +1602,7 @@ export function FamilyForm({
                     name="number"
                     render={({ field }) => (
                       <FormItem className="w-[104px]">
-                        <FormLabel>Número</FormLabel>
+                        <FormLabel>Número*</FormLabel>
                         <FormControl>
                           <Input placeholder="Número" {...field} />
                         </FormControl>
@@ -1610,7 +1616,7 @@ export function FamilyForm({
                     name="neighborhood"
                     render={({ field }) => (
                       <FormItem className="w-[250px]">
-                        <FormLabel>Bairro</FormLabel>
+                        <FormLabel>Bairro*</FormLabel>
                         <FormControl>
                           <Input placeholder="Bairro" {...field} />
                         </FormControl>
@@ -1638,7 +1644,7 @@ export function FamilyForm({
                     name="state"
                     render={({ field }) => (
                       <FormItem className="w-[320px]">
-                        <FormLabel>Estado</FormLabel>
+                        <FormLabel>Estado*</FormLabel>
                         <FormControl>
                           <Select
                             onValueChange={value => {
@@ -1671,7 +1677,7 @@ export function FamilyForm({
                     name="city"
                     render={({ field }) => (
                       <FormItem className="w-[370px]">
-                        <FormLabel>Cidade</FormLabel>
+                        <FormLabel>Cidade*</FormLabel>
                         <FormControl>
                           <Select
                             onValueChange={field.onChange}
@@ -1755,6 +1761,7 @@ export function FamilyForm({
                             onChange={date => field.onChange(date)}
                             dateFormat="dd/MM/yyyy"
                             placeholder="Selecione uma data"
+                            required={false}
                           />
                           <FormMessage />
                         </FormItem>

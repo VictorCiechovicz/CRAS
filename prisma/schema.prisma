@@ -17,43 +17,43 @@ enum FamilyStatus {
 }
 
 model Familys {
-  id                        String          @id @default(auto()) @map("_id") @db.ObjectId
-  name                      String
-  CPF                       String
-  RG                        String?
-  phone                     String?
-  city                      String
-  neighborhood              String
-  number                    String
-  state                     String
-  street                    String
-  zip_code                  String
-  notes                     String?
-  date_birth_responsible    DateTime
-  profession_responsible    String
-  nis_responsible           String?
-  schooling_responsible     String
-  income_responsible        String
-  type_income_responsible   String[]
-  type_residence            String
-  is_bathroom               String
-  type_house                String
-  length_of_residence       String
-  is_bolsa_familia          String
-  value_bolsa_familia       String?
-  BPC                       String
-  social_assistance_program String
-  is_single_cadastre        String
-  notes_reprove             String?
+  id                          String          @id @default(auto()) @map("_id") @db.ObjectId
+  name                        String
+  CPF                         String
+  RG                          String?
+  phone                       String?
+  city                        String
+  neighborhood                String
+  number                      String
+  state                       String
+  street                      String
+  zip_code                    String
+  notes                       String?
+  date_birth_responsible      DateTime
+  profession_responsible      String?
+  nis_responsible             String?
+  schooling_responsible       String
+  income_responsible          String
+  type_income_responsible     String[]
+  type_residence              String
+  is_bathroom                 String
+  type_house                  String
+  length_of_residence         String
+  is_bolsa_familia            String
+  value_bolsa_familia         String?
+  BPC                         String
+  social_assistance_program   String
+  is_single_cadastre          String
+  notes_reprove               String?
   maritial_status_responsible String
-  date_visited              DateTime
-  createdAt                 DateTime        @default(now())
-  updatedAt                 DateTime        @default(now())
-  status                    FamilyStatus    @default(PENDING)
-  createdByUserId           String
-  createdByUserName         String
-  dependents                Dependent[]
-  periodBenefit             PeriodBenefit[]
+  date_visited                DateTime?
+  createdAt                   DateTime        @default(now())
+  updatedAt                   DateTime        @default(now())
+  status                      FamilyStatus    @default(PENDING)
+  createdByUserId             String
+  createdByUserName           String
+  dependents                  Dependent[]
+  periodBenefit               PeriodBenefit[]
 }
 
 model Dependent {
@@ -73,11 +73,11 @@ model Dependent {
 }
 
 model PeriodBenefit {
-  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  id                String    @id @default(auto()) @map("_id") @db.ObjectId
   startDate         DateTime
   endDate           DateTime
   withdrawalBenefit DateTime?
-  createdAt         DateTime @default(now())
-  familyId          String   @db.ObjectId
-  family            Familys  @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  createdAt         DateTime  @default(now())
+  familyId          String    @db.ObjectId
+  family            Familys   @relation(fields: [familyId], references: [id], onDelete: Cascade)
 }

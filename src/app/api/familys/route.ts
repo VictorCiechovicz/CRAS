@@ -45,7 +45,7 @@ export const POST = async (request: Request) => {
     if (
       !name ||
       !CPF ||
-     !city ||
+      !city ||
       !neighborhood ||
       !number ||
       !state ||
@@ -54,7 +54,6 @@ export const POST = async (request: Request) => {
       !createdByUserId ||
       !createdByUserName ||
       !date_birth_responsible ||
-      !profession_responsible ||
       !type_residence ||
       !is_bathroom ||
       !type_house ||
@@ -63,7 +62,6 @@ export const POST = async (request: Request) => {
       !BPC ||
       !social_assistance_program ||
       !is_single_cadastre ||
-      !date_visited ||
       !schooling_responsible ||
       !income_responsible ||
       !type_income_responsible ||
