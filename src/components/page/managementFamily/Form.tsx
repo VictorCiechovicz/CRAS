@@ -1264,13 +1264,27 @@ export function FamilyForm({
                             </TableCell>
 
                             <TableCell>
-                              {item.withdrawalBenefit &&
-                              isValid(new Date(item.withdrawalBenefit))
-                                ? format(
-                                    new Date(item.withdrawalBenefit),
-                                    'dd/MM/yyyy'
-                                  )
-                                : ''}
+                              <div className="flex flex-col">
+                                {item.withdrawalBenefit &&
+                                item.withdrawalBenefit.length > 0
+                                  ? item.withdrawalBenefit.map(
+                                      (date, index) => {
+                                        if (isValid(new Date(date))) {
+                                          return (
+                                            <span key={index}>
+                                              {index + 1}.{' '}
+                                              {format(
+                                                new Date(date),
+                                                'dd/MM/yyyy'
+                                              )}
+                                            </span>
+                                          )
+                                        }
+                                        return null
+                                      }
+                                    )
+                                  : ''}
+                              </div>
                             </TableCell>
 
                             <TableCell>
