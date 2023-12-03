@@ -67,7 +67,7 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
         showLoading()
         onClose()
         const data = {
-          withdrawalBenefit: dateWithdrawalBenefit
+          withdrawalBenefit: [dateWithdrawalBenefit]
         }
         setIsVisibleDateWithdrawalBenefit(false)
 
@@ -389,7 +389,7 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
                     <TableRow>
                       <TableHead>Data de Entrada</TableHead>
                       <TableHead>Data de Saída</TableHead>
-                      <TableHead>Data de Retirada</TableHead>
+                      <TableHead>Datas de Retirada</TableHead>
                       {(session?.user as any)?.role === 'master' && (
                         <TableHead>Ações</TableHead>
                       )}
@@ -416,14 +416,14 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
                           </TableCell>
 
                           <TableCell>
-                            <div className="flex flex-col">
+                            <div className="flex gap-4">
                               {item.withdrawalBenefit &&
                               item.withdrawalBenefit.length > 0
                                 ? item.withdrawalBenefit.map((date, index) => {
                                     if (isValid(new Date(date))) {
                                       return (
-                                        <span key={index}>
-                                          {index + 1}.{' '}
+                                        <span key={index} className='flex gap-2'>
+                                         <p className='font-bold'>{index + 1}º</p> {' '}
                                           {format(new Date(date), 'dd/MM/yyyy')}
                                         </span>
                                       )

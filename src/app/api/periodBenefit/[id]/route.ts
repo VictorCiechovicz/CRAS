@@ -31,27 +31,37 @@ export async function PUT(
   { params }: { params: IParams }
 ) {
   try {
-    const { id } = params
-    const body = await request.json()
+    const { id } = params;
+    const body = await request.json();
 
-    const { withdrawalBenefit } = body;
-    if (!Array.isArray(withdrawalBenefit)) {
+    const { withdrawalBenefit: newWithdrawalBenefits } = body;
+    if (!Array.isArray(newWithdrawalBenefits)) {
       return new NextResponse('Body Malformatted: withdrawalBenefit must be an array', { status: 400 });
     }
 
+    const currentPeriodBenefit = await prisma.periodBenefit.findUnique({
+      where: { id }
+    });
+
+    if (!currentPeriodBenefit) {
+      return new NextResponse('PeriodBenefit not found', { status: 404 });
+    }
+
+    const updatedWithdrawalBenefits = [
+      ...(currentPeriodBenefit.withdrawalBenefit || []),
+      ...newWithdrawalBenefits
+    ];
 
     const periodBenefitFamily = await prisma.periodBenefit.update({
-      where: {
-        id: id
-      },
+      where: { id },
       data: {
-        withdrawalBenefit
+        withdrawalBenefit: updatedWithdrawalBenefits
       }
-    })
+    });
 
-    return NextResponse.json(periodBenefitFamily)
+    return NextResponse.json(periodBenefitFamily);
   } catch (error) {
-    console.error(error)
-    return new NextResponse('Internal Error', { status: 500 })
+    console.error(error);
+    return new NextResponse('Internal Error', { status: 500 });
   }
 }

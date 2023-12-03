@@ -50,6 +50,7 @@ import {
   formatMoney,
   formatPhoneNumber
 } from '@/src/utils/format/masks'
+import { TrashIcon } from '@heroicons/react/24/outline'
 
 export type FormValues = z.infer<typeof FormSchema>
 
@@ -401,6 +402,39 @@ export function FamilyForm({
       console.error('Não foi possível deletar o item', error)
     }
     stopLoading()
+  }
+
+  const handleDeletewithdrawalBenefit = async (value: any, date: any) => {
+    const data = { withdrawalBenefitToRemove: date }
+    showLoading()
+
+    try {
+      if (value.id) {
+        await axios.put(`/api/withdrawalBenefit/${value.id}`, data)
+      }
+      setTableBenefitPeriod(prevItems => {
+        if (prevItems.length > 0 && prevItems[0].id === value.id) {
+          const newItems = [...prevItems]
+
+          newItems[0].withdrawalBenefit = newItems[0].withdrawalBenefit.filter(
+            d => d !== date
+          )
+
+          return newItems
+        }
+        return prevItems
+      })
+    } catch (error) {
+      console.error('Não foi possível deletar o item', error)
+      toast({
+        title: 'Data de Retirada não removido',
+        description: 'Não foi Possível Deletar a Data de Retirada!',
+        variant: 'destructive'
+      })
+    } finally {
+      stopLoading()
+      router.refresh()
+    }
   }
 
   const handleUpdateFamily = async (data: Familys) => {
@@ -1243,7 +1277,7 @@ export function FamilyForm({
                       <TableRow>
                         <TableHead>Data de Entrada</TableHead>
                         <TableHead>Data de Saída</TableHead>
-                        <TableHead>Data de Retirada</TableHead>
+                        <TableHead>Datas de Retirada</TableHead>
                         <TableHead>Ação</TableHead>
                       </TableRow>
                     </TableHeader>
@@ -1264,20 +1298,39 @@ export function FamilyForm({
                             </TableCell>
 
                             <TableCell>
-                              <div className="flex flex-col">
+                              <div className="flex gap-4">
                                 {item.withdrawalBenefit &&
                                 item.withdrawalBenefit.length > 0
                                   ? item.withdrawalBenefit.map(
-                                      (date, index) => {
+                                      (date, indexW) => {
                                         if (isValid(new Date(date))) {
                                           return (
-                                            <span key={index}>
-                                              {index + 1}.{' '}
-                                              {format(
-                                                new Date(date),
-                                                'dd/MM/yyyy'
-                                              )}
-                                            </span>
+                                            <div className="flex gap-1 items-center ">
+                                              <span
+                                                key={indexW}
+                                                className="flex gap-1"
+                                              >
+                                                <p className="font-bold">
+                                                  {indexW + 1}º
+                                                </p>{' '}
+                                                {format(
+                                                  new Date(date),
+                                                  'dd/MM/yyyy'
+                                                )}
+                                              </span>
+                                              <button
+                                                type="button"
+                                                onClick={e => {
+                                                  e.stopPropagation()
+                                                  handleDeletewithdrawalBenefit(
+                                                    item,
+                                                    date
+                                                  )
+                                                }}
+                                              >
+                                                <TrashIcon className="w-4 h-4" />
+                                              </button>
+                                            </div>
                                           )
                                         }
                                         return null
