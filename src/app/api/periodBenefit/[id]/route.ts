@@ -35,9 +35,11 @@ export async function PUT(
     const body = await request.json()
 
     const { withdrawalBenefit } = body;
-    if (!withdrawalBenefit) {
-      return new NextResponse('Body Malformated', { status: 400 });
+    if (!Array.isArray(withdrawalBenefit)) {
+      return new NextResponse('Body Malformatted: withdrawalBenefit must be an array', { status: 400 });
     }
+
+
     const periodBenefitFamily = await prisma.periodBenefit.update({
       where: {
         id: id

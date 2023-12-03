@@ -416,37 +416,44 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
                           </TableCell>
 
                           <TableCell>
-                            <div className="flex">
+                            <div className="flex flex-col">
                               {item.withdrawalBenefit &&
-                              isValid(new Date(item.withdrawalBenefit))
-                                ? format(
-                                    new Date(item.withdrawalBenefit),
-                                    'dd/MM/yyyy'
-                                  )
+                              item.withdrawalBenefit.length > 0
+                                ? item.withdrawalBenefit.map((date, index) => {
+                                    if (isValid(new Date(date))) {
+                                      return (
+                                        <span key={index}>
+                                          {index + 1}.{' '}
+                                          {format(new Date(date), 'dd/MM/yyyy')}
+                                        </span>
+                                      )
+                                    }
+                                    return null
+                                  })
                                 : ''}
                             </div>
                           </TableCell>
-                          {(session?.user as any)?.role === 'master' &&
-                            !item.withdrawalBenefit && (
-                              <TableCell>
-                                <div className="flex">
-                                  <Button
-                                    variant={'outline'}
-                                    type="button"
-                                    onClick={event => {
-                                      event.stopPropagation(),
-                                        setInfosPeridBenefit(item),
-                                        setIsVisibleDateWithdrawalBenefit(
-                                          prev => !prev
-                                        )
-                                    }}
-                                    className="bg-blue-800 text-white"
-                                  >
-                                    Adicionar Retirada
-                                  </Button>
-                                </div>
-                              </TableCell>
-                            )}
+
+                          {(session?.user as any)?.role === 'master' && (
+                            <TableCell>
+                              <div className="flex">
+                                <Button
+                                  variant={'outline'}
+                                  type="button"
+                                  onClick={event => {
+                                    event.stopPropagation(),
+                                      setInfosPeridBenefit(item),
+                                      setIsVisibleDateWithdrawalBenefit(
+                                        prev => !prev
+                                      )
+                                  }}
+                                  className="bg-blue-800 text-white"
+                                >
+                                  Adicionar Retirada
+                                </Button>
+                              </div>
+                            </TableCell>
+                          )}
                         </TableRow>
                       ))
                     ) : (
@@ -480,7 +487,7 @@ const FamilyDetailsModal: React.FC<FamilyDetailsModalProps> = ({
                 <div>
                   <div className="flex gap-4 mb-10 justify-center">
                     <div>
-                      <p className="text-sm font-medium  ">Data de Entrega</p>
+                      <p className="text-sm font-medium">Data de Entrega</p>
 
                       <DatePicker
                         customInput={<CustomInput ref={datePickerRef} />}
