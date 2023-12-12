@@ -1,7 +1,7 @@
 
 ![Figma Community Thumbnail](https://github.com/VictorCiechovicz/CRAS/assets/106246945/b396184c-84d7-4287-8e3a-de9a5ea35902)
 
-# **** 👨‍👩‍👧‍👦 🏠 Cras App****
+# ****👨‍👩‍👧‍👦 🏠 Cras App****
 
 
 This application is project to Family Management using Next.js 13, Shadcn-ui, Prisma, MongoDb and Next Auth with Keycloak. This application was created for the purpose of volunteer work.
