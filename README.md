@@ -4,7 +4,7 @@
 # ****📍🏠 Cras App****
 
 
-This application is project to Family Management using Next.js 13, Shadcn-ui, Prisma, MongoDb and Next Auth with Keycloak. This application was created for the purpose of studies.
+This application is project to Family Management using Next.js 13, Shadcn-ui, Prisma, MongoDb and Next Auth with Keycloak. This application was created for the purpose of volunteer work.
  
 ## ****✨ Stacks****
 
